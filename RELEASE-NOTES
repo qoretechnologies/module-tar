@@ -1,0 +1,18 @@
+Qore tar Module Release Notes
+==============================
+
+Version 1.0.0
+-------------
+- Initial release
+- TarFile class for reading and writing TAR archives
+- Support for compression methods: none, gzip, bzip2, xz, zstd, lz4
+- Support for TAR formats: ustar, pax, GNU, V7
+- TarInputStream and TarOutputStream for streaming operations
+- Stream-based I/O (read/write from Qore InputStream/OutputStream)
+- In-memory archive operations
+- File metadata handling (permissions, ownership, timestamps)
+- Support for special file types (symlinks, hardlinks, sparse files, device nodes)
+- Archive encryption helper functions (AES-256-CBC)
+- Multi-volume archive support (split/join)
+- TarDataProvider module with 16 registered actions
+- Comprehensive test suite with unit, integration, negative, and corner case tests

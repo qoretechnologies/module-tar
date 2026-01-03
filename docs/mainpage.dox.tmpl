@@ -1,0 +1,314 @@
+/** @mainpage Qore tar Module
+
+    @tableofcontents
+
+    @section tarintro Introduction
+
+    The \c tar module provides comprehensive TAR archive functionality for Qore, including:
+
+    - Creating, reading, and modifying TAR archives
+    - Multiple compression methods: gzip, bzip2, xz, zstd, lz4
+    - Multiple TAR formats: USTAR, PAX, GNU, V7
+    - Streaming API for large file operations
+    - Support for symbolic links, hard links, and special files
+    - In-memory archive operations
+    - Data provider module for integration with Qore's data provider framework
+    - Archive encryption and multi-volume archive support
+
+    The module is built on top of libarchive, providing robust and efficient archive handling.
+
+    To use this module, use \c "%requires tar" in your code.
+
+    @section tarquickstart Quick Start
+
+    @subsection tarcreate Creating a TAR Archive
+
+    @code{.py}
+#!/usr/bin/qore
+
+%requires tar
+
+# Create a new uncompressed archive
+TarFile tar("archive.tar", "w");
+tar.add("readme.txt", "Hello, World!");
+tar.addFile("document.pdf", "/path/to/document.pdf");
+tar.addDirectory("images/");
+tar.addFile("images/logo.png", "/path/to/logo.png");
+tar.close();
+
+# Create a gzip-compressed archive
+TarFile tarGz("archive.tar.gz", "w", <TarCreateOptions>{"compression_method": TAR_CM_GZIP});
+tarGz.add("data.txt", "Compressed content");
+tarGz.close();
+    @endcode
+
+    @subsection tarread Reading a TAR Archive
+
+    @code{.py}
+TarFile tar("archive.tar", "r");
+foreach hash<TarEntryInfo> entry in (tar.entries()) {
+    printf("Entry: %s, Size: %d bytes, Type: %s\n", entry.name, entry.size, entry.type);
+    if (!entry.is_directory) {
+        binary data = tar.read(entry.name);
+    }
+}
+tar.close();
+    @endcode
+
+    @subsection tarextract Extracting a TAR Archive
+
+    @code{.py}
+TarFile tar("archive.tar.gz", "r");
+tar.extractAll(<TarExtractOptions>{
+    "destination": "/destination/path",
+    "overwrite": True,
+    "preserve_permissions": True,
+    "preserve_times": True,
+});
+tar.close();
+
+# Extract a single file
+TarFile tar2("archive.tar", "r");
+tar2.extractTo("readme.txt", "/path/to/extracted/readme.txt");
+tar2.close();
+    @endcode
+
+    @subsection tarmemory In-Memory Archives
+
+    @code{.py}
+# Create an in-memory archive
+TarFile tar();
+tar.add("data.json", make_json({"key": "value"}));
+binary archive_data = tar.toData();
+# archive_data can be sent over network, stored in DB, etc.
+
+# Read from binary data
+TarFile readTar(archive_data);
+string content = readTar.readText("data.json");
+readTar.close();
+
+# Create compressed in-memory archive
+TarFile compressedTar(NOTHING, <TarCreateOptions>{"compression_method": TAR_CM_GZIP});
+compressedTar.add("file.txt", "Compressed content");
+binary compressedData = compressedTar.toData();
+    @endcode
+
+    @subsection tarsymlinks Working with Symlinks and Hardlinks
+
+    @code{.py}
+TarFile tar("links.tar", "w", <TarCreateOptions>{"format": TAR_FORMAT_PAX});
+tar.add("original.txt", "Original file content");
+tar.addSymlink("symlink.txt", "original.txt");
+tar.addHardlink("hardlink.txt", "original.txt");
+tar.close();
+
+# Reading link information
+TarFile readTar("links.tar", "r");
+hash<TarEntryInfo> entry = readTar.getEntry("symlink.txt");
+if (entry.is_symlink) {
+    printf("Symlink points to: %s\n", entry.link_target);
+}
+readTar.close();
+    @endcode
+
+    @subsection tarstreaming Streaming API
+
+    @code{.py}
+# Streaming write for large files
+TarFile tar("large.tar", "w");
+TarOutputStream os = tar.getOutputStream("bigfile.bin");
+# Write data in chunks
+os.write(chunk1);
+os.write(chunk2);
+os.write(chunk3);
+os.close();
+tar.close();
+
+# Streaming read for large files
+TarFile readTar("large.tar", "r");
+TarInputStream is = readTar.getInputStream("bigfile.bin");
+while (*binary chunk = is.read(4096)) {
+    # Process chunk
+}
+readTar.close();
+    @endcode
+
+    @section tarcompression Compression Methods
+
+    The module supports multiple compression methods:
+
+    |Constant|Extension|Description|
+    |--------|---------|-----------|
+    |@ref Tar::TAR_CM_NONE|.tar|No compression (plain tar)|
+    |@ref Tar::TAR_CM_GZIP|.tar.gz, .tgz|Gzip compression (most common)|
+    |@ref Tar::TAR_CM_BZIP2|.tar.bz2|Bzip2 compression (better ratio, slower)|
+    |@ref Tar::TAR_CM_XZ|.tar.xz|XZ/LZMA2 compression (best ratio, slowest)|
+    |@ref Tar::TAR_CM_ZSTD|.tar.zst|Zstandard compression (fast, good ratio)|
+    |@ref Tar::TAR_CM_LZ4|.tar.lz4|LZ4 compression (fastest, lower ratio)|
+
+    Compression levels range from 1 (fastest) to 9 (best):
+
+    |Constant|Description|
+    |--------|-----------|
+    |@ref Tar::TAR_COMPRESSION_DEFAULT|Default compression level|
+    |@ref Tar::TAR_COMPRESSION_FASTEST|Fastest compression (level 1)|
+    |@ref Tar::TAR_COMPRESSION_BEST|Best compression (level 9)|
+
+    @section tarformats TAR Formats
+
+    The module supports multiple TAR formats:
+
+    |Constant|Description|
+    |--------|-----------|
+    |@ref Tar::TAR_FORMAT_USTAR|POSIX.1-1988 ustar format (100-char filename limit)|
+    |@ref Tar::TAR_FORMAT_PAX|POSIX.1-2001 pax format (recommended, no practical limits)|
+    |@ref Tar::TAR_FORMAT_GNU|GNU tar format (extended attributes support)|
+    |@ref Tar::TAR_FORMAT_V7|Original V7 Unix tar format (legacy)|
+
+    The PAX format is recommended for new archives as it supports:
+    - Unlimited filename length
+    - Unlimited file size
+    - Unicode filenames
+    - Extended attributes
+    - Nanosecond timestamps
+
+    @section tarentryinfo Entry Information
+
+    Each entry in a TAR archive has associated metadata:
+
+    @code{.py}
+hashdecl TarEntryInfo {
+    string name;              # Entry path/name
+    int size;                 # Uncompressed size
+    date modified;            # Modification time
+    date accessed;            # Access time (if available)
+    date created;             # Creation time (if available)
+    int mode;                 # Unix permissions
+    int uid;                  # User ID
+    int gid;                  # Group ID
+    *string uname;            # User name
+    *string gname;            # Group name
+    string type;              # "file", "directory", "symlink", "hardlink", etc.
+    *string link_target;      # Target for symlinks/hardlinks
+    bool is_directory;        # Convenience flag
+    bool is_symlink;          # Convenience flag
+    bool is_hardlink;         # Convenience flag
+    *int devmajor;            # Device major number (for device nodes)
+    *int devminor;            # Device minor number (for device nodes)
+}
+    @endcode
+
+    @section tardataprovider Data Provider API
+
+    The \c TarDataProvider module provides integration with Qore's data provider framework:
+
+    @code{.py}
+%requires TarDataProvider
+
+# Get the data provider factory
+AbstractDataProviderFactory factory = DataProvider::getFactoryEx("tar");
+AbstractDataProvider provider = factory.create();
+
+# Navigate to the create-archive action
+AbstractDataProvider createAction = provider.getChildProviderEx("archive").getChildProviderEx("create");
+
+# Or use the shorthand path navigation
+AbstractDataProvider dp = DataProvider::getFactoryObjectFromStringEx("tar{}/archive/create");
+    @endcode
+
+    @subsection tardpactions Available Data Provider Actions
+
+    |Path|Action|Description|
+    |----|------|-----------|
+    |/archive/create|create-archive|Create a new tar archive|
+    |/archive/extract|extract-archive|Extract all files from an archive|
+    |/archive/list|list-archive|List archive contents with metadata|
+    |/archive/info|get-archive-info|Get archive metadata and statistics|
+    |/archive/add|add-files|Add files to an existing archive|
+    |/file/extract|extract-file|Extract a single file from archive|
+    |/file/read|read-file|Read file content without extracting to disk|
+    |/data/compress|compress-data|Compress data to tar format (in-memory)|
+    |/data/decompress|decompress-data|Decompress tar data (in-memory)|
+    |/directory/archive|archive-directory|Archive a directory tree|
+    |/stream/extract|stream-extract|Stream extract large files|
+    |/entry/delete|delete-entry|Delete entry from archive|
+    |/archive/encrypt|encrypt-archive|Encrypt a tar archive|
+    |/archive/decrypt|decrypt-archive|Decrypt an encrypted tar archive|
+    |/archive/split|split-archive|Split archive into multiple chunks|
+    |/archive/join|join-archive|Join multiple chunks into single archive|
+
+    @section tarerrors Error Handling
+
+    All TAR operations throw exceptions of type \c "TAR-ERROR" when errors occur:
+
+    @code{.py}
+try {
+    TarFile tar("nonexistent.tar", "r");
+} catch (hash<ExceptionInfo> ex) {
+    if (ex.err == "TAR-ERROR") {
+        printf("TAR error: %s\n", ex.desc);
+    }
+}
+    @endcode
+
+    @section taradvanced Advanced Features
+
+    @subsection tarencrypt Archive Encryption
+
+    The module provides helper functions for encrypting entire archives:
+
+    @code{.py}
+# Create archive
+TarFile tar();
+tar.add("secret.txt", "Confidential data");
+binary archiveData = tar.toData();
+
+# Encrypt the archive
+binary encrypted = TarFile::encryptArchive(archiveData, "password123");
+
+# Decrypt the archive
+binary decrypted = TarFile::decryptArchive(encrypted, "password123");
+
+# Read decrypted archive
+TarFile readTar(decrypted);
+string content = readTar.readText("secret.txt");
+    @endcode
+
+    @subsection tarmultivolume Multi-Volume Archives
+
+    For large archives, you can split them into multiple chunks:
+
+    @code{.py}
+# Create archive
+TarFile tar();
+tar.add("largefile.bin", largeData);
+binary archiveData = tar.toData();
+
+# Split into 10MB chunks
+list<binary> chunks = TarFile::splitArchive(archiveData, 10 * 1024 * 1024);
+
+# Later, join the chunks back
+binary joined = TarFile::joinArchive(chunks);
+
+# Read joined archive
+TarFile readTar(joined);
+    @endcode
+
+    @section tarreleasenotes Release Notes
+
+    @subsection tar_1_0 tar Module Version 1.0
+    - Initial release
+    - Multiple compression methods (gzip, bzip2, xz, zstd, lz4)
+    - Multiple TAR formats (USTAR, PAX, GNU, V7)
+    - Streaming API for large files
+    - In-memory archive operations
+    - Symlink and hardlink support
+    - Archive encryption and multi-volume support
+    - Data provider module with 16 registered actions
+
+    @section tarlicense License
+
+    The tar module is released under the MIT license.
+
+    Copyright (C) 2026 Qore Technologies, s.r.o.
+*/

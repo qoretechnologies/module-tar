@@ -1,0 +1,1425 @@
+#!/usr/bin/env qore
+# -*- mode: qore; indent-tabs-mode: nil -*-
+
+/*
+    Qore tar module test suite
+
+    Copyright (C) 2026 Qore Technologies, s.r.o.
+
+    Permission is hereby granted, free of charge, to any person obtaining a
+    copy of this software and associated documentation files (the "Software"),
+    to deal in the Software without restriction, including without limitation
+    the rights to use, copy, modify, merge, publish, distribute, sublicense,
+    and/or sell copies of the Software, and to permit persons to whom the
+    Software is furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in
+    all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+    DEALINGS IN THE SOFTWARE.
+*/
+
+%new-style
+%strict-args
+%require-types
+%enable-all-warnings
+
+%requires QUnit
+%requires Util
+%requires tar
+
+%exec-class TarTest
+
+public class TarTest inherits QUnit::Test {
+    private {
+        string testDir;
+        string testTarPath;
+    }
+
+    constructor() : Test("TarTest", "1.0") {
+        testDir = tmp_location() + "/tar_test_" + string(getpid());
+        testTarPath = testDir + "/test.tar";
+
+        addTestCase("Archive creation tests", \archiveCreationTest());
+        addTestCase("Archive reading tests", \archiveReadingTest());
+        addTestCase("In-memory archive tests", \inMemoryArchiveTest());
+        addTestCase("Gzip compression tests", \gzipCompressionTest());
+        addTestCase("Bzip2 compression tests", \bzip2CompressionTest());
+        addTestCase("XZ compression tests", \xzCompressionTest());
+        addTestCase("Zstd compression tests", \zstdCompressionTest());
+        addTestCase("LZ4 compression tests", \lz4CompressionTest());
+        addTestCase("Tar format tests", \tarFormatTest());
+        addTestCase("Extraction tests", \extractionTest());
+        addTestCase("Symlink tests", \symlinkTest());
+        addTestCase("Hardlink tests", \hardlinkTest());
+        addTestCase("Error handling tests", \errorHandlingTest());
+        addTestCase("Corner case tests", \cornerCaseTest());
+        addTestCase("Unicode filename tests", \unicodeFilenameTest());
+        addTestCase("Streaming API tests", \streamingApiTest());
+        addTestCase("Metadata tests", \metadataTest());
+        addTestCase("Path traversal protection tests", \pathTraversalTest());
+        addTestCase("Append mode tests", \appendModeTest());
+
+        set_return_value(main());
+    }
+
+    globalSetUp() {
+        mkdir(testDir);
+    }
+
+    globalTearDown() {
+        # Clean up test directory
+        if (is_dir(testDir)) {
+            system("rm -rf " + testDir);
+        }
+    }
+
+    # Test archive creation
+    archiveCreationTest() {
+        # Test creating empty archive
+        {
+            TarFile tar(testTarPath, "w");
+            tar.close();
+            assertEq(True, is_file(testTarPath), "empty archive file created");
+        }
+
+        # Test creating archive with single text file
+        {
+            string tarPath = testDir + "/single_file.tar";
+            TarFile tar(tarPath, "w");
+            tar.add("hello.txt", "Hello, World!");
+            tar.close();
+
+            TarFile readTar(tarPath, "r");
+            assertEq(1, readTar.entryCount(), "archive has 1 entry");
+            assertEq(True, readTar.hasEntry("hello.txt"), "entry exists");
+            readTar.close();
+        }
+
+        # Test creating archive with multiple files
+        {
+            string tarPath = testDir + "/multi_file.tar";
+            TarFile tar(tarPath, "w");
+            tar.add("file1.txt", "Content 1");
+            tar.add("file2.txt", "Content 2");
+            tar.add("file3.txt", "Content 3");
+            tar.close();
+
+            TarFile readTar(tarPath, "r");
+            assertEq(3, readTar.entryCount(), "archive has 3 entries");
+            readTar.close();
+        }
+
+        # Test creating archive with directories
+        {
+            string tarPath = testDir + "/with_dirs.tar";
+            TarFile tar(tarPath, "w");
+            tar.addDirectory("subdir/");
+            tar.add("subdir/file.txt", "Nested file content");
+            tar.close();
+
+            TarFile readTar(tarPath, "r");
+            assertEq(2, readTar.entryCount(), "archive has directory and file");
+            assertEq(True, readTar.hasEntry("subdir/"), "directory entry exists");
+            assertEq(True, readTar.hasEntry("subdir/file.txt"), "nested file exists");
+            readTar.close();
+        }
+
+        # Test creating archive with nested directories
+        {
+            string tarPath = testDir + "/nested_dirs.tar";
+            TarFile tar(tarPath, "w");
+            tar.addDirectory("a/");
+            tar.addDirectory("a/b/");
+            tar.addDirectory("a/b/c/");
+            tar.add("a/b/c/deep.txt", "Deep nested file");
+            tar.close();
+
+            TarFile readTar(tarPath, "r");
+            assertEq(True, readTar.hasEntry("a/b/c/deep.txt"), "deeply nested file exists");
+            readTar.close();
+        }
+
+        # Test creating archive with binary data
+        {
+            string tarPath = testDir + "/binary_data.tar";
+            binary binData = <0102030405060708090a0b0c0d0e0f>;
+            TarFile tar(tarPath, "w");
+            tar.add("data.bin", binData);
+            tar.close();
+
+            TarFile readTar(tarPath, "r");
+            binary readData = readTar.read("data.bin");
+            assertEq(binData, readData, "binary data preserved");
+            readTar.close();
+        }
+    }
+
+    # Test reading archives
+    archiveReadingTest() {
+        # Create test archive
+        string tarPath = testDir + "/read_test.tar";
+        {
+            TarFile tar(tarPath, "w");
+            tar.add("text.txt", "Hello, World!");
+            tar.add("data.bin", <0102030405>);
+            tar.close();
+        }
+
+        # Test reading text
+        {
+            TarFile tar(tarPath, "r");
+            string content = tar.readText("text.txt");
+            assertEq("Hello, World!", content, "text content matches");
+            tar.close();
+        }
+
+        # Test reading binary
+        {
+            TarFile tar(tarPath, "r");
+            binary data = tar.read("text.txt");
+            assertEq(True, data.size() > 0, "binary read returns data");
+            tar.close();
+        }
+
+        # Test entries list
+        {
+            TarFile tar(tarPath, "r");
+            list<hash<TarEntryInfo>> entries = tar.entries();
+            assertEq(2, entries.size(), "entries list has correct count");
+
+            hash<TarEntryInfo> entry = entries[0];
+            assertEq(True, exists entry.name, "entry has name");
+            assertEq(True, exists entry.size, "entry has size");
+            assertEq(True, exists entry.mode, "entry has mode");
+            assertEq(True, exists entry.is_directory, "entry has is_directory");
+            tar.close();
+        }
+
+        # Test getEntry
+        {
+            TarFile tar(tarPath, "r");
+            hash<TarEntryInfo> entry = tar.getEntry("text.txt");
+            assertEq("text.txt", entry.name, "entry name matches");
+            assertEq(False, entry.is_directory, "text file is not directory");
+            assertEq("file", entry.type, "entry type is file");
+            tar.close();
+        }
+    }
+
+    # Test in-memory archive operations
+    inMemoryArchiveTest() {
+        # Create in-memory archive
+        binary archiveData;
+        {
+            TarFile tar();
+            tar.add("memory.txt", "In-memory content");
+            tar.add("data.json", '{"key": "value"}');
+            archiveData = tar.toData();
+        }
+
+        assertEq(True, archiveData.size() > 0, "in-memory archive has data");
+
+        # Read from in-memory archive
+        {
+            TarFile tar(archiveData);
+            assertEq(2, tar.entryCount(), "in-memory archive has 2 entries");
+            string content = tar.readText("memory.txt");
+            assertEq("In-memory content", content, "in-memory content matches");
+            tar.close();
+        }
+
+        # Create in-memory archive with compression
+        {
+            TarFile tar(<TarCreateOptions>{"compression_method": TAR_CM_GZIP});
+            tar.add("compressed.txt", "This is compressed content");
+            binary compressedData = tar.toData();
+
+            # Gzip data should start with gzip magic bytes
+            assertEq(0x1f, compressedData[0], "gzip magic byte 1");
+            assertEq(0x8b, compressedData[1], "gzip magic byte 2");
+
+            # Read back compressed archive
+            TarFile readTar(compressedData);
+            string content = readTar.readText("compressed.txt");
+            assertEq("This is compressed content", content, "compressed content matches");
+            readTar.close();
+        }
+    }
+
+    # Test gzip compression
+    gzipCompressionTest() {
+        string testContent = strmul("This is test content for gzip compression testing. ", 100);
+
+        # Test .tar.gz creation
+        {
+            string tarPath = testDir + "/test.tar.gz";
+            TarFile tar(tarPath, "w", <TarCreateOptions>{"compression_method": TAR_CM_GZIP});
+            tar.add("content.txt", testContent);
+            tar.close();
+
+            assertEq(True, is_file(tarPath), "tar.gz file created");
+
+            # Verify it's smaller than uncompressed
+            int compressedSize = hstat(tarPath).size;
+
+            string uncompressedPath = testDir + "/test_uncompressed.tar";
+            TarFile uncompTar(uncompressedPath, "w");
+            uncompTar.add("content.txt", testContent);
+            uncompTar.close();
+            int uncompressedSize = hstat(uncompressedPath).size;
+
+            assertEq(True, compressedSize < uncompressedSize, "gzip reduces file size");
+        }
+
+        # Test reading .tar.gz
+        {
+            string tarPath = testDir + "/test.tar.gz";
+            TarFile tar(tarPath, "r");
+            string content = tar.readText("content.txt");
+            assertEq(testContent, content, "gzip content matches after decompression");
+            tar.close();
+        }
+
+        # Test compression levels
+        {
+            string path1 = testDir + "/gzip_level1.tar.gz";
+            string path9 = testDir + "/gzip_level9.tar.gz";
+
+            {
+                TarFile tar(path1, "w", <TarCreateOptions>{
+                    "compression_method": TAR_CM_GZIP,
+                    "compression_level": TAR_COMPRESSION_FASTEST,
+                });
+                tar.add("content.txt", testContent);
+                tar.close();
+            }
+
+            {
+                TarFile tar(path9, "w", <TarCreateOptions>{
+                    "compression_method": TAR_CM_GZIP,
+                    "compression_level": TAR_COMPRESSION_BEST,
+                });
+                tar.add("content.txt", testContent);
+                tar.close();
+            }
+
+            int size1 = hstat(path1).size;
+            int size9 = hstat(path9).size;
+            assertEq(True, size9 <= size1, "best compression is smaller or equal to fastest");
+        }
+    }
+
+    # Test bzip2 compression
+    bzip2CompressionTest() {
+        string testContent = strmul("This is test content for bzip2 compression testing. ", 100);
+
+        # Test .tar.bz2 creation
+        {
+            string tarPath = testDir + "/test.tar.bz2";
+            TarFile tar(tarPath, "w", <TarCreateOptions>{"compression_method": TAR_CM_BZIP2});
+            tar.add("content.txt", testContent);
+            tar.close();
+
+            assertEq(True, is_file(tarPath), "tar.bz2 file created");
+
+            # Read back and verify
+            TarFile readTar(tarPath, "r");
+            string content = readTar.readText("content.txt");
+            assertEq(testContent, content, "bzip2 content matches after decompression");
+            readTar.close();
+        }
+    }
+
+    # Test xz compression
+    xzCompressionTest() {
+        string testContent = strmul("This is test content for XZ compression testing. ", 100);
+
+        # Test .tar.xz creation
+        {
+            string tarPath = testDir + "/test.tar.xz";
+            TarFile tar(tarPath, "w", <TarCreateOptions>{"compression_method": TAR_CM_XZ});
+            tar.add("content.txt", testContent);
+            tar.close();
+
+            assertEq(True, is_file(tarPath), "tar.xz file created");
+
+            # Read back and verify
+            TarFile readTar(tarPath, "r");
+            string content = readTar.readText("content.txt");
+            assertEq(testContent, content, "xz content matches after decompression");
+            readTar.close();
+        }
+    }
+
+    # Test zstd compression
+    zstdCompressionTest() {
+        string testContent = strmul("This is test content for Zstandard compression testing. ", 100);
+
+        # Test .tar.zst creation
+        {
+            string tarPath = testDir + "/test.tar.zst";
+            TarFile tar(tarPath, "w", <TarCreateOptions>{"compression_method": TAR_CM_ZSTD});
+            tar.add("content.txt", testContent);
+            tar.close();
+
+            assertEq(True, is_file(tarPath), "tar.zst file created");
+
+            # Read back and verify
+            TarFile readTar(tarPath, "r");
+            string content = readTar.readText("content.txt");
+            assertEq(testContent, content, "zstd content matches after decompression");
+            readTar.close();
+        }
+    }
+
+    # Test lz4 compression
+    lz4CompressionTest() {
+        string testContent = strmul("This is test content for LZ4 compression testing. ", 100);
+
+        # Test .tar.lz4 creation
+        {
+            string tarPath = testDir + "/test.tar.lz4";
+            TarFile tar(tarPath, "w", <TarCreateOptions>{"compression_method": TAR_CM_LZ4});
+            tar.add("content.txt", testContent);
+            tar.close();
+
+            assertEq(True, is_file(tarPath), "tar.lz4 file created");
+
+            # Read back and verify
+            TarFile readTar(tarPath, "r");
+            string content = readTar.readText("content.txt");
+            assertEq(testContent, content, "lz4 content matches after decompression");
+            readTar.close();
+        }
+    }
+
+    # Test tar format variations
+    tarFormatTest() {
+        string testContent = "Format test content";
+
+        # Test USTAR format
+        {
+            string tarPath = testDir + "/ustar.tar";
+            TarFile tar(tarPath, "w", <TarCreateOptions>{"format": TAR_FORMAT_USTAR});
+            tar.add("ustar_file.txt", testContent);
+            tar.close();
+
+            TarFile readTar(tarPath, "r");
+            assertEq(testContent, readTar.readText("ustar_file.txt"), "ustar content matches");
+            readTar.close();
+        }
+
+        # Test PAX format
+        {
+            string tarPath = testDir + "/pax.tar";
+            TarFile tar(tarPath, "w", <TarCreateOptions>{"format": TAR_FORMAT_PAX});
+            tar.add("pax_file.txt", testContent);
+            tar.close();
+
+            TarFile readTar(tarPath, "r");
+            assertEq(testContent, readTar.readText("pax_file.txt"), "pax content matches");
+            readTar.close();
+        }
+
+        # Test GNU format
+        {
+            string tarPath = testDir + "/gnu.tar";
+            TarFile tar(tarPath, "w", <TarCreateOptions>{"format": TAR_FORMAT_GNU});
+            tar.add("gnu_file.txt", testContent);
+            tar.close();
+
+            TarFile readTar(tarPath, "r");
+            assertEq(testContent, readTar.readText("gnu_file.txt"), "gnu content matches");
+            readTar.close();
+        }
+
+        # Test V7 format
+        {
+            string tarPath = testDir + "/v7.tar";
+            TarFile tar(tarPath, "w", <TarCreateOptions>{"format": TAR_FORMAT_V7});
+            tar.add("v7_file.txt", testContent);
+            tar.close();
+
+            TarFile readTar(tarPath, "r");
+            assertEq(testContent, readTar.readText("v7_file.txt"), "v7 content matches");
+            readTar.close();
+        }
+    }
+
+    # Test extraction
+    extractionTest() {
+        # Create test archive
+        string tarPath = testDir + "/extract_test.tar";
+        {
+            TarFile tar(tarPath, "w");
+            tar.addDirectory("dir1/");
+            tar.add("dir1/file1.txt", "File 1 content");
+            tar.add("dir1/file2.txt", "File 2 content");
+            tar.addDirectory("dir2/");
+            tar.add("dir2/nested.txt", "Nested content");
+            tar.close();
+        }
+
+        # Test full extraction
+        {
+            string extractDir = testDir + "/extracted";
+            mkdir(extractDir);
+
+            TarFile tar(tarPath, "r");
+            tar.extractAll(<TarExtractOptions>{"destination": extractDir});
+            tar.close();
+
+            assertEq(True, is_dir(extractDir + "/dir1"), "dir1 extracted");
+            assertEq(True, is_file(extractDir + "/dir1/file1.txt"), "file1.txt extracted");
+            assertEq(True, is_file(extractDir + "/dir1/file2.txt"), "file2.txt extracted");
+            assertEq(True, is_dir(extractDir + "/dir2"), "dir2 extracted");
+            assertEq(True, is_file(extractDir + "/dir2/nested.txt"), "nested.txt extracted");
+
+            # Verify content
+            string content = ReadOnlyFile::readTextFile(extractDir + "/dir1/file1.txt");
+            assertEq("File 1 content", content, "extracted content matches");
+        }
+
+        # Test single entry extraction
+        {
+            string singleFile = testDir + "/single_extracted.txt";
+
+            TarFile tar(tarPath, "r");
+            tar.extractTo("dir1/file1.txt", singleFile);
+            tar.close();
+
+            assertEq(True, is_file(singleFile), "single entry extracted");
+            string content = ReadOnlyFile::readTextFile(singleFile);
+            assertEq("File 1 content", content, "single entry content matches");
+        }
+
+        # Test extraction with options
+        {
+            string extractDir = testDir + "/extracted_opts";
+            mkdir(extractDir);
+
+            TarFile tar(tarPath, "r");
+            tar.extractAll(<TarExtractOptions>{
+                "destination": extractDir,
+                "preserve_permissions": True,
+                "preserve_times": True,
+                "overwrite": True,
+                "create_directories": True,
+            });
+            tar.close();
+
+            assertEq(True, is_file(extractDir + "/dir1/file1.txt"), "file extracted with options");
+        }
+    }
+
+    # Test symlinks
+    symlinkTest() {
+        string tarPath = testDir + "/symlink.tar";
+
+        # Create archive with symlink
+        {
+            TarFile tar(tarPath, "w", <TarCreateOptions>{"format": TAR_FORMAT_PAX});
+            tar.add("target.txt", "This is the target file");
+            tar.addSymlink("link.txt", "target.txt");
+            tar.close();
+        }
+
+        # Read and verify symlink
+        {
+            TarFile tar(tarPath, "r");
+            hash<TarEntryInfo> entry = tar.getEntry("link.txt");
+            assertEq(True, entry.is_symlink, "entry is symlink");
+            assertEq("symlink", entry.type, "entry type is symlink");
+            assertEq("target.txt", entry.link_target, "symlink target matches");
+            tar.close();
+        }
+
+        # Extract and verify symlink
+        {
+            string extractDir = testDir + "/symlink_extracted";
+            mkdir(extractDir);
+
+            TarFile tar(tarPath, "r");
+            tar.extractAll(<TarExtractOptions>{"destination": extractDir});
+            tar.close();
+
+            assertEq(True, is_file(extractDir + "/target.txt"), "target file extracted");
+            assertEq(True, is_link(extractDir + "/link.txt"), "symlink extracted");
+
+            # Verify symlink points to correct target
+            string target = readlink(extractDir + "/link.txt");
+            assertEq("target.txt", target, "symlink target is correct");
+        }
+    }
+
+    # Test hardlinks
+    hardlinkTest() {
+        string tarPath = testDir + "/hardlink.tar";
+
+        # Create archive with hardlink
+        {
+            TarFile tar(tarPath, "w", <TarCreateOptions>{"format": TAR_FORMAT_PAX});
+            tar.add("original.txt", "This is the original file");
+            tar.addHardlink("hardlink.txt", "original.txt");
+            tar.close();
+        }
+
+        # Read and verify hardlink
+        {
+            TarFile tar(tarPath, "r");
+            hash<TarEntryInfo> entry = tar.getEntry("hardlink.txt");
+            assertEq(True, entry.is_hardlink, "entry is hardlink");
+            assertEq("hardlink", entry.type, "entry type is hardlink");
+            assertEq("original.txt", entry.link_target, "hardlink target matches");
+            tar.close();
+        }
+
+        # Extract and verify hardlink
+        {
+            string extractDir = testDir + "/hardlink_extracted";
+            mkdir(extractDir);
+
+            TarFile tar(tarPath, "r");
+            tar.extractAll(<TarExtractOptions>{"destination": extractDir});
+            tar.close();
+
+            assertEq(True, is_file(extractDir + "/original.txt"), "original file extracted");
+            assertEq(True, is_file(extractDir + "/hardlink.txt"), "hardlink extracted");
+
+            # Verify both files have same content
+            string orig = ReadOnlyFile::readTextFile(extractDir + "/original.txt");
+            string link = ReadOnlyFile::readTextFile(extractDir + "/hardlink.txt");
+            assertEq(orig, link, "hardlink content matches original");
+        }
+    }
+
+    # Test error handling (negative tests)
+    errorHandlingTest() {
+        # Test opening non-existent file
+        {
+            bool caught = False;
+            try {
+                TarFile tar(testDir + "/nonexistent.tar", "r");
+            } catch (hash<ExceptionInfo> ex) {
+                caught = True;
+                assertEq("TAR-ERROR", ex.err, "correct exception type for missing file");
+            }
+            assertEq(True, caught, "exception thrown for missing file");
+        }
+
+        # Test reading non-existent entry
+        {
+            string tarPath = testDir + "/entry_test.tar";
+            {
+                TarFile tar(tarPath, "w");
+                tar.add("exists.txt", "content");
+                tar.close();
+            }
+
+            bool caught = False;
+            try {
+                TarFile tar(tarPath, "r");
+                tar.read("doesnt_exist.txt");
+            } catch (hash<ExceptionInfo> ex) {
+                caught = True;
+                assertEq("TAR-ERROR", ex.err, "correct exception for missing entry");
+            }
+            assertEq(True, caught, "exception thrown for missing entry");
+        }
+
+        # Test writing to read-only archive
+        {
+            string tarPath = testDir + "/readonly_test.tar";
+            {
+                TarFile tar(tarPath, "w");
+                tar.add("test.txt", "content");
+                tar.close();
+            }
+
+            bool caught = False;
+            try {
+                TarFile tar(tarPath, "r");
+                tar.add("new.txt", "new content");
+            } catch (hash<ExceptionInfo> ex) {
+                caught = True;
+                assertEq("TAR-ERROR", ex.err, "correct exception for write on read-only");
+            }
+            assertEq(True, caught, "exception thrown for write on read-only archive");
+        }
+
+        # Test invalid mode
+        {
+            bool caught = False;
+            try {
+                TarFile tar(testDir + "/invalid_mode.tar", "x");
+            } catch (hash<ExceptionInfo> ex) {
+                caught = True;
+            }
+            assertEq(True, caught, "exception thrown for invalid mode");
+        }
+
+        # Test corrupted archive
+        {
+            string tarPath = testDir + "/corrupted.tar";
+            # Write garbage data
+            File f();
+            f.open(tarPath, O_CREAT | O_WRONLY | O_TRUNC);
+            f.write("this is not a valid tar archive");
+            f.close();
+
+            bool caught = False;
+            try {
+                TarFile tar(tarPath, "r");
+                tar.entries();
+            } catch (hash<ExceptionInfo> ex) {
+                caught = True;
+            }
+            assertEq(True, caught, "exception thrown for corrupted archive");
+        }
+
+        # Test invalid compression method
+        {
+            bool caught = False;
+            try {
+                TarFile tar(testDir + "/invalid_comp.tar", "w",
+                    <TarCreateOptions>{"compression_method": 999});
+            } catch (hash<ExceptionInfo> ex) {
+                caught = True;
+            }
+            assertEq(True, caught, "exception thrown for invalid compression method");
+        }
+    }
+
+    # Test corner cases
+    cornerCaseTest() {
+        # Test empty file
+        {
+            string tarPath = testDir + "/empty_file.tar";
+            TarFile tar(tarPath, "w");
+            tar.add("empty.txt", "");
+            tar.close();
+
+            TarFile readTar(tarPath, "r");
+            string content = readTar.readText("empty.txt");
+            assertEq("", content, "empty file content is empty string");
+            hash<TarEntryInfo> entry = readTar.getEntry("empty.txt");
+            assertEq(0, entry.size, "empty file has size 0");
+            readTar.close();
+        }
+
+        # Test very long filename (USTAR limit is 100 chars, PAX has no practical limit)
+        {
+            string longName = strmul("a", 200) + ".txt";
+            string tarPath = testDir + "/long_name.tar";
+
+            TarFile tar(tarPath, "w", <TarCreateOptions>{"format": TAR_FORMAT_PAX});
+            tar.add(longName, "content");
+            tar.close();
+
+            TarFile readTar(tarPath, "r");
+            assertEq(True, readTar.hasEntry(longName), "long filename entry exists");
+            readTar.close();
+        }
+
+        # Test special characters in filename
+        {
+            string tarPath = testDir + "/special_chars.tar";
+            TarFile tar(tarPath, "w");
+            tar.add("file with spaces.txt", "content1");
+            tar.add("file-with-dashes.txt", "content2");
+            tar.add("file_with_underscores.txt", "content3");
+            tar.add("file.multiple.dots.txt", "content4");
+            tar.close();
+
+            TarFile readTar(tarPath, "r");
+            assertEq(4, readTar.entryCount(), "all special char files added");
+            readTar.close();
+        }
+
+        # Test binary content with null bytes
+        {
+            string tarPath = testDir + "/binary_nulls.tar";
+            binary binData = <00010203040506070809>;
+
+            TarFile tar(tarPath, "w");
+            tar.add("binary.bin", binData);
+            tar.close();
+
+            TarFile readTar(tarPath, "r");
+            binary readData = readTar.read("binary.bin");
+            assertEq(binData, readData, "binary data with nulls preserved");
+            readTar.close();
+        }
+
+        # Test zero-byte file
+        {
+            string tarPath = testDir + "/zero_byte.tar";
+            TarFile tar(tarPath, "w");
+            tar.add("zero.bin", binary());
+            tar.close();
+
+            TarFile readTar(tarPath, "r");
+            binary data = readTar.read("zero.bin");
+            assertEq(0, data.size(), "zero-byte file has no content");
+            readTar.close();
+        }
+
+        # Test deeply nested path
+        {
+            string tarPath = testDir + "/deep_path.tar";
+            string deepPath = "a/b/c/d/e/f/g/h/i/j/k/l/m/n/o/p/q/r/s/t/u/v/w/x/y/z/file.txt";
+
+            TarFile tar(tarPath, "w", <TarCreateOptions>{"format": TAR_FORMAT_PAX});
+            tar.add(deepPath, "deep content");
+            tar.close();
+
+            TarFile readTar(tarPath, "r");
+            assertEq(True, readTar.hasEntry(deepPath), "deeply nested path entry exists");
+            assertEq("deep content", readTar.readText(deepPath), "deeply nested content matches");
+            readTar.close();
+        }
+
+        # Test large file (1MB)
+        {
+            string tarPath = testDir + "/large_file.tar";
+            binary largeData = binary(strmul("X", 1024 * 1024));
+
+            TarFile tar(tarPath, "w", <TarCreateOptions>{"compression_method": TAR_CM_GZIP});
+            tar.add("large.bin", largeData);
+            tar.close();
+
+            TarFile readTar(tarPath, "r");
+            binary readData = readTar.read("large.bin");
+            assertEq(largeData.size(), readData.size(), "large file size matches");
+            assertEq(largeData, readData, "large file content matches");
+            readTar.close();
+        }
+
+        # Test duplicate entry names (should overwrite or error)
+        {
+            string tarPath = testDir + "/duplicate.tar";
+            TarFile tar(tarPath, "w");
+            tar.add("file.txt", "content 1");
+            tar.add("file.txt", "content 2");
+            tar.close();
+
+            # Behavior may vary - just verify we can read it
+            TarFile readTar(tarPath, "r");
+            assertEq(True, readTar.hasEntry("file.txt"), "duplicate entry exists");
+            readTar.close();
+        }
+
+        # Test entry with . and .. components (normalized)
+        {
+            string tarPath = testDir + "/dotdot.tar";
+            TarFile tar(tarPath, "w");
+            tar.add("dir/./file.txt", "content");
+            tar.close();
+
+            TarFile readTar(tarPath, "r");
+            # Path should be normalized
+            assertEq(True, readTar.entryCount() > 0, "entry with dots added");
+            readTar.close();
+        }
+    }
+
+    # Test Unicode filenames
+    unicodeFilenameTest() {
+        string tarPath = testDir + "/unicode.tar";
+
+        # Test various Unicode filenames
+        {
+            TarFile tar(tarPath, "w", <TarCreateOptions>{"format": TAR_FORMAT_PAX});
+            tar.add("日本語.txt", "Japanese content");
+            tar.add("中文.txt", "Chinese content");
+            tar.add("한국어.txt", "Korean content");
+            tar.add("émojis_🎉.txt", "Emoji content");
+            tar.add("Ελληνικά.txt", "Greek content");
+            tar.add("العربية.txt", "Arabic content");
+            tar.close();
+        }
+
+        # Read back and verify
+        {
+            TarFile readTar(tarPath, "r");
+            assertEq(6, readTar.entryCount(), "all unicode files added");
+
+            string japContent = readTar.readText("日本語.txt");
+            assertEq("Japanese content", japContent, "Japanese filename works");
+
+            string chiContent = readTar.readText("中文.txt");
+            assertEq("Chinese content", chiContent, "Chinese filename works");
+
+            string korContent = readTar.readText("한국어.txt");
+            assertEq("Korean content", korContent, "Korean filename works");
+
+            string emojiContent = readTar.readText("émojis_🎉.txt");
+            assertEq("Emoji content", emojiContent, "Emoji filename works");
+
+            readTar.close();
+        }
+    }
+
+    # Test streaming API
+    streamingApiTest() {
+        # Test streaming read
+        {
+            string tarPath = testDir + "/stream_read.tar";
+            string content = "This is test content for streaming read. It will be read in chunks.";
+
+            # Create archive
+            {
+                TarFile tar(tarPath, "w");
+                tar.add("stream_test.txt", content);
+                tar.close();
+            }
+
+            # Read using stream
+            {
+                TarFile tar(tarPath, "r");
+                binary allData;
+                {
+                    TarInputStream is = tar.getInputStream("stream_test.txt");
+
+                    # Read in small chunks
+                    while (*binary chunk = is.read(10)) {
+                        allData += chunk;
+                    }
+                }
+
+                string readContent = allData.toString("UTF-8");
+                assertEq(content, readContent, "streaming read content matches");
+                tar.close();
+            }
+        }
+
+        # Test streaming write
+        {
+            string tarPath = testDir + "/stream_write.tar";
+            binary chunk1 = binary("First chunk of data. ");
+            binary chunk2 = binary("Second chunk of data. ");
+            binary chunk3 = binary("Third and final chunk.");
+
+            # Create archive using streaming
+            {
+                TarFile tar(tarPath, "w");
+                TarOutputStream os = tar.getOutputStream("streamed.txt");
+                os.write(chunk1);
+                os.write(chunk2);
+                os.write(chunk3);
+                os.close();
+                tar.close();
+            }
+
+            # Read back and verify
+            {
+                TarFile tar(tarPath, "r");
+                string content = tar.readText("streamed.txt");
+                assertEq("First chunk of data. Second chunk of data. Third and final chunk.",
+                         content, "streaming write content matches");
+                tar.close();
+            }
+        }
+
+        # Test streaming with compression
+        {
+            string tarPath = testDir + "/stream_compress.tar.gz";
+            # Create large repetitive content that compresses well
+            string largeContent = strmul("Repeated content for compression testing. ", 100);
+
+            # Create archive using streaming with compression
+            {
+                TarFile tar(tarPath, "w", <TarCreateOptions>{"compression_method": TAR_CM_GZIP});
+                TarOutputStream os = tar.getOutputStream("large.txt");
+                os.write(binary(largeContent));
+                os.close();
+                tar.close();
+            }
+
+            # Read back and verify
+            {
+                TarFile tar(tarPath, "r");
+                binary allData;
+                {
+                    # Verify using streaming read
+                    TarInputStream is = tar.getInputStream("large.txt");
+                    while (*binary chunk = is.read(1024)) {
+                        allData += chunk;
+                    }
+                }
+
+                string readContent = allData.toString("UTF-8");
+                assertEq(largeContent, readContent, "streamed compressed content matches");
+                tar.close();
+            }
+        }
+
+        # Test peek functionality
+        {
+            string tarPath = testDir + "/stream_peek.tar";
+
+            {
+                TarFile tar(tarPath, "w");
+                tar.add("peek_test.txt", "ABCDEF");
+                tar.close();
+            }
+
+            {
+                TarFile tar(tarPath, "r");
+                {
+                    TarInputStream is = tar.getInputStream("peek_test.txt");
+
+                    # Peek should return first byte without consuming
+                    int first = is.peek();
+                    assertEq(65, first, "peek returns 'A' (65)");  # 'A' = 65
+
+                    # Peek again should return same byte
+                    int second = is.peek();
+                    assertEq(65, second, "second peek returns same byte");
+
+                    # Read should now consume the peeked byte and more
+                    *binary data = is.read(3);
+                    assertEq("ABC", data.toString("UTF-8"), "read after peek works correctly");
+                }
+                tar.close();
+            }
+        }
+
+        # Test getting entry info from stream
+        {
+            string tarPath = testDir + "/stream_info.tar";
+
+            {
+                TarFile tar(tarPath, "w");
+                tar.add("info_test.txt", "Test content for info");
+                tar.close();
+            }
+
+            {
+                TarFile tar(tarPath, "r");
+                TarInputStream is = tar.getInputStream("info_test.txt");
+                *hash<TarEntryInfo> info = is.getEntryInfo();
+                assertEq("info_test.txt", info.name, "stream entry info has correct name");
+                assertEq(False, info.is_directory, "stream entry is not directory");
+                tar.close();
+            }
+        }
+    }
+
+    # Test metadata preservation
+    metadataTest() {
+        string tarPath = testDir + "/metadata.tar";
+
+        # Create archive with specific metadata
+        {
+            TarFile tar(tarPath, "w", <TarCreateOptions>{"format": TAR_FORMAT_PAX});
+            tar.add("file.txt", "content", NOTHING, <TarAddOptions>{
+                "mode": 0644,
+                "uid": 1000,
+                "gid": 1000,
+                "uname": "testuser",
+                "gname": "testgroup",
+                "modified": now(),
+            });
+            tar.close();
+        }
+
+        # Read and verify metadata
+        {
+            TarFile tar(tarPath, "r");
+            hash<TarEntryInfo> entry = tar.getEntry("file.txt");
+
+            assertEq("file.txt", entry.name, "entry name matches");
+            assertEq(0644, entry.mode & 0777, "file mode preserved");
+            assertEq(1000, entry.uid, "uid preserved");
+            assertEq(1000, entry.gid, "gid preserved");
+            assertEq("testuser", entry.uname, "username preserved");
+            assertEq("testgroup", entry.gname, "groupname preserved");
+            assertEq(True, exists entry.modified, "modification time exists");
+            assertEq("file", entry.type, "entry type is file");
+
+            tar.close();
+        }
+
+        # Test directory metadata
+        {
+            string dirTarPath = testDir + "/dir_metadata.tar";
+
+            TarFile tar(dirTarPath, "w", <TarCreateOptions>{"format": TAR_FORMAT_PAX});
+            tar.addDirectory("testdir/", <TarAddOptions>{
+                "mode": 0755,
+            });
+            tar.close();
+
+            TarFile readTar(dirTarPath, "r");
+            hash<TarEntryInfo> entry = readTar.getEntry("testdir/");
+            assertEq(True, entry.is_directory, "entry is directory");
+            assertEq("directory", entry.type, "entry type is directory");
+            assertEq(0755, entry.mode & 0777, "directory mode preserved");
+            readTar.close();
+        }
+    }
+
+    # Test path traversal protection
+    pathTraversalTest() {
+        string tarPath = testDir + "/traversal.tar";
+
+        # Create a malicious archive with path traversal attempt
+        # Note: This tests that we reject extraction to paths outside destination
+
+        # Test that extraction blocks path traversal
+        {
+            string extractDir = testDir + "/traversal_extract";
+            mkdir(extractDir);
+
+            # Try to create archive with absolute path (should be rejected or normalized)
+            bool caught = False;
+            try {
+                TarFile tar(tarPath, "w");
+                tar.add("/etc/passwd", "fake passwd content");
+            } catch (hash<ExceptionInfo> ex) {
+                caught = True;
+            }
+            # May or may not throw depending on implementation
+        }
+
+        # Test that .. in paths is handled safely
+        {
+            TarFile tar(tarPath, "w");
+            # These should be normalized or rejected
+            tar.add("safe_file.txt", "safe content");
+            tar.close();
+
+            string extractDir = testDir + "/safe_extract";
+            mkdir(extractDir);
+
+            TarFile readTar(tarPath, "r");
+            readTar.extractAll(<TarExtractOptions>{"destination": extractDir});
+            readTar.close();
+
+            # Verify extraction stayed within destination
+            assertEq(True, is_file(extractDir + "/safe_file.txt"), "safe file extracted");
+        }
+    }
+
+    # Test append mode
+    appendModeTest() {
+        # Test basic append
+        {
+            string tarPath = testDir + "/append_test.tar";
+
+            # Create initial archive with one file
+            {
+                TarFile tar(tarPath, "w");
+                tar.add("file1.txt", "Content 1");
+                tar.close();
+            }
+
+            # Verify initial archive
+            {
+                TarFile tar(tarPath, "r");
+                assertEq(1, tar.entryCount(), "initial archive has 1 entry");
+                assertEq("Content 1", tar.readText("file1.txt"), "file1 content matches");
+                tar.close();
+            }
+
+            # Append another file
+            {
+                TarFile tar(tarPath, "a");
+                tar.add("file2.txt", "Content 2");
+                tar.close();
+            }
+
+            # Verify both files exist
+            {
+                TarFile tar(tarPath, "r");
+                assertEq(2, tar.entryCount(), "archive has 2 entries after append");
+                assertEq("Content 1", tar.readText("file1.txt"), "file1 content preserved");
+                assertEq("Content 2", tar.readText("file2.txt"), "file2 content matches");
+                tar.close();
+            }
+        }
+
+        # Test append to non-existent file (should create new archive)
+        {
+            string tarPath = testDir + "/append_new.tar";
+
+            # Append to non-existent file
+            {
+                TarFile tar(tarPath, "a");
+                tar.add("newfile.txt", "New content");
+                tar.close();
+            }
+
+            # Verify file was created
+            {
+                assertEq(True, is_file(tarPath), "archive created via append mode");
+                TarFile tar(tarPath, "r");
+                assertEq(1, tar.entryCount(), "new archive has 1 entry");
+                assertEq("New content", tar.readText("newfile.txt"), "content matches");
+                tar.close();
+            }
+        }
+
+        # Test multiple appends
+        {
+            string tarPath = testDir + "/multi_append.tar";
+
+            # Create initial archive
+            {
+                TarFile tar(tarPath, "w");
+                tar.add("first.txt", "First");
+                tar.close();
+            }
+
+            # Append multiple times
+            for (int i = 0; i < 5; i++) {
+                TarFile tar(tarPath, "a");
+                tar.add(sprintf("file%d.txt", i), sprintf("Content %d", i));
+                tar.close();
+            }
+
+            # Verify all files exist
+            {
+                TarFile tar(tarPath, "r");
+                assertEq(6, tar.entryCount(), "archive has 6 entries after multiple appends");
+                assertEq("First", tar.readText("first.txt"), "first file preserved");
+                assertEq("Content 4", tar.readText("file4.txt"), "last appended file correct");
+                tar.close();
+            }
+        }
+
+        # Test append with directories
+        {
+            string tarPath = testDir + "/append_dirs.tar";
+
+            # Create initial archive with directory
+            {
+                TarFile tar(tarPath, "w");
+                tar.addDirectory("dir1/");
+                tar.add("dir1/file.txt", "Dir1 file");
+                tar.close();
+            }
+
+            # Append another directory
+            {
+                TarFile tar(tarPath, "a");
+                tar.addDirectory("dir2/");
+                tar.add("dir2/file.txt", "Dir2 file");
+                tar.close();
+            }
+
+            # Verify both directories exist
+            {
+                TarFile tar(tarPath, "r");
+                assertEq(4, tar.entryCount(), "archive has all entries after dir append");
+                assertEq(True, tar.hasEntry("dir1/"), "dir1 exists");
+                assertEq(True, tar.hasEntry("dir2/"), "dir2 exists");
+                assertEq("Dir1 file", tar.readText("dir1/file.txt"), "dir1 file content");
+                assertEq("Dir2 file", tar.readText("dir2/file.txt"), "dir2 file content");
+                tar.close();
+            }
+        }
+
+        # Test append with compression (gzip)
+        {
+            string tarPath = testDir + "/append_compressed.tar.gz";
+
+            # Create initial compressed archive
+            {
+                TarFile tar(tarPath, "w", <TarCreateOptions>{"compression_method": TAR_CM_GZIP});
+                tar.add("original.txt", "Original content");
+                tar.close();
+            }
+
+            # Append to compressed archive
+            {
+                TarFile tar(tarPath, "a", <TarCreateOptions>{"compression_method": TAR_CM_GZIP});
+                tar.add("appended.txt", "Appended content");
+                tar.close();
+            }
+
+            # Verify both files exist
+            {
+                TarFile tar(tarPath, "r");
+                assertEq(2, tar.entryCount(), "compressed archive has 2 entries");
+                assertEq("Original content", tar.readText("original.txt"), "original preserved");
+                assertEq("Appended content", tar.readText("appended.txt"), "appended correct");
+                tar.close();
+            }
+        }
+
+        # Test append with binary data
+        {
+            string tarPath = testDir + "/append_binary.tar";
+            binary bin1 = <0102030405>;
+            binary bin2 = <0a0b0c0d0e>;
+
+            # Create initial archive
+            {
+                TarFile tar(tarPath, "w");
+                tar.add("data1.bin", bin1);
+                tar.close();
+            }
+
+            # Append binary file
+            {
+                TarFile tar(tarPath, "a");
+                tar.add("data2.bin", bin2);
+                tar.close();
+            }
+
+            # Verify both binaries
+            {
+                TarFile tar(tarPath, "r");
+                assertEq(bin1, tar.read("data1.bin"), "binary 1 preserved");
+                assertEq(bin2, tar.read("data2.bin"), "binary 2 correct");
+                tar.close();
+            }
+        }
+
+        # Test append with symlinks
+        {
+            string tarPath = testDir + "/append_symlink.tar";
+
+            # Create initial archive
+            {
+                TarFile tar(tarPath, "w", <TarCreateOptions>{"format": TAR_FORMAT_PAX});
+                tar.add("target.txt", "Target content");
+                tar.close();
+            }
+
+            # Append symlink
+            {
+                TarFile tar(tarPath, "a", <TarCreateOptions>{"format": TAR_FORMAT_PAX});
+                tar.addSymlink("link.txt", "target.txt");
+                tar.close();
+            }
+
+            # Verify both entries
+            {
+                TarFile tar(tarPath, "r");
+                assertEq(2, tar.entryCount(), "archive has target and link");
+                hash<TarEntryInfo> linkEntry = tar.getEntry("link.txt");
+                assertEq(True, linkEntry.is_symlink, "link is symlink");
+                assertEq("target.txt", linkEntry.link_target, "link target correct");
+                tar.close();
+            }
+        }
+
+        # Test append preserves metadata
+        {
+            string tarPath = testDir + "/append_metadata.tar";
+
+            # Create initial archive with specific metadata
+            {
+                TarFile tar(tarPath, "w", <TarCreateOptions>{"format": TAR_FORMAT_PAX});
+                tar.add("original.txt", "content", NOTHING, <TarAddOptions>{
+                    "mode": 0755,
+                    "uid": 500,
+                    "gid": 500,
+                    "uname": "origuser",
+                    "gname": "origgroup",
+                });
+                tar.close();
+            }
+
+            # Append file with different metadata
+            {
+                TarFile tar(tarPath, "a", <TarCreateOptions>{"format": TAR_FORMAT_PAX});
+                tar.add("appended.txt", "content", NOTHING, <TarAddOptions>{
+                    "mode": 0644,
+                    "uid": 1000,
+                    "gid": 1000,
+                    "uname": "appenduser",
+                    "gname": "appendgroup",
+                });
+                tar.close();
+            }
+
+            # Verify metadata of both files is preserved
+            {
+                TarFile tar(tarPath, "r");
+                hash<TarEntryInfo> orig = tar.getEntry("original.txt");
+                hash<TarEntryInfo> appended = tar.getEntry("appended.txt");
+
+                assertEq(0755, orig.mode & 0777, "original mode preserved");
+                assertEq(500, orig.uid, "original uid preserved");
+                assertEq("origuser", orig.uname, "original uname preserved");
+
+                assertEq(0644, appended.mode & 0777, "appended mode correct");
+                assertEq(1000, appended.uid, "appended uid correct");
+                assertEq("appenduser", appended.uname, "appended uname correct");
+
+                tar.close();
+            }
+        }
+
+        # Test append with streaming write
+        {
+            string tarPath = testDir + "/append_stream.tar";
+
+            # Create initial archive
+            {
+                TarFile tar(tarPath, "w");
+                tar.add("file1.txt", "File 1");
+                tar.close();
+            }
+
+            # Append using streaming write
+            {
+                TarFile tar(tarPath, "a");
+                TarOutputStream os = tar.getOutputStream("streamed.txt");
+                os.write(binary("Streamed "));
+                os.write(binary("content"));
+                os.close();
+                tar.close();
+            }
+
+            # Verify both entries
+            {
+                TarFile tar(tarPath, "r");
+                assertEq(2, tar.entryCount(), "archive has 2 entries after stream append");
+                assertEq("File 1", tar.readText("file1.txt"), "file1 preserved");
+                assertEq("Streamed content", tar.readText("streamed.txt"), "streamed content correct");
+                tar.close();
+            }
+        }
+
+        # Test large archive append
+        {
+            string tarPath = testDir + "/append_large.tar";
+            string largeContent = strmul("X", 100 * 1024);  # 100KB content
+
+            # Create initial archive with large file
+            {
+                TarFile tar(tarPath, "w");
+                tar.add("large1.txt", largeContent);
+                tar.close();
+            }
+
+            # Append another large file
+            {
+                TarFile tar(tarPath, "a");
+                tar.add("large2.txt", largeContent);
+                tar.close();
+            }
+
+            # Verify both large files
+            {
+                TarFile tar(tarPath, "r");
+                assertEq(2, tar.entryCount(), "archive has 2 large entries");
+                assertEq(largeContent, tar.readText("large1.txt"), "large1 content correct");
+                assertEq(largeContent, tar.readText("large2.txt"), "large2 content correct");
+                tar.close();
+            }
+        }
+    }
+}

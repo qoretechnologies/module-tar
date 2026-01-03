@@ -1,0 +1,618 @@
+/* -*- mode: c++; indent-tabs-mode: nil -*- */
+/** @file QC_TarFile.qpp defines the %Qore TarFile class and related types */
+/*
+    Qore tar module
+
+    Copyright (C) 2026 Qore Technologies, s.r.o.
+
+    Permission is hereby granted, free of charge, to any person obtaining a
+    copy of this software and associated documentation files (the "Software"),
+    to deal in the Software without restriction, including without limitation
+    the rights to use, copy, modify, merge, publish, distribute, sublicense,
+    and/or sell copies of the Software, and to permit persons to whom the
+    Software is furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in
+    all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+    DEALINGS IN THE SOFTWARE.
+*/
+
+#include "QC_TarFile.h"
+#include "QoreTarFile.h"
+#include "TarInputStream.h"
+#include "TarOutputStream.h"
+#include "QC_TarInputStream.h"
+#include "QC_TarOutputStream.h"
+
+/** @defgroup tar_compression_methods Tar Compression Methods
+    These constants define the compression methods available for TAR archives.
+*/
+///@{
+//! No compression (.tar)
+const TAR_CM_NONE = 0;
+
+//! Gzip compression (.tar.gz, .tgz)
+const TAR_CM_GZIP = 1;
+
+//! BZip2 compression (.tar.bz2)
+const TAR_CM_BZIP2 = 2;
+
+//! XZ/LZMA compression (.tar.xz)
+const TAR_CM_XZ = 3;
+
+//! Zstandard compression (.tar.zst)
+const TAR_CM_ZSTD = 4;
+
+//! LZ4 compression (.tar.lz4)
+const TAR_CM_LZ4 = 5;
+///@}
+
+/** @defgroup tar_compression_levels Tar Compression Levels
+    These constants define compression levels for TAR archives.
+*/
+///@{
+//! Default compression level
+const TAR_COMPRESSION_DEFAULT = -1;
+
+//! Fastest compression
+const TAR_COMPRESSION_FASTEST = 1;
+
+//! Best (maximum) compression
+const TAR_COMPRESSION_BEST = 9;
+///@}
+
+/** @defgroup tar_formats Tar Formats
+    These constants define the TAR archive formats.
+*/
+///@{
+//! POSIX.1-1988 ustar format
+const TAR_FORMAT_USTAR = 0;
+
+//! POSIX.1-2001 pax interchange format (default, most compatible)
+const TAR_FORMAT_PAX = 1;
+
+//! GNU tar format
+const TAR_FORMAT_GNU = 2;
+
+//! Old V7 tar format
+const TAR_FORMAT_V7 = 3;
+///@}
+
+//! Information about a TAR archive entry
+/** @since %tar 1.0
+*/
+hashdecl TarEntryInfo {
+    //! The name/path of the entry within the archive
+    string name;
+
+    //! The uncompressed size of the entry in bytes
+    int size;
+
+    //! The last modification date and time
+    date modified;
+
+    //! The last access date and time (if available)
+    *date accessed;
+
+    //! The creation date and time (if available)
+    *date created;
+
+    //! Unix file mode/permissions
+    int mode;
+
+    //! User ID of the file owner
+    int uid;
+
+    //! Group ID of the file owner
+    int gid;
+
+    //! User name of the file owner (if available)
+    *string uname;
+
+    //! Group name of the file owner (if available)
+    *string gname;
+
+    //! Entry type: "file", "directory", "symlink", "hardlink", "chardev", "blockdev", "fifo", "socket"
+    string type;
+
+    //! Target path for symlinks and hardlinks
+    *string link_target;
+
+    //! True if this entry is a directory
+    bool is_directory;
+
+    //! True if this entry is a symbolic link
+    bool is_symlink;
+
+    //! True if this entry is a hard link
+    bool is_hardlink;
+
+    //! Device major number (for device nodes)
+    *int devmajor;
+
+    //! Device minor number (for device nodes)
+    *int devminor;
+}
+
+//! Options for adding entries to a TAR archive
+/** @since %tar 1.0
+*/
+hashdecl TarAddOptions {
+    //! Compression method (one of @ref tar_compression_methods)
+    *int compression_method;
+
+    //! Compression level (1-9, where 1=fastest, 9=best)
+    *int compression_level;
+
+    //! TAR format (one of @ref tar_formats)
+    *int format;
+
+    //! Override file permissions
+    *int mode;
+
+    //! Override user ID
+    *int uid;
+
+    //! Override group ID
+    *int gid;
+
+    //! Override user name
+    *string uname;
+
+    //! Override group name
+    *string gname;
+
+    //! Override modification time
+    *date modified;
+
+    //! Preserve original permissions (default: True)
+    *bool preserve_permissions;
+
+    //! Follow symlinks instead of storing them
+    *bool dereference_symlinks;
+}
+
+//! Options for extracting entries from a TAR archive
+/** @since %tar 1.0
+*/
+hashdecl TarExtractOptions {
+    //! Base destination path for extraction
+    *string destination;
+
+    //! Restore file permissions (default: True)
+    *bool preserve_permissions;
+
+    //! Restore ownership (requires root, default: False)
+    *bool preserve_ownership;
+
+    //! Restore modification times (default: True)
+    *bool preserve_times;
+
+    //! Overwrite existing files (default: True)
+    *bool overwrite;
+
+    //! Create parent directories (default: True)
+    *bool create_directories;
+
+    //! Patterns to include (glob-style)
+    *list<string> include;
+
+    //! Patterns to exclude (glob-style)
+    *list<string> exclude;
+
+    //! Strip leading path components
+    *bool strip_components;
+
+    //! Number of path components to strip
+    *int strip_count;
+}
+
+//! Options for creating a TAR archive
+/** @since %tar 1.0
+*/
+hashdecl TarCreateOptions {
+    //! Default compression method
+    *int compression_method;
+
+    //! Default compression level
+    *int compression_level;
+
+    //! TAR format to use
+    *int format;
+}
+
+//! The TarFile class provides functionality for creating, reading, and modifying TAR archives
+/**
+    @par Example: Creating a TAR archive
+    @code{.py}
+#!/usr/bin/qore
+
+%requires tar
+
+TarFile tar("backup.tar.gz", "w");
+tar.add("readme.txt", "Hello, World!");
+tar.addFile("document.pdf", "/path/to/document.pdf");
+tar.addDirectory("images/");
+tar.close();
+    @endcode
+
+    @par Example: Reading a TAR archive
+    @code{.py}
+TarFile tar("backup.tar.gz", "r");
+foreach hash<TarEntryInfo> entry in (tar.entries()) {
+    printf("Entry: %s, Size: %d bytes\n", entry.name, entry.size);
+}
+binary data = tar.read("readme.txt");
+tar.close();
+    @endcode
+
+    @par Example: Extracting a TAR archive
+    @code{.py}
+TarFile tar("backup.tar.gz", "r");
+tar.extractAll("/destination/path", {"overwrite": True});
+tar.close();
+    @endcode
+
+    @since %tar 1.0
+*/
+qclass TarFile [arg=QoreTarFile* tf; ns=Tar];
+
+//! Creates a TarFile object for reading, writing, or appending to an archive
+/** @param path the path to the TAR archive file
+    @param mode the open mode: \c "r" for read, \c "w" for write (create/overwrite), \c "a" for append
+
+    @throw TAR-ERROR error opening the archive
+
+    @note Compression is auto-detected from the filename extension (e.g., .tar.gz, .tar.bz2, .tar.xz)
+*/
+TarFile::constructor(string path, string mode = "r") {
+    TarMode tm = TAR_MODE_READ;
+    if (mode->empty() || mode->c_str()[0] == 'r') {
+        tm = TAR_MODE_READ;
+    } else if (mode->c_str()[0] == 'w') {
+        tm = TAR_MODE_WRITE;
+    } else if (mode->c_str()[0] == 'a') {
+        tm = TAR_MODE_APPEND;
+    } else {
+        xsink->raiseException("TAR-ERROR", "invalid mode '%s'; must be 'r', 'w', or 'a'", mode->c_str());
+        return;
+    }
+
+    ReferenceHolder<QoreTarFile> holder(new QoreTarFile(path->c_str(), tm, -1, -1, xsink), xsink);
+    if (*xsink) {
+        return;
+    }
+    self->setPrivate(CID_TARFILE, holder.release());
+}
+
+//! Creates a TarFile object for reading, writing, or appending to an archive with options
+/** @param path the path to the TAR archive file
+    @param mode the open mode: \c "r" for read, \c "w" for write (create/overwrite), \c "a" for append
+    @param opts optional @ref TarCreateOptions for compression and format settings
+
+    @throw TAR-ERROR error opening the archive
+*/
+TarFile::constructor(string path, string mode, *hash<TarCreateOptions> opts) {
+    TarMode tm = TAR_MODE_READ;
+    if (mode->empty() || mode->c_str()[0] == 'r') {
+        tm = TAR_MODE_READ;
+    } else if (mode->c_str()[0] == 'w') {
+        tm = TAR_MODE_WRITE;
+    } else if (mode->c_str()[0] == 'a') {
+        tm = TAR_MODE_APPEND;
+    } else {
+        xsink->raiseException("TAR-ERROR", "invalid mode '%s'; must be 'r', 'w', or 'a'", mode->c_str());
+        return;
+    }
+
+    int cm = -1;
+    int fmt = -1;
+    if (opts) {
+        QoreValue v = opts->getKeyValue("compression_method");
+        if (!v.isNothing()) {
+            cm = (int)v.getAsBigInt();
+        }
+        v = opts->getKeyValue("format");
+        if (!v.isNothing()) {
+            fmt = (int)v.getAsBigInt();
+        }
+    }
+
+    ReferenceHolder<QoreTarFile> holder(new QoreTarFile(path->c_str(), tm, cm, fmt, xsink), xsink);
+    if (*xsink) {
+        return;
+    }
+    self->setPrivate(CID_TARFILE, holder.release());
+}
+
+//! Creates a TarFile object from binary data (in-memory archive)
+/** @param data binary data containing a TAR archive
+
+    @throw TAR-ERROR error parsing the archive data
+*/
+TarFile::constructor(binary data) {
+    ReferenceHolder<QoreTarFile> holder(new QoreTarFile(data, xsink), xsink);
+    if (*xsink) {
+        return;
+    }
+    self->setPrivate(CID_TARFILE, holder.release());
+}
+
+//! Creates a new empty in-memory TAR archive
+/** Use toData() to get the archive as binary data after adding entries.
+
+    @param opts optional @ref TarCreateOptions for compression and format settings
+*/
+TarFile::constructor(*hash<TarCreateOptions> opts) {
+    int cm = -1;
+    int fmt = -1;
+    if (opts) {
+        QoreValue v = opts->getKeyValue("compression_method");
+        if (!v.isNothing()) {
+            cm = (int)v.getAsBigInt();
+        }
+        v = opts->getKeyValue("format");
+        if (!v.isNothing()) {
+            fmt = (int)v.getAsBigInt();
+        }
+    }
+
+    ReferenceHolder<QoreTarFile> holder(new QoreTarFile(cm, fmt, xsink), xsink);
+    if (*xsink) {
+        return;
+    }
+    self->setPrivate(CID_TARFILE, holder.release());
+}
+
+//! Destroys the object and closes the archive if still open
+/**
+*/
+TarFile::destructor() {
+    tf->close(xsink);
+    tf->deref(xsink);
+}
+
+//! Closes the archive
+/** @throw TAR-ERROR error closing the archive
+*/
+nothing TarFile::close() {
+    tf->close(xsink);
+}
+
+//! Returns the archive as binary data (for in-memory archives)
+/** @return the archive as binary data
+
+    @throw TAR-ERROR error getting archive data or archive not in memory mode
+*/
+binary TarFile::toData() {
+    return tf->toData(xsink);
+}
+
+//! Returns a list of all entries in the archive
+/** @return a list of @ref TarEntryInfo hashes describing each entry
+
+    @throw TAR-ERROR error reading archive entries
+*/
+list<hash<TarEntryInfo>> TarFile::entries() {
+    return tf->entries(xsink);
+}
+
+//! Returns the number of entries in the archive
+/** @return the number of entries
+
+    @throw TAR-ERROR error reading archive
+*/
+int TarFile::entryCount() {
+    return tf->count(xsink);
+}
+
+//! Checks if an entry exists in the archive
+/** @param name the name of the entry to check
+
+    @return True if the entry exists, False otherwise
+
+    @throw TAR-ERROR error reading archive
+*/
+bool TarFile::hasEntry(string name) {
+    return tf->hasEntry(name->c_str(), xsink);
+}
+
+//! Reads an entry from the archive as binary data
+/** @param name the name of the entry to read
+
+    @return the entry content as binary data
+
+    @throw TAR-ERROR error reading entry or entry not found
+*/
+binary TarFile::read(string name) {
+    return tf->read(name->c_str(), xsink);
+}
+
+//! Reads an entry from the archive as text
+/** @param name the name of the entry to read
+    @param encoding the character encoding to use (default: UTF-8)
+
+    @return the entry content as a string
+
+    @throw TAR-ERROR error reading entry or entry not found
+*/
+string TarFile::readText(string name, *string encoding) {
+    return tf->readText(name->c_str(), encoding ? encoding->c_str() : nullptr, xsink);
+}
+
+//! Gets information about a specific entry
+/** @param name the name of the entry
+
+    @return a @ref TarEntryInfo hash describing the entry, or NOTHING if not found
+*/
+*hash<TarEntryInfo> TarFile::getEntry(string name) {
+    return tf->getEntry(name->c_str(), xsink);
+}
+
+//! Adds binary data as an entry to the archive
+/** @param name the name for the entry in the archive
+    @param data the binary data to add
+    @param opts optional @ref TarAddOptions for metadata settings
+
+    @throw TAR-ERROR error adding entry or archive not open for writing
+*/
+nothing TarFile::add(string name, binary data, *hash<TarAddOptions> opts) {
+    tf->add(name->c_str(), data, opts, xsink);
+}
+
+//! Adds text as an entry to the archive
+/** @param name the name for the entry in the archive
+    @param text the text content to add
+    @param encoding the character encoding to use (default: UTF-8)
+    @param opts optional @ref TarAddOptions for metadata settings
+
+    @throw TAR-ERROR error adding entry or archive not open for writing
+*/
+nothing TarFile::add(string name, string text, *string encoding, *hash<TarAddOptions> opts) {
+    tf->addText(name->c_str(), text, encoding ? encoding->c_str() : nullptr, opts, xsink);
+}
+
+//! Adds a file from the filesystem to the archive
+/** @param archive_name the name for the entry in the archive
+    @param source_path the path to the source file on disk
+    @param opts optional @ref TarAddOptions for metadata settings
+
+    @throw TAR-ERROR error adding file or archive not open for writing
+*/
+nothing TarFile::addFile(string archive_name, string source_path, *hash<TarAddOptions> opts) {
+    tf->addFile(archive_name->c_str(), source_path->c_str(), opts, xsink);
+}
+
+//! Adds a directory entry to the archive
+/** @param name the name for the directory in the archive
+    @param opts optional @ref TarAddOptions for metadata settings
+
+    @throw TAR-ERROR error adding directory or archive not open for writing
+*/
+nothing TarFile::addDirectory(string name, *hash<TarAddOptions> opts) {
+    tf->addDirectory(name->c_str(), opts, xsink);
+}
+
+//! Adds a symbolic link entry to the archive
+/** @param name the name for the symlink in the archive
+    @param target the target path for the symlink
+    @param opts optional @ref TarAddOptions for metadata settings
+
+    @throw TAR-ERROR error adding symlink or archive not open for writing
+*/
+nothing TarFile::addSymlink(string name, string target, *hash<TarAddOptions> opts) {
+    tf->addSymlink(name->c_str(), target->c_str(), opts, xsink);
+}
+
+//! Adds a hard link entry to the archive
+/** @param name the name for the hardlink in the archive
+    @param target the target entry in the archive
+    @param opts optional @ref TarAddOptions for metadata settings
+
+    @throw TAR-ERROR error adding hardlink or archive not open for writing
+*/
+nothing TarFile::addHardlink(string name, string target, *hash<TarAddOptions> opts) {
+    tf->addHardlink(name->c_str(), target->c_str(), opts, xsink);
+}
+
+//! Extracts all entries to a destination directory
+/** @param opts optional @ref TarExtractOptions for extraction settings
+
+    @throw TAR-ERROR error extracting archive
+*/
+nothing TarFile::extractAll(*hash<TarExtractOptions> opts) {
+    const char* dest = ".";
+    if (opts) {
+        QoreValue v = opts->getKeyValue("destination");
+        if (v.getType() == NT_STRING) {
+            dest = v.get<const QoreStringNode>()->c_str();
+        }
+    }
+    tf->extractAll(dest, opts, xsink);
+}
+
+//! Extracts a single entry to a destination directory
+/** @param name the name of the entry to extract
+    @param opts optional @ref TarExtractOptions for extraction settings
+
+    @throw TAR-ERROR error extracting entry or entry not found
+*/
+nothing TarFile::extract(string name, *hash<TarExtractOptions> opts) {
+    const char* dest = ".";
+    if (opts) {
+        QoreValue v = opts->getKeyValue("destination");
+        if (v.getType() == NT_STRING) {
+            dest = v.get<const QoreStringNode>()->c_str();
+        }
+    }
+    tf->extractEntry(name->c_str(), dest, xsink);
+}
+
+//! Extracts a single entry to a specific file path
+/** @param name the name of the entry to extract
+    @param destination the destination file path
+
+    @throw TAR-ERROR error extracting entry or entry not found
+*/
+nothing TarFile::extractTo(string name, string destination) {
+    tf->extractTo(name->c_str(), destination->c_str(), xsink);
+}
+
+//! Returns the archive file path (if opened from a file)
+/** @return the file path, or NOTHING for in-memory archives
+*/
+*string TarFile::getPath() {
+    return tf->getPath();
+}
+
+//! Returns the compression method used
+/** @return the compression method constant, or NOTHING if unknown
+*/
+*int TarFile::getCompressionMethod() {
+    int cm = tf->getCompressionMethod();
+    if (cm < 0) {
+        return QoreValue();
+    }
+    return cm;
+}
+
+//! Returns the archive format
+/** @return the format constant, or NOTHING if unknown
+*/
+*int TarFile::getFormat() {
+    int fmt = tf->getFormat();
+    if (fmt < 0) {
+        return QoreValue();
+    }
+    return fmt;
+}
+
+//! Opens an input stream for reading an entry
+/** @param name the name of the entry to read
+
+    @return a TarInputStream for reading the entry data
+
+    @throw TAR-ERROR error opening stream or entry not found
+*/
+TarInputStream TarFile::getInputStream(string name) {
+    return tf->openInputStream(name->c_str(), xsink);
+}
+
+//! Opens an output stream for writing an entry
+/** @param name the name for the entry in the archive
+    @param opts optional @ref TarAddOptions for metadata settings
+
+    @return a TarOutputStream for writing the entry data
+
+    @throw TAR-ERROR error opening stream or archive not open for writing
+*/
+TarOutputStream TarFile::getOutputStream(string name, *hash<TarAddOptions> opts) {
+    return tf->openOutputStream(name->c_str(), opts, xsink);
+}

@@ -1,0 +1,2102 @@
+# -*- mode: qore; indent-tabs-mode: nil -*-
+#! @file TarDataProvider.qm Qore user module providing a data provider API for TAR archives
+
+/*  TarDataProvider.qm Copyright (C) 2026 Qore Technologies, s.r.o.
+
+    Permission is hereby granted, free of charge, to any person obtaining a
+    copy of this software and associated documentation files (the "Software"),
+    to deal in the Software without restriction, including without limitation
+    the rights to use, copy, modify, merge, publish, distribute, sublicense,
+    and/or sell copies of the Software, and to permit persons to whom the
+    Software is furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in
+    all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+    DEALINGS IN THE SOFTWARE.
+*/
+
+%requires qore >= 2.0
+
+%requires(reexport) DataProvider
+%requires Mime
+%requires tar
+
+%new-style
+%strict-args
+%require-types
+%enable-all-warnings
+
+module TarDataProvider {
+    version = "1.0";
+    desc = "user module providing a data provider API for TAR archives";
+    author = "Qore Technologies, s.r.o.";
+    url = "https://github.com/qorelanguage/module-tar";
+    license = "MIT";
+    init = sub () {
+        # Register the data provider factory
+        DataProvider::registerFactory(new TarDataProviderFactory());
+
+        # Register the data provider application
+        DataProviderActionCatalog::registerApp(<DataProviderAppInfo>{
+            "name": TarDataProvider::AppName,
+            "display_name": "TAR Archives",
+            "short_desc": "TAR archive operations",
+            "desc": "Create, extract, and manage TAR archives with support for gzip, bzip2, xz, and zstd compression",
+            "logo": TarLogo,
+            "logo_file_name": "tar-logo.svg",
+            "logo_mime_type": MimeTypeSvg,
+        });
+
+        # Register actions
+        DataProviderActionCatalog::registerAction(<DataProviderActionInfo>{
+            "app": TarDataProvider::AppName,
+            "path": "/archive/create",
+            "action": "create-archive",
+            "display_name": "Create Archive",
+            "short_desc": "Create a new tar archive",
+            "desc": "Create a new tar archive from files, directories, or binary data",
+            "action_code": DPAT_API,
+        });
+
+        DataProviderActionCatalog::registerAction(<DataProviderActionInfo>{
+            "app": TarDataProvider::AppName,
+            "path": "/archive/extract",
+            "action": "extract-archive",
+            "display_name": "Extract Archive",
+            "short_desc": "Extract a tar archive",
+            "desc": "Extract all contents of a tar archive to a destination directory",
+            "action_code": DPAT_API,
+        });
+
+        DataProviderActionCatalog::registerAction(<DataProviderActionInfo>{
+            "app": TarDataProvider::AppName,
+            "path": "/archive/list",
+            "action": "list-archive",
+            "display_name": "List Archive Contents",
+            "short_desc": "List files in a tar archive",
+            "desc": "Get a list of all entries in a tar archive with metadata",
+            "action_code": DPAT_API,
+        });
+
+        DataProviderActionCatalog::registerAction(<DataProviderActionInfo>{
+            "app": TarDataProvider::AppName,
+            "path": "/archive/info",
+            "action": "get-archive-info",
+            "display_name": "Get Archive Info",
+            "short_desc": "Get tar archive metadata",
+            "desc": "Get metadata and statistics about a tar archive",
+            "action_code": DPAT_API,
+        });
+
+        DataProviderActionCatalog::registerAction(<DataProviderActionInfo>{
+            "app": TarDataProvider::AppName,
+            "path": "/archive/add",
+            "action": "add-files",
+            "display_name": "Add Files to Archive",
+            "short_desc": "Add files to an existing archive",
+            "desc": "Add new files or update existing files in a tar archive",
+            "action_code": DPAT_API,
+        });
+
+        DataProviderActionCatalog::registerAction(<DataProviderActionInfo>{
+            "app": TarDataProvider::AppName,
+            "path": "/file/extract",
+            "action": "extract-file",
+            "display_name": "Extract Single File",
+            "short_desc": "Extract one file from archive",
+            "desc": "Extract a single file from a tar archive to memory or disk",
+            "action_code": DPAT_API,
+        });
+
+        DataProviderActionCatalog::registerAction(<DataProviderActionInfo>{
+            "app": TarDataProvider::AppName,
+            "path": "/file/read",
+            "action": "read-file",
+            "display_name": "Read File Content",
+            "short_desc": "Read file without extracting",
+            "desc": "Read the contents of a file from a tar archive without extracting to disk",
+            "action_code": DPAT_API,
+        });
+
+        DataProviderActionCatalog::registerAction(<DataProviderActionInfo>{
+            "app": TarDataProvider::AppName,
+            "path": "/data/compress",
+            "action": "compress-data",
+            "display_name": "Compress Data",
+            "short_desc": "Compress data to tar format",
+            "desc": "Compress binary data or files into an in-memory tar archive",
+            "action_code": DPAT_API,
+        });
+
+        DataProviderActionCatalog::registerAction(<DataProviderActionInfo>{
+            "app": TarDataProvider::AppName,
+            "path": "/data/decompress",
+            "action": "decompress-data",
+            "display_name": "Decompress Data",
+            "short_desc": "Decompress tar data",
+            "desc": "Decompress an in-memory tar archive and return file contents",
+            "action_code": DPAT_API,
+        });
+
+        DataProviderActionCatalog::registerAction(<DataProviderActionInfo>{
+            "app": TarDataProvider::AppName,
+            "path": "/directory/archive",
+            "action": "archive-directory",
+            "display_name": "Archive Directory",
+            "short_desc": "Archive a directory tree",
+            "desc": "Create a tar archive from a directory and all its contents",
+            "action_code": DPAT_API,
+        });
+
+        DataProviderActionCatalog::registerAction(<DataProviderActionInfo>{
+            "app": TarDataProvider::AppName,
+            "path": "/stream/extract",
+            "action": "stream-extract",
+            "display_name": "Stream Extract",
+            "short_desc": "Stream extract large file from archive",
+            "desc": "Extract a large file from an archive using streaming to avoid loading entire file into memory",
+            "action_code": DPAT_API,
+        });
+
+        DataProviderActionCatalog::registerAction(<DataProviderActionInfo>{
+            "app": TarDataProvider::AppName,
+            "path": "/entry/delete",
+            "action": "delete-entry",
+            "display_name": "Delete Entry",
+            "short_desc": "Delete file from archive",
+            "desc": "Delete a file or directory entry from an existing tar archive",
+            "action_code": DPAT_API,
+        });
+
+        DataProviderActionCatalog::registerAction(<DataProviderActionInfo>{
+            "app": TarDataProvider::AppName,
+            "path": "/archive/encrypt",
+            "action": "encrypt-archive",
+            "display_name": "Encrypt Archive",
+            "short_desc": "Encrypt a tar archive",
+            "desc": "Encrypt a tar archive with AES-256 encryption",
+            "action_code": DPAT_API,
+        });
+
+        DataProviderActionCatalog::registerAction(<DataProviderActionInfo>{
+            "app": TarDataProvider::AppName,
+            "path": "/archive/decrypt",
+            "action": "decrypt-archive",
+            "display_name": "Decrypt Archive",
+            "short_desc": "Decrypt an encrypted tar archive",
+            "desc": "Decrypt an AES-256 encrypted tar archive",
+            "action_code": DPAT_API,
+        });
+
+        DataProviderActionCatalog::registerAction(<DataProviderActionInfo>{
+            "app": TarDataProvider::AppName,
+            "path": "/archive/split",
+            "action": "split-archive",
+            "display_name": "Split Archive",
+            "short_desc": "Split archive into chunks",
+            "desc": "Split a tar archive into multiple smaller chunks for multi-volume storage",
+            "action_code": DPAT_API,
+        });
+
+        DataProviderActionCatalog::registerAction(<DataProviderActionInfo>{
+            "app": TarDataProvider::AppName,
+            "path": "/archive/join",
+            "action": "join-archive",
+            "display_name": "Join Archive Chunks",
+            "short_desc": "Join archive chunks",
+            "desc": "Join multiple archive chunks back into a single tar archive",
+            "action_code": DPAT_API,
+        });
+    };
+}
+
+public namespace TarDataProvider {
+    #! Application name
+    public const AppName = "Tar";
+
+    #! TAR logo (loaded at initialization)
+    public const TarLogo = File::readTextFile(get_script_dir() + "/tar-logo.svg");
+
+#! TarDataProvider factory class
+public class TarDataProviderFactory inherits AbstractDataProviderFactory {
+    public {
+        #! Factory info
+        const FactoryInfo = <DataProviderFactoryInfo>{
+            "name": "tar",
+            "desc": "TAR archive data provider factory",
+            "children_can_support_apis": True,
+        };
+    }
+
+    #! Returns the factory name
+    string getName() {
+        return FactoryInfo.name;
+    }
+
+    #! Returns static factory information
+    hash<DataProviderFactoryInfo> getInfoImpl() {
+        return FactoryInfo;
+    }
+
+    #! Returns the data provider info
+    private hash<DataProviderInfo> getProviderInfoImpl() {
+        return TarDataProvider::ProviderInfo;
+    }
+
+    #! Returns a data provider with the given options
+    private AbstractDataProvider getProviderImpl(hash<auto> opts) {
+        return new TarDataProvider(opts);
+    }
+
+    #! Returns the class for the data provider
+    private Class getClassImpl() {
+        return Class::forName("TarDataProvider::TarDataProvider");
+    }
+}
+
+#! Main TAR data provider class
+public class TarDataProvider inherits AbstractDataProvider {
+    public {
+        #! Provider info
+        const ProviderInfo = <DataProviderInfo>{
+            "name": "tar",
+            "desc": "TAR archive data provider",
+            "type": "TarDataProvider",
+            "supports_children": True,
+            "children_can_support_apis": True,
+        };
+    }
+
+    private {
+        #! Options passed to constructor
+        hash<auto> opts;
+    }
+
+    #! Constructor
+    constructor(hash<auto> opts = {}) {
+        self.opts = opts;
+    }
+
+    #! Returns the data provider name
+    string getName() {
+        return ProviderInfo.name;
+    }
+
+    #! Returns the data provider description
+    *string getDesc() {
+        return ProviderInfo.desc;
+    }
+
+    #! Returns child providers
+    private *list<string> getChildProviderNamesImpl() {
+        return ("archive", "file", "data", "directory", "stream", "entry");
+    }
+
+    #! Returns the given child provider or NOTHING if it doesn't exist
+    private *AbstractDataProvider getChildProviderImpl(string name) {
+        switch (name) {
+            case "archive":
+                return new TarArchiveDataProvider(opts);
+            case "file":
+                return new TarFileDataProvider(opts);
+            case "data":
+                return new TarDataDataProvider(opts);
+            case "directory":
+                return new TarDirectoryDataProvider(opts);
+            case "stream":
+                return new TarStreamDataProvider(opts);
+            case "entry":
+                return new TarEntryDataProvider(opts);
+        }
+        return NOTHING;
+    }
+
+    #! Returns data provider static info
+    private hash<DataProviderInfo> getStaticInfoImpl() {
+        return ProviderInfo;
+    }
+}
+
+#! Archive operations provider
+public class TarArchiveDataProvider inherits AbstractDataProvider {
+    public {
+        const ProviderInfo = <DataProviderInfo>{
+            "name": "archive",
+            "desc": "TAR archive operations",
+            "type": "TarArchiveDataProvider",
+            "supports_children": True,
+        };
+    }
+
+    private {
+        hash<auto> opts;
+    }
+
+    constructor(hash<auto> opts = {}) {
+        self.opts = opts;
+    }
+
+    string getName() {
+        return ProviderInfo.name;
+    }
+
+    private *list<string> getChildProviderNamesImpl() {
+        return ("create", "extract", "list", "info", "add", "encrypt", "decrypt", "split", "join");
+    }
+
+    private *AbstractDataProvider getChildProviderImpl(string name) {
+        switch (name) {
+            case "create":
+                return new TarCreateArchiveDataProvider(opts);
+            case "extract":
+                return new TarExtractArchiveDataProvider(opts);
+            case "list":
+                return new TarListArchiveDataProvider(opts);
+            case "info":
+                return new TarArchiveInfoDataProvider(opts);
+            case "add":
+                return new TarAddFilesDataProvider(opts);
+            case "encrypt":
+                return new TarEncryptArchiveDataProvider(opts);
+            case "decrypt":
+                return new TarDecryptArchiveDataProvider(opts);
+            case "split":
+                return new TarSplitArchiveDataProvider(opts);
+            case "join":
+                return new TarJoinArchiveDataProvider(opts);
+        }
+        return NOTHING;
+    }
+
+    private hash<DataProviderInfo> getStaticInfoImpl() {
+        return ProviderInfo;
+    }
+}
+
+#! File operations provider
+public class TarFileDataProvider inherits AbstractDataProvider {
+    public {
+        const ProviderInfo = <DataProviderInfo>{
+            "name": "file",
+            "desc": "TAR file entry operations",
+            "type": "TarFileDataProvider",
+            "supports_children": True,
+        };
+    }
+
+    private {
+        hash<auto> opts;
+    }
+
+    constructor(hash<auto> opts = {}) {
+        self.opts = opts;
+    }
+
+    string getName() {
+        return ProviderInfo.name;
+    }
+
+    private *list<string> getChildProviderNamesImpl() {
+        return ("extract", "read");
+    }
+
+    private *AbstractDataProvider getChildProviderImpl(string name) {
+        switch (name) {
+            case "extract":
+                return new TarExtractFileDataProvider(opts);
+            case "read":
+                return new TarReadFileDataProvider(opts);
+        }
+        return NOTHING;
+    }
+
+    private hash<DataProviderInfo> getStaticInfoImpl() {
+        return ProviderInfo;
+    }
+}
+
+#! Data operations provider
+public class TarDataDataProvider inherits AbstractDataProvider {
+    public {
+        const ProviderInfo = <DataProviderInfo>{
+            "name": "data",
+            "desc": "TAR data operations",
+            "type": "TarDataDataProvider",
+            "supports_children": True,
+        };
+    }
+
+    private {
+        hash<auto> opts;
+    }
+
+    constructor(hash<auto> opts = {}) {
+        self.opts = opts;
+    }
+
+    string getName() {
+        return ProviderInfo.name;
+    }
+
+    private *list<string> getChildProviderNamesImpl() {
+        return ("compress", "decompress");
+    }
+
+    private *AbstractDataProvider getChildProviderImpl(string name) {
+        switch (name) {
+            case "compress":
+                return new TarCompressDataDataProvider(opts);
+            case "decompress":
+                return new TarDecompressDataDataProvider(opts);
+        }
+        return NOTHING;
+    }
+
+    private hash<DataProviderInfo> getStaticInfoImpl() {
+        return ProviderInfo;
+    }
+}
+
+#! Directory operations provider
+public class TarDirectoryDataProvider inherits AbstractDataProvider {
+    public {
+        const ProviderInfo = <DataProviderInfo>{
+            "name": "directory",
+            "desc": "TAR directory operations",
+            "type": "TarDirectoryDataProvider",
+            "supports_children": True,
+        };
+    }
+
+    private {
+        hash<auto> opts;
+    }
+
+    constructor(hash<auto> opts = {}) {
+        self.opts = opts;
+    }
+
+    string getName() {
+        return ProviderInfo.name;
+    }
+
+    private *list<string> getChildProviderNamesImpl() {
+        return ("archive",);
+    }
+
+    private *AbstractDataProvider getChildProviderImpl(string name) {
+        if (name == "archive") {
+            return new TarArchiveDirectoryDataProvider(opts);
+        }
+        return NOTHING;
+    }
+
+    private hash<DataProviderInfo> getStaticInfoImpl() {
+        return ProviderInfo;
+    }
+}
+
+#! Stream operations provider
+public class TarStreamDataProvider inherits AbstractDataProvider {
+    public {
+        const ProviderInfo = <DataProviderInfo>{
+            "name": "stream",
+            "desc": "TAR stream operations",
+            "type": "TarStreamDataProvider",
+            "supports_children": True,
+        };
+    }
+
+    private {
+        hash<auto> opts;
+    }
+
+    constructor(hash<auto> opts = {}) {
+        self.opts = opts;
+    }
+
+    string getName() {
+        return ProviderInfo.name;
+    }
+
+    private *list<string> getChildProviderNamesImpl() {
+        return ("extract",);
+    }
+
+    private *AbstractDataProvider getChildProviderImpl(string name) {
+        if (name == "extract") {
+            return new TarStreamExtractDataProvider(opts);
+        }
+        return NOTHING;
+    }
+
+    private hash<DataProviderInfo> getStaticInfoImpl() {
+        return ProviderInfo;
+    }
+}
+
+#! Entry operations provider
+public class TarEntryDataProvider inherits AbstractDataProvider {
+    public {
+        const ProviderInfo = <DataProviderInfo>{
+            "name": "entry",
+            "desc": "TAR entry operations",
+            "type": "TarEntryDataProvider",
+            "supports_children": True,
+        };
+    }
+
+    private {
+        hash<auto> opts;
+    }
+
+    constructor(hash<auto> opts = {}) {
+        self.opts = opts;
+    }
+
+    string getName() {
+        return ProviderInfo.name;
+    }
+
+    private *list<string> getChildProviderNamesImpl() {
+        return ("delete",);
+    }
+
+    private *AbstractDataProvider getChildProviderImpl(string name) {
+        if (name == "delete") {
+            return new TarDeleteEntryDataProvider(opts);
+        }
+        return NOTHING;
+    }
+
+    private hash<DataProviderInfo> getStaticInfoImpl() {
+        return ProviderInfo;
+    }
+}
+
+#! Compression method names for user-friendly input
+const CompressionMethods = {
+    "none": TAR_CM_NONE,
+    "gzip": TAR_CM_GZIP,
+    "bzip2": TAR_CM_BZIP2,
+    "xz": TAR_CM_XZ,
+    "zstd": TAR_CM_ZSTD,
+    "lz4": TAR_CM_LZ4,
+};
+
+#! Format names for user-friendly input
+const TarFormats = {
+    "ustar": TAR_FORMAT_USTAR,
+    "pax": TAR_FORMAT_PAX,
+    "gnu": TAR_FORMAT_GNU,
+    "v7": TAR_FORMAT_V7,
+};
+
+#! Helper to get compression method from string
+public int sub getCompressionMethod(auto val) {
+    if (!exists val) {
+        return TAR_CM_NONE;
+    }
+    if (val.typeCode() == NT_INT) {
+        return int(val);
+    }
+    string method = string(val).lwr();
+    return CompressionMethods{method} ?? TAR_CM_NONE;
+}
+
+#! Helper to get format from string
+public int sub getTarFormat(auto val) {
+    if (!exists val) {
+        return TAR_FORMAT_PAX;
+    }
+    if (val.typeCode() == NT_INT) {
+        return int(val);
+    }
+    string fmt = string(val).lwr();
+    return TarFormats{fmt} ?? TAR_FORMAT_PAX;
+}
+
+#! List archive contents data provider
+public class TarListArchiveDataProvider inherits DataProvider::AbstractDataProvider {
+    public {
+        const ProviderInfo = <DataProviderInfo>{
+            "name": "list",
+            "desc": "List contents of a TAR archive",
+            "type": "TarListArchiveDataProvider",
+            "supports_request": True,
+        };
+    }
+
+    private {
+        hash<auto> opts;
+    }
+
+    constructor(hash<auto> opts = {}) {
+        self.opts = opts;
+    }
+
+    string getName() {
+        return ProviderInfo.name;
+    }
+
+    private hash<DataProviderInfo> getStaticInfoImpl() {
+        return ProviderInfo;
+    }
+
+    private *AbstractDataProviderType getRequestTypeImpl() {
+        return new TarListRequestDataType();
+    }
+
+    private *AbstractDataProviderType getResponseTypeImpl() {
+        return new TarListResponseDataType();
+    }
+
+    private auto doRequestImpl(auto req, *hash<auto> request_options) {
+        string archive_path;
+        *binary archive_data;
+
+        if (req.archive_path) {
+            archive_path = req.archive_path;
+        }
+        if (req.archive_data) {
+            archive_data = req.archive_data;
+        }
+
+        TarFile tar;
+        if (archive_data) {
+            tar = new TarFile(archive_data);
+        } else if (archive_path) {
+            tar = new TarFile(archive_path, "r");
+        } else {
+            throw "TAR-ERROR", "Either archive_path or archive_data must be provided";
+        }
+
+        list<hash<TarEntryInfo>> entries = tar.entries();
+        tar.close();
+
+        return {
+            "entries": entries,
+            "count": entries.size(),
+        };
+    }
+}
+
+#! Request type for list operation
+public class TarListRequestDataType inherits HashDataType {
+    public {
+        const Fields = {
+            "archive_path": {
+                "type": StringOrNothingType,
+                "display_name": "Archive Path",
+                "short_desc": "Path to the tar archive file",
+                "desc": "The filesystem path to the tar archive to list",
+                "example_value": "/path/to/archive.tar.gz",
+            },
+            "archive_data": {
+                "type": BinaryOrNothingType,
+                "display_name": "Archive Data",
+                "short_desc": "Binary archive data",
+                "desc": "The tar archive as binary data (alternative to archive_path)",
+            },
+        };
+    }
+
+    constructor() : HashDataType("TarListRequest") {
+        addQoreFields(Fields);
+    }
+}
+
+#! Response type for list operation
+public class TarListResponseDataType inherits HashDataType {
+    public {
+        const Fields = {
+            "entries": {
+                "type": new ListDataType("EntryList", AutoType, True),
+                "display_name": "Entries",
+                "short_desc": "List of archive entries",
+                "desc": "List of entries with metadata (name, size, type, etc.)",
+            },
+            "count": {
+                "type": IntType,
+                "display_name": "Entry Count",
+                "short_desc": "Number of entries in archive",
+                "desc": "Total number of entries in the archive",
+            },
+        };
+    }
+
+    constructor() : HashDataType("TarListResponse") {
+        addQoreFields(Fields);
+    }
+}
+
+#! Read file from archive data provider
+public class TarReadFileDataProvider inherits AbstractDataProvider {
+    public {
+        const ProviderInfo = <DataProviderInfo>{
+            "name": "read",
+            "desc": "Read file contents from a TAR archive without extracting",
+            "type": "TarReadFileDataProvider",
+            "supports_request": True,
+        };
+    }
+
+    private {
+        hash<auto> opts;
+    }
+
+    constructor(hash<auto> opts = {}) {
+        self.opts = opts;
+    }
+
+    string getName() {
+        return ProviderInfo.name;
+    }
+
+    private hash<DataProviderInfo> getStaticInfoImpl() {
+        return ProviderInfo;
+    }
+
+    private *AbstractDataProviderType getRequestTypeImpl() {
+        return new TarReadFileRequestDataType();
+    }
+
+    private *AbstractDataProviderType getResponseTypeImpl() {
+        return new TarReadFileResponseDataType();
+    }
+
+    private auto doRequestImpl(auto req, *hash<auto> request_options) {
+        TarFile tar;
+        if (req.archive_data) {
+            tar = new TarFile(req.archive_data);
+        } else if (req.archive_path) {
+            tar = new TarFile(req.archive_path, "r");
+        } else {
+            throw "TAR-ERROR", "Either archive_path or archive_data must be provided";
+        }
+
+        binary content = tar.read(req.entry_name);
+        *hash<TarEntryInfo> info = tar.getEntry(req.entry_name);
+        tar.close();
+
+        if (req.as_text) {
+            return {
+                "content": content.toString(req.encoding ?? "UTF-8"),
+                "size": content.size(),
+                "entry_info": info,
+            };
+        }
+
+        return {
+            "content": content,
+            "size": content.size(),
+            "entry_info": info,
+        };
+    }
+}
+
+#! Request type for read file operation
+public class TarReadFileRequestDataType inherits HashDataType {
+    public {
+        const Fields = {
+            "archive_path": {
+                "type": StringOrNothingType,
+                "display_name": "Archive Path",
+                "short_desc": "Path to the tar archive file",
+                "desc": "The filesystem path to the tar archive",
+                "example_value": "/path/to/archive.tar.gz",
+            },
+            "archive_data": {
+                "type": BinaryOrNothingType,
+                "display_name": "Archive Data",
+                "short_desc": "Binary archive data",
+                "desc": "The tar archive as binary data (alternative to archive_path)",
+            },
+            "entry_name": {
+                "type": StringType,
+                "display_name": "Entry Name",
+                "short_desc": "Name of file to read",
+                "desc": "The path/name of the entry to read from the archive",
+                "example_value": "data/config.json",
+            },
+            "as_text": {
+                "type": SoftBoolOrNothingType,
+                "display_name": "Read as Text",
+                "short_desc": "Return content as text string",
+                "desc": "If true, returns content as text string instead of binary (default: false)",
+                "example_value": False,
+            },
+            "encoding": {
+                "type": StringOrNothingType,
+                "display_name": "Encoding",
+                "short_desc": "Text encoding for as_text mode",
+                "desc": "Character encoding to use when as_text is true (default: UTF-8)",
+                "example_value": "UTF-8",
+            },
+        };
+    }
+
+    constructor() : HashDataType("TarReadFileRequest") {
+        addQoreFields(Fields);
+    }
+}
+
+#! Response type for read file operation
+public class TarReadFileResponseDataType inherits HashDataType {
+    public {
+        const Fields = {
+            "content": {
+                "type": AutoType,
+                "display_name": "Content",
+                "short_desc": "File content",
+                "desc": "The content of the file (binary or string depending on as_text)",
+            },
+            "size": {
+                "type": IntType,
+                "display_name": "Size",
+                "short_desc": "Content size in bytes",
+                "desc": "Size of the content in bytes",
+            },
+            "entry_info": {
+                "type": AutoHashOrNothingType,
+                "display_name": "Entry Info",
+                "short_desc": "Entry metadata",
+                "desc": "Metadata about the entry (name, permissions, timestamps, etc.)",
+            },
+        };
+    }
+
+    constructor() : HashDataType("TarReadFileResponse") {
+        addQoreFields(Fields);
+    }
+}
+
+#! Create archive data provider
+public class TarCreateArchiveDataProvider inherits AbstractDataProvider {
+    public {
+        const ProviderInfo = <DataProviderInfo>{
+            "name": "create",
+            "desc": "Create a new TAR archive",
+            "type": "TarCreateArchiveDataProvider",
+            "supports_request": True,
+        };
+    }
+
+    private {
+        hash<auto> opts;
+    }
+
+    constructor(hash<auto> opts = {}) {
+        self.opts = opts;
+    }
+
+    string getName() {
+        return ProviderInfo.name;
+    }
+
+    private hash<DataProviderInfo> getStaticInfoImpl() {
+        return ProviderInfo;
+    }
+
+    private *AbstractDataProviderType getRequestTypeImpl() {
+        return new TarCreateArchiveRequestDataType();
+    }
+
+    private *AbstractDataProviderType getResponseTypeImpl() {
+        return new TarCreateArchiveResponseDataType();
+    }
+
+    private auto doRequestImpl(auto req, *hash<auto> request_options) {
+        int compression = getCompressionMethod(req.compression);
+        int format = getTarFormat(req.format);
+        int level = req.compression_level ?? -1;
+
+        hash<TarCreateOptions> create_opts = <TarCreateOptions>{
+            "compression_method": compression,
+            "compression_level": level,
+            "format": format,
+        };
+
+        TarFile tar;
+        bool in_memory = !req.archive_path;
+
+        if (in_memory) {
+            tar = new TarFile(create_opts);
+        } else {
+            tar = new TarFile(req.archive_path, "w", create_opts);
+        }
+
+        int entry_count = 0;
+
+        # Add entries from files hash
+        if (req.files) {
+            foreach hash<auto> file in (req.files) {
+                string name = file.name;
+                if (file.data) {
+                    tar.add(name, file.data);
+                } else if (file.text) {
+                    tar.add(name, file.text);
+                } else if (file.source_path) {
+                    tar.addFile(name, file.source_path);
+                }
+                entry_count++;
+            }
+        }
+
+        # Add directories
+        if (req.directories) {
+            foreach string dir in (req.directories) {
+                string dir_name = dir;
+                if (!dir_name.endsWith("/")) {
+                    dir_name += "/";
+                }
+                tar.addDirectory(dir_name);
+                entry_count++;
+            }
+        }
+
+        *binary archive_data;
+        if (in_memory) {
+            archive_data = tar.toData();
+        }
+
+        tar.close();
+
+        if (in_memory) {
+            return {
+                "archive_data": archive_data,
+                "entry_count": entry_count,
+                "compression": req.compression ?? "none",
+            };
+        }
+
+        return {
+            "archive_path": req.archive_path,
+            "entry_count": entry_count,
+            "compression": req.compression ?? "none",
+        };
+    }
+}
+
+#! Request type for create archive operation
+public class TarCreateArchiveRequestDataType inherits HashDataType {
+    public {
+        const Fields = {
+            "archive_path": {
+                "type": StringOrNothingType,
+                "display_name": "Archive Path",
+                "short_desc": "Output archive file path",
+                "desc": "The path where the tar archive will be created. If not specified, returns binary data.",
+                "example_value": "/tmp/backup.tar.gz",
+            },
+            "compression": {
+                "type": StringOrNothingType,
+                "display_name": "Compression Method",
+                "short_desc": "Archive compression type",
+                "desc": "The compression method to use: none, gzip, bzip2, xz, zstd, or lz4",
+                "example_value": "gzip",
+                "allowed_values": ("none", "gzip", "bzip2", "xz", "zstd", "lz4"),
+            },
+            "compression_level": {
+                "type": IntOrNothingType,
+                "display_name": "Compression Level",
+                "short_desc": "Compression strength (1-9)",
+                "desc": "Compression level from 1 (fastest) to 9 (best). Default depends on method.",
+                "example_value": 6,
+            },
+            "format": {
+                "type": StringOrNothingType,
+                "display_name": "Archive Format",
+                "short_desc": "TAR format variant",
+                "desc": "The tar format to use: ustar, pax, gnu, or v7",
+                "example_value": "pax",
+                "allowed_values": ("ustar", "pax", "gnu", "v7"),
+            },
+            "files": {
+                "type": new ListDataType("FileEntryList", AutoHashType, True),
+                "display_name": "Files",
+                "short_desc": "Files to add to archive",
+                "desc": "List of file entries. Each entry should have 'name' and one of: 'data' (binary), 'text' (string), or 'source_path' (file path)",
+                "example_value": ({"name": "hello.txt", "text": "Hello World"},),
+            },
+            "directories": {
+                "type": new ListDataType("DirList", StringType, True),
+                "display_name": "Directories",
+                "short_desc": "Empty directories to create",
+                "desc": "List of directory entries to add (without content)",
+                "example_value": ("subdir/", "another/path/"),
+            },
+        };
+    }
+
+    constructor() : HashDataType("TarCreateArchiveRequest") {
+        addQoreFields(Fields);
+    }
+}
+
+#! Response type for create archive operation
+public class TarCreateArchiveResponseDataType inherits HashDataType {
+    public {
+        const Fields = {
+            "archive_path": {
+                "type": StringOrNothingType,
+                "display_name": "Archive Path",
+                "short_desc": "Path to created archive",
+                "desc": "The filesystem path where the archive was created",
+            },
+            "archive_data": {
+                "type": BinaryOrNothingType,
+                "display_name": "Archive Data",
+                "short_desc": "Archive binary data",
+                "desc": "The archive as binary data (when no path was specified)",
+            },
+            "entry_count": {
+                "type": IntType,
+                "display_name": "Entry Count",
+                "short_desc": "Number of entries added",
+                "desc": "Total number of entries added to the archive",
+            },
+            "compression": {
+                "type": StringType,
+                "display_name": "Compression",
+                "short_desc": "Compression method used",
+                "desc": "The compression method that was applied",
+            },
+        };
+    }
+
+    constructor() : HashDataType("TarCreateArchiveResponse") {
+        addQoreFields(Fields);
+    }
+}
+
+#! Extract archive data provider
+public class TarExtractArchiveDataProvider inherits AbstractDataProvider {
+    public {
+        const ProviderInfo = <DataProviderInfo>{
+            "name": "extract",
+            "desc": "Extract all contents from a TAR archive",
+            "type": "TarExtractArchiveDataProvider",
+            "supports_request": True,
+        };
+    }
+
+    private {
+        hash<auto> opts;
+    }
+
+    constructor(hash<auto> opts = {}) {
+        self.opts = opts;
+    }
+
+    string getName() {
+        return ProviderInfo.name;
+    }
+
+    private hash<DataProviderInfo> getStaticInfoImpl() {
+        return ProviderInfo;
+    }
+
+    private *AbstractDataProviderType getRequestTypeImpl() {
+        return new TarExtractArchiveRequestDataType();
+    }
+
+    private *AbstractDataProviderType getResponseTypeImpl() {
+        return new TarExtractArchiveResponseDataType();
+    }
+
+    private auto doRequestImpl(auto req, *hash<auto> request_options) {
+        TarFile tar;
+        if (req.archive_data) {
+            tar = new TarFile(req.archive_data);
+        } else if (req.archive_path) {
+            tar = new TarFile(req.archive_path, "r");
+        } else {
+            throw "TAR-ERROR", "Either archive_path or archive_data must be provided";
+        }
+
+        string destination = req.destination ?? ".";
+
+        hash<TarExtractOptions> extract_opts = <TarExtractOptions>{
+            "destination": destination,
+            "preserve_permissions": req.preserve_permissions ?? True,
+            "preserve_times": req.preserve_times ?? True,
+            "overwrite": req.overwrite ?? False,
+            "create_directories": True,
+        };
+
+        list<hash<TarEntryInfo>> entries = tar.entries();
+        tar.extractAll(extract_opts);
+        tar.close();
+
+        return {
+            "destination": destination,
+            "extracted_count": entries.size(),
+            "entries": entries,
+        };
+    }
+}
+
+#! Request type for extract archive operation
+public class TarExtractArchiveRequestDataType inherits HashDataType {
+    public {
+        const Fields = {
+            "archive_path": {
+                "type": StringOrNothingType,
+                "display_name": "Archive Path",
+                "short_desc": "Path to the tar archive",
+                "desc": "The filesystem path to the tar archive to extract",
+                "example_value": "/path/to/archive.tar.gz",
+            },
+            "archive_data": {
+                "type": BinaryOrNothingType,
+                "display_name": "Archive Data",
+                "short_desc": "Binary archive data",
+                "desc": "The tar archive as binary data (alternative to archive_path)",
+            },
+            "destination": {
+                "type": StringOrNothingType,
+                "display_name": "Destination",
+                "short_desc": "Extraction destination directory",
+                "desc": "The directory where files will be extracted (default: current directory)",
+                "example_value": "/tmp/extracted",
+            },
+            "preserve_permissions": {
+                "type": SoftBoolType,
+                "display_name": "Preserve Permissions",
+                "short_desc": "Restore file permissions",
+                "desc": "If true, restores original file permissions (default: true)",
+                "example_value": True,
+            },
+            "preserve_times": {
+                "type": SoftBoolType,
+                "display_name": "Preserve Times",
+                "short_desc": "Restore modification times",
+                "desc": "If true, restores original modification times (default: true)",
+                "example_value": True,
+            },
+            "overwrite": {
+                "type": SoftBoolType,
+                "display_name": "Overwrite",
+                "short_desc": "Overwrite existing files",
+                "desc": "If true, overwrites existing files (default: false)",
+                "example_value": False,
+            },
+        };
+    }
+
+    constructor() : HashDataType("TarExtractArchiveRequest") {
+        addQoreFields(Fields);
+    }
+}
+
+#! Response type for extract archive operation
+public class TarExtractArchiveResponseDataType inherits HashDataType {
+    public {
+        const Fields = {
+            "destination": {
+                "type": StringType,
+                "display_name": "Destination",
+                "short_desc": "Extraction directory",
+                "desc": "The directory where files were extracted",
+            },
+            "extracted_count": {
+                "type": IntType,
+                "display_name": "Extracted Count",
+                "short_desc": "Number of entries extracted",
+                "desc": "Total number of entries that were extracted",
+            },
+            "entries": {
+                "type": new ListDataType("ExtractedEntryList", AutoType, True),
+                "display_name": "Entries",
+                "short_desc": "List of extracted entries",
+                "desc": "List of entries that were extracted with metadata",
+            },
+        };
+    }
+
+    constructor() : HashDataType("TarExtractArchiveResponse") {
+        addQoreFields(Fields);
+    }
+}
+
+#! Archive info data provider
+public class TarArchiveInfoDataProvider inherits AbstractDataProvider {
+    public {
+        const ProviderInfo = <DataProviderInfo>{
+            "name": "info",
+            "desc": "Get metadata about a TAR archive",
+            "type": "TarArchiveInfoDataProvider",
+            "supports_request": True,
+        };
+    }
+
+    private {
+        hash<auto> opts;
+    }
+
+    constructor(hash<auto> opts = {}) {
+        self.opts = opts;
+    }
+
+    string getName() {
+        return ProviderInfo.name;
+    }
+
+    private hash<DataProviderInfo> getStaticInfoImpl() {
+        return ProviderInfo;
+    }
+
+    private *AbstractDataProviderType getRequestTypeImpl() {
+        return new TarArchiveInfoRequestDataType();
+    }
+
+    private *AbstractDataProviderType getResponseTypeImpl() {
+        return new TarArchiveInfoResponseDataType();
+    }
+
+    private auto doRequestImpl(auto req, *hash<auto> request_options) {
+        TarFile tar;
+        if (req.archive_data) {
+            tar = new TarFile(req.archive_data);
+        } else if (req.archive_path) {
+            tar = new TarFile(req.archive_path, "r");
+        } else {
+            throw "TAR-ERROR", "Either archive_path or archive_data must be provided";
+        }
+
+        list<hash<TarEntryInfo>> entries = tar.entries();
+
+        int total_size = 0;
+        int file_count = 0;
+        int dir_count = 0;
+        int link_count = 0;
+
+        foreach hash<TarEntryInfo> entry in (entries) {
+            total_size += entry.size;
+            if (entry.is_directory) {
+                dir_count++;
+            } else if (entry.is_symlink || entry.is_hardlink) {
+                link_count++;
+            } else {
+                file_count++;
+            }
+        }
+
+        tar.close();
+
+        return {
+            "entry_count": entries.size(),
+            "file_count": file_count,
+            "directory_count": dir_count,
+            "link_count": link_count,
+            "total_uncompressed_size": total_size,
+        };
+    }
+}
+
+#! Request type for archive info operation
+public class TarArchiveInfoRequestDataType inherits HashDataType {
+    public {
+        const Fields = {
+            "archive_path": {
+                "type": StringOrNothingType,
+                "display_name": "Archive Path",
+                "short_desc": "Path to the tar archive",
+                "desc": "The filesystem path to the tar archive",
+                "example_value": "/path/to/archive.tar.gz",
+            },
+            "archive_data": {
+                "type": BinaryOrNothingType,
+                "display_name": "Archive Data",
+                "short_desc": "Binary archive data",
+                "desc": "The tar archive as binary data (alternative to archive_path)",
+            },
+        };
+    }
+
+    constructor() : HashDataType("TarArchiveInfoRequest") {
+        addQoreFields(Fields);
+    }
+}
+
+#! Response type for archive info operation
+public class TarArchiveInfoResponseDataType inherits HashDataType {
+    public {
+        const Fields = {
+            "entry_count": {
+                "type": IntType,
+                "display_name": "Entry Count",
+                "short_desc": "Total number of entries",
+                "desc": "Total number of entries in the archive",
+            },
+            "file_count": {
+                "type": IntType,
+                "display_name": "File Count",
+                "short_desc": "Number of regular files",
+                "desc": "Number of regular file entries",
+            },
+            "directory_count": {
+                "type": IntType,
+                "display_name": "Directory Count",
+                "short_desc": "Number of directories",
+                "desc": "Number of directory entries",
+            },
+            "link_count": {
+                "type": IntType,
+                "display_name": "Link Count",
+                "short_desc": "Number of links",
+                "desc": "Number of symlink and hardlink entries",
+            },
+            "total_uncompressed_size": {
+                "type": IntType,
+                "display_name": "Total Size",
+                "short_desc": "Total uncompressed size",
+                "desc": "Total uncompressed size of all entries in bytes",
+            },
+        };
+    }
+
+    constructor() : HashDataType("TarArchiveInfoResponse") {
+        addQoreFields(Fields);
+    }
+}
+
+#! Add files to archive data provider
+public class TarAddFilesDataProvider inherits AbstractDataProvider {
+    public {
+        const ProviderInfo = <DataProviderInfo>{
+            "name": "add",
+            "desc": "Add files to an existing TAR archive",
+            "type": "TarAddFilesDataProvider",
+            "supports_request": True,
+        };
+    }
+
+    private {
+        hash<auto> opts;
+    }
+
+    constructor(hash<auto> opts = {}) {
+        self.opts = opts;
+    }
+
+    string getName() {
+        return ProviderInfo.name;
+    }
+
+    private hash<DataProviderInfo> getStaticInfoImpl() {
+        return ProviderInfo;
+    }
+
+    private *AbstractDataProviderType getRequestTypeImpl() {
+        return new TarAddFilesRequestDataType();
+    }
+
+    private *AbstractDataProviderType getResponseTypeImpl() {
+        return new TarAddFilesResponseDataType();
+    }
+
+    private auto doRequestImpl(auto req, *hash<auto> request_options) {
+        if (!req.archive_path) {
+            throw "TAR-ERROR", "archive_path is required for add operation";
+        }
+
+        int compression = getCompressionMethod(req.compression);
+        int format = getTarFormat(req.format);
+
+        hash<TarCreateOptions> create_opts = <TarCreateOptions>{
+            "compression_method": compression,
+            "format": format,
+        };
+
+        TarFile tar(req.archive_path, "a", create_opts);
+
+        int added_count = 0;
+
+        if (req.files) {
+            foreach hash<auto> file in (req.files) {
+                string name = file.name;
+                if (file.data) {
+                    tar.add(name, file.data);
+                } else if (file.text) {
+                    tar.add(name, file.text);
+                } else if (file.source_path) {
+                    tar.addFile(name, file.source_path);
+                }
+                added_count++;
+            }
+        }
+
+        tar.close();
+
+        return {
+            "archive_path": req.archive_path,
+            "added_count": added_count,
+        };
+    }
+}
+
+#! Request type for add files operation
+public class TarAddFilesRequestDataType inherits HashDataType {
+    public {
+        const Fields = {
+            "archive_path": {
+                "type": StringType,
+                "display_name": "Archive Path",
+                "short_desc": "Path to the tar archive",
+                "desc": "The filesystem path to the tar archive to modify",
+                "example_value": "/path/to/archive.tar",
+            },
+            "compression": {
+                "type": StringOrNothingType,
+                "display_name": "Compression",
+                "short_desc": "Compression for the archive",
+                "desc": "Compression method if archive needs to be rewritten: none, gzip, bzip2, xz, zstd, or lz4",
+                "example_value": "gzip",
+            },
+            "format": {
+                "type": StringOrNothingType,
+                "display_name": "Format",
+                "short_desc": "TAR format",
+                "desc": "The tar format: ustar, pax, gnu, or v7",
+                "example_value": "pax",
+            },
+            "files": {
+                "type": new ListDataType("AddFileList", AutoHashType, True),
+                "display_name": "Files",
+                "short_desc": "Files to add",
+                "desc": "List of file entries to add. Each entry should have 'name' and one of: 'data', 'text', or 'source_path'",
+                "example_value": ({"name": "new.txt", "text": "New content"},),
+            },
+        };
+    }
+
+    constructor() : HashDataType("TarAddFilesRequest") {
+        addQoreFields(Fields);
+    }
+}
+
+#! Response type for add files operation
+public class TarAddFilesResponseDataType inherits HashDataType {
+    public {
+        const Fields = {
+            "archive_path": {
+                "type": StringType,
+                "display_name": "Archive Path",
+                "short_desc": "Path to modified archive",
+                "desc": "The filesystem path to the modified archive",
+            },
+            "added_count": {
+                "type": IntType,
+                "display_name": "Added Count",
+                "short_desc": "Number of files added",
+                "desc": "Number of files that were added to the archive",
+            },
+        };
+    }
+
+    constructor() : HashDataType("TarAddFilesResponse") {
+        addQoreFields(Fields);
+    }
+}
+
+#! Extract single file data provider
+public class TarExtractFileDataProvider inherits AbstractDataProvider {
+    public {
+        const ProviderInfo = <DataProviderInfo>{
+            "name": "extract",
+            "desc": "Extract a single file from a TAR archive",
+            "type": "TarExtractFileDataProvider",
+            "supports_request": True,
+        };
+    }
+
+    private {
+        hash<auto> opts;
+    }
+
+    constructor(hash<auto> opts = {}) {
+        self.opts = opts;
+    }
+
+    string getName() {
+        return ProviderInfo.name;
+    }
+
+    private hash<DataProviderInfo> getStaticInfoImpl() {
+        return ProviderInfo;
+    }
+
+    private *AbstractDataProviderType getRequestTypeImpl() {
+        return new TarExtractFileRequestDataType();
+    }
+
+    private *AbstractDataProviderType getResponseTypeImpl() {
+        return new TarExtractFileResponseDataType();
+    }
+
+    private auto doRequestImpl(auto req, *hash<auto> request_options) {
+        TarFile tar;
+        if (req.archive_data) {
+            tar = new TarFile(req.archive_data);
+        } else if (req.archive_path) {
+            tar = new TarFile(req.archive_path, "r");
+        } else {
+            throw "TAR-ERROR", "Either archive_path or archive_data must be provided";
+        }
+
+        string entry_name = req.entry_name;
+        string destination = req.destination ?? ".";
+
+        tar.extractTo(entry_name, destination);
+        tar.close();
+
+        return {
+            "extracted_to": destination,
+            "entry_name": entry_name,
+        };
+    }
+}
+
+#! Request type for extract file operation
+public class TarExtractFileRequestDataType inherits HashDataType {
+    public {
+        const Fields = {
+            "archive_path": {
+                "type": StringOrNothingType,
+                "display_name": "Archive Path",
+                "short_desc": "Path to the tar archive",
+                "desc": "The filesystem path to the tar archive",
+                "example_value": "/path/to/archive.tar.gz",
+            },
+            "archive_data": {
+                "type": BinaryOrNothingType,
+                "display_name": "Archive Data",
+                "short_desc": "Binary archive data",
+                "desc": "The tar archive as binary data",
+            },
+            "entry_name": {
+                "type": StringType,
+                "display_name": "Entry Name",
+                "short_desc": "File to extract",
+                "desc": "The name/path of the entry to extract",
+                "example_value": "data/config.json",
+            },
+            "destination": {
+                "type": StringOrNothingType,
+                "display_name": "Destination",
+                "short_desc": "Destination path",
+                "desc": "Where to extract the file (default: current directory)",
+                "example_value": "/tmp/config.json",
+            },
+        };
+    }
+
+    constructor() : HashDataType("TarExtractFileRequest") {
+        addQoreFields(Fields);
+    }
+}
+
+#! Response type for extract file operation
+public class TarExtractFileResponseDataType inherits HashDataType {
+    public {
+        const Fields = {
+            "extracted_to": {
+                "type": StringType,
+                "display_name": "Extracted To",
+                "short_desc": "Destination path",
+                "desc": "Path where the file was extracted",
+            },
+            "entry_name": {
+                "type": StringType,
+                "display_name": "Entry Name",
+                "short_desc": "Extracted entry name",
+                "desc": "Name of the entry that was extracted",
+            },
+        };
+    }
+
+    constructor() : HashDataType("TarExtractFileResponse") {
+        addQoreFields(Fields);
+    }
+}
+
+#! Compress data to TAR data provider
+public class TarCompressDataDataProvider inherits AbstractDataProvider {
+    public {
+        const ProviderInfo = <DataProviderInfo>{
+            "name": "compress",
+            "desc": "Compress data into an in-memory TAR archive",
+            "type": "TarCompressDataDataProvider",
+            "supports_request": True,
+        };
+    }
+
+    private {
+        hash<auto> opts;
+    }
+
+    constructor(hash<auto> opts = {}) {
+        self.opts = opts;
+    }
+
+    string getName() {
+        return ProviderInfo.name;
+    }
+
+    private hash<DataProviderInfo> getStaticInfoImpl() {
+        return ProviderInfo;
+    }
+
+    private *AbstractDataProviderType getRequestTypeImpl() {
+        return new TarCompressDataRequestDataType();
+    }
+
+    private *AbstractDataProviderType getResponseTypeImpl() {
+        return new TarCompressDataResponseDataType();
+    }
+
+    private auto doRequestImpl(auto req, *hash<auto> request_options) {
+        int compression = getCompressionMethod(req.compression);
+        int format = getTarFormat(req.format);
+
+        hash<TarCreateOptions> create_opts = <TarCreateOptions>{
+            "compression_method": compression,
+            "format": format,
+        };
+
+        TarFile tar(create_opts);
+
+        int entry_count = 0;
+        if (req.files) {
+            foreach hash<auto> file in (req.files) {
+                string name = file.name;
+                if (file.data) {
+                    tar.add(name, file.data);
+                } else if (file.text) {
+                    tar.add(name, file.text);
+                }
+                entry_count++;
+            }
+        }
+
+        binary archive_data = tar.toData();
+
+        return {
+            "archive_data": archive_data,
+            "archive_size": archive_data.size(),
+            "entry_count": entry_count,
+        };
+    }
+}
+
+#! Request type for compress data operation
+public class TarCompressDataRequestDataType inherits HashDataType {
+    public {
+        const Fields = {
+            "compression": {
+                "type": StringOrNothingType,
+                "display_name": "Compression",
+                "short_desc": "Compression method",
+                "desc": "Compression method: none, gzip, bzip2, xz, zstd, or lz4",
+                "example_value": "gzip",
+            },
+            "format": {
+                "type": StringOrNothingType,
+                "display_name": "Format",
+                "short_desc": "TAR format",
+                "desc": "The tar format: ustar, pax, gnu, or v7",
+                "example_value": "pax",
+            },
+            "files": {
+                "type": new ListDataType("CompressFileList", AutoHashType, True),
+                "display_name": "Files",
+                "short_desc": "Files to compress",
+                "desc": "List of entries. Each entry should have 'name' and either 'data' (binary) or 'text' (string)",
+                "example_value": ({"name": "hello.txt", "text": "Hello World"},),
+            },
+        };
+    }
+
+    constructor() : HashDataType("TarCompressDataRequest") {
+        addQoreFields(Fields);
+    }
+}
+
+#! Response type for compress data operation
+public class TarCompressDataResponseDataType inherits HashDataType {
+    public {
+        const Fields = {
+            "archive_data": {
+                "type": BinaryType,
+                "display_name": "Archive Data",
+                "short_desc": "Compressed archive data",
+                "desc": "The compressed tar archive as binary data",
+            },
+            "archive_size": {
+                "type": IntType,
+                "display_name": "Archive Size",
+                "short_desc": "Size in bytes",
+                "desc": "Size of the compressed archive in bytes",
+            },
+            "entry_count": {
+                "type": IntType,
+                "display_name": "Entry Count",
+                "short_desc": "Number of entries",
+                "desc": "Number of entries in the archive",
+            },
+        };
+    }
+
+    constructor() : HashDataType("TarCompressDataResponse") {
+        addQoreFields(Fields);
+    }
+}
+
+#! Decompress TAR data provider
+public class TarDecompressDataDataProvider inherits AbstractDataProvider {
+    public {
+        const ProviderInfo = <DataProviderInfo>{
+            "name": "decompress",
+            "desc": "Decompress a TAR archive and return file contents",
+            "type": "TarDecompressDataDataProvider",
+            "supports_request": True,
+        };
+    }
+
+    private {
+        hash<auto> opts;
+    }
+
+    constructor(hash<auto> opts = {}) {
+        self.opts = opts;
+    }
+
+    string getName() {
+        return ProviderInfo.name;
+    }
+
+    private hash<DataProviderInfo> getStaticInfoImpl() {
+        return ProviderInfo;
+    }
+
+    private *AbstractDataProviderType getRequestTypeImpl() {
+        return new TarDecompressDataRequestDataType();
+    }
+
+    private *AbstractDataProviderType getResponseTypeImpl() {
+        return new TarDecompressDataResponseDataType();
+    }
+
+    private auto doRequestImpl(auto req, *hash<auto> request_options) {
+        if (!req.archive_data) {
+            throw "TAR-ERROR", "archive_data is required";
+        }
+
+        TarFile tar(req.archive_data);
+
+        list<hash<TarEntryInfo>> entries = tar.entries();
+        hash<string, auto> files = {};
+
+        foreach hash<TarEntryInfo> entry in (entries) {
+            if (!entry.is_directory && !entry.is_symlink && !entry.is_hardlink) {
+                binary content = tar.read(entry.name);
+                files{entry.name} = {
+                    "content": content,
+                    "size": content.size(),
+                    "type": entry.type,
+                };
+            }
+        }
+
+        tar.close();
+
+        return {
+            "files": files,
+            "entry_count": entries.size(),
+            "file_count": files.size(),
+        };
+    }
+}
+
+#! Request type for decompress data operation
+public class TarDecompressDataRequestDataType inherits HashDataType {
+    public {
+        const Fields = {
+            "archive_data": {
+                "type": BinaryType,
+                "display_name": "Archive Data",
+                "short_desc": "TAR archive binary data",
+                "desc": "The tar archive as binary data to decompress",
+            },
+        };
+    }
+
+    constructor() : HashDataType("TarDecompressDataRequest") {
+        addQoreFields(Fields);
+    }
+}
+
+#! Response type for decompress data operation
+public class TarDecompressDataResponseDataType inherits HashDataType {
+    public {
+        const Fields = {
+            "files": {
+                "type": AutoHashType,
+                "display_name": "Files",
+                "short_desc": "Extracted file contents",
+                "desc": "Hash mapping entry names to their content and metadata",
+            },
+            "entry_count": {
+                "type": IntType,
+                "display_name": "Entry Count",
+                "short_desc": "Total entries",
+                "desc": "Total number of entries in the archive",
+            },
+            "file_count": {
+                "type": IntType,
+                "display_name": "File Count",
+                "short_desc": "Files extracted",
+                "desc": "Number of regular files extracted",
+            },
+        };
+    }
+
+    constructor() : HashDataType("TarDecompressDataResponse") {
+        addQoreFields(Fields);
+    }
+}
+
+#! Archive directory data provider
+public class TarArchiveDirectoryDataProvider inherits AbstractDataProvider {
+    public {
+        const ProviderInfo = <DataProviderInfo>{
+            "name": "archive",
+            "desc": "Archive a directory tree into a TAR archive",
+            "type": "TarArchiveDirectoryDataProvider",
+            "supports_request": True,
+        };
+    }
+
+    private {
+        hash<auto> opts;
+    }
+
+    constructor(hash<auto> opts = {}) {
+        self.opts = opts;
+    }
+
+    string getName() {
+        return ProviderInfo.name;
+    }
+
+    private hash<DataProviderInfo> getStaticInfoImpl() {
+        return ProviderInfo;
+    }
+
+    private auto doRequestImpl(auto req, *hash<auto> request_options) {
+        throw "NOT-IMPLEMENTED", "Archive directory operation not yet implemented";
+    }
+}
+
+#! Stream extract data provider
+public class TarStreamExtractDataProvider inherits AbstractDataProvider {
+    public {
+        const ProviderInfo = <DataProviderInfo>{
+            "name": "extract",
+            "desc": "Stream extract a large file from TAR archive",
+            "type": "TarStreamExtractDataProvider",
+            "supports_request": True,
+        };
+    }
+
+    private {
+        hash<auto> opts;
+    }
+
+    constructor(hash<auto> opts = {}) {
+        self.opts = opts;
+    }
+
+    string getName() {
+        return ProviderInfo.name;
+    }
+
+    private hash<DataProviderInfo> getStaticInfoImpl() {
+        return ProviderInfo;
+    }
+
+    private auto doRequestImpl(auto req, *hash<auto> request_options) {
+        throw "NOT-IMPLEMENTED", "Stream extract operation not yet implemented";
+    }
+}
+
+#! Delete entry data provider
+public class TarDeleteEntryDataProvider inherits AbstractDataProvider {
+    public {
+        const ProviderInfo = <DataProviderInfo>{
+            "name": "delete",
+            "desc": "Delete an entry from a TAR archive",
+            "type": "TarDeleteEntryDataProvider",
+            "supports_request": True,
+        };
+    }
+
+    private {
+        hash<auto> opts;
+    }
+
+    constructor(hash<auto> opts = {}) {
+        self.opts = opts;
+    }
+
+    string getName() {
+        return ProviderInfo.name;
+    }
+
+    private hash<DataProviderInfo> getStaticInfoImpl() {
+        return ProviderInfo;
+    }
+
+    private auto doRequestImpl(auto req, *hash<auto> request_options) {
+        throw "NOT-IMPLEMENTED", "Delete entry operation not yet implemented";
+    }
+}
+
+#! Encrypt archive data provider
+public class TarEncryptArchiveDataProvider inherits AbstractDataProvider {
+    public {
+        const ProviderInfo = <DataProviderInfo>{
+            "name": "encrypt",
+            "desc": "Encrypt a TAR archive with AES-256",
+            "type": "TarEncryptArchiveDataProvider",
+            "supports_request": True,
+        };
+    }
+
+    private {
+        hash<auto> opts;
+    }
+
+    constructor(hash<auto> opts = {}) {
+        self.opts = opts;
+    }
+
+    string getName() {
+        return ProviderInfo.name;
+    }
+
+    private hash<DataProviderInfo> getStaticInfoImpl() {
+        return ProviderInfo;
+    }
+
+    private auto doRequestImpl(auto req, *hash<auto> request_options) {
+        throw "NOT-IMPLEMENTED", "Encrypt archive operation not yet implemented";
+    }
+}
+
+#! Decrypt archive data provider
+public class TarDecryptArchiveDataProvider inherits AbstractDataProvider {
+    public {
+        const ProviderInfo = <DataProviderInfo>{
+            "name": "decrypt",
+            "desc": "Decrypt an AES-256 encrypted TAR archive",
+            "type": "TarDecryptArchiveDataProvider",
+            "supports_request": True,
+        };
+    }
+
+    private {
+        hash<auto> opts;
+    }
+
+    constructor(hash<auto> opts = {}) {
+        self.opts = opts;
+    }
+
+    string getName() {
+        return ProviderInfo.name;
+    }
+
+    private hash<DataProviderInfo> getStaticInfoImpl() {
+        return ProviderInfo;
+    }
+
+    private auto doRequestImpl(auto req, *hash<auto> request_options) {
+        throw "NOT-IMPLEMENTED", "Decrypt archive operation not yet implemented";
+    }
+}
+
+#! Split archive data provider
+public class TarSplitArchiveDataProvider inherits AbstractDataProvider {
+    public {
+        const ProviderInfo = <DataProviderInfo>{
+            "name": "split",
+            "desc": "Split a TAR archive into multiple chunks",
+            "type": "TarSplitArchiveDataProvider",
+            "supports_request": True,
+        };
+    }
+
+    private {
+        hash<auto> opts;
+    }
+
+    constructor(hash<auto> opts = {}) {
+        self.opts = opts;
+    }
+
+    string getName() {
+        return ProviderInfo.name;
+    }
+
+    private hash<DataProviderInfo> getStaticInfoImpl() {
+        return ProviderInfo;
+    }
+
+    private auto doRequestImpl(auto req, *hash<auto> request_options) {
+        throw "NOT-IMPLEMENTED", "Split archive operation not yet implemented";
+    }
+}
+
+#! Join archive data provider
+public class TarJoinArchiveDataProvider inherits AbstractDataProvider {
+    public {
+        const ProviderInfo = <DataProviderInfo>{
+            "name": "join",
+            "desc": "Join archive chunks back into a single TAR archive",
+            "type": "TarJoinArchiveDataProvider",
+            "supports_request": True,
+        };
+    }
+
+    private {
+        hash<auto> opts;
+    }
+
+    constructor(hash<auto> opts = {}) {
+        self.opts = opts;
+    }
+
+    string getName() {
+        return ProviderInfo.name;
+    }
+
+    private hash<DataProviderInfo> getStaticInfoImpl() {
+        return ProviderInfo;
+    }
+
+    private auto doRequestImpl(auto req, *hash<auto> request_options) {
+        throw "NOT-IMPLEMENTED", "Join archive operation not yet implemented";
+    }
+}
+
+} # end namespace TarDataProvider

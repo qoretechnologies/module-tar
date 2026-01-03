@@ -1,0 +1,86 @@
+/* -*- mode: c++; indent-tabs-mode: nil -*- */
+/** @file QC_TarInputStream.qpp defines the %Qore TarInputStream class */
+/*
+    Qore tar module
+
+    Copyright (C) 2026 Qore Technologies, s.r.o.
+
+    Permission is hereby granted, free of charge, to any person obtaining a
+    copy of this software and associated documentation files (the "Software"),
+    to deal in the Software without restriction, including without limitation
+    the rights to use, copy, modify, merge, publish, distribute, sublicense,
+    and/or sell copies of the Software, and to permit persons to whom the
+    Software is furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in
+    all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+    DEALINGS IN THE SOFTWARE.
+*/
+
+#include "QC_TarInputStream.h"
+#include "TarInputStream.h"
+
+//! The TarInputStream class provides streaming read access to TAR archive entries
+/**
+    This class implements the InputStream interface for reading data from a TAR entry.
+
+    @since %tar 1.0
+*/
+qclass TarInputStream [arg=TarInputStream* tis; ns=Tar; vparent=InputStream];
+
+//! Returns the stream name
+/** @return "TarInputStream"
+*/
+string TarInputStream::getName() {
+    return new QoreStringNode(tis->getName());
+}
+
+//! Reads data from the stream
+/** @param limit maximum bytes to read
+
+    @return binary data read, or NOTHING at EOF
+
+    @throw STREAM-CLOSED-ERROR stream is closed
+    @throw TAR-READ-ERROR error reading data
+*/
+*binary TarInputStream::read(int limit) {
+    SimpleRefHolder<BinaryNode> data(new BinaryNode());
+    data->preallocate(limit);
+    int64 bytes = tis->read((void*)data->getPtr(), limit, xsink);
+    if (*xsink || bytes <= 0) {
+        return QoreValue();
+    }
+    data->setSize(bytes);
+    return data.release();
+}
+
+//! Peeks at the next byte without consuming it
+/** @return the next byte (0-255), or -1 at EOF
+
+    @throw STREAM-CLOSED-ERROR stream is closed
+    @throw TAR-READ-ERROR error peeking data
+*/
+int TarInputStream::peek() {
+    return tis->peek(xsink);
+}
+
+//! Returns information about the entry being read
+/** @return a @ref TarEntryInfo hash
+*/
+*hash<TarEntryInfo> TarInputStream::getEntryInfo() {
+    return tis->getEntryInfo(xsink);
+}
+
+//! Destroys the stream
+/**
+*/
+TarInputStream::destructor() {
+    tis->deref(xsink);
+}

@@ -1,0 +1,146 @@
+/* -*- mode: c++; indent-tabs-mode: nil -*- */
+/** @file QC_TarEntry.qpp defines the %Qore TarEntry class */
+/*
+    Qore tar module
+
+    Copyright (C) 2026 Qore Technologies, s.r.o.
+
+    Permission is hereby granted, free of charge, to any person obtaining a
+    copy of this software and associated documentation files (the "Software"),
+    to deal in the Software without restriction, including without limitation
+    the rights to use, copy, modify, merge, publish, distribute, sublicense,
+    and/or sell copies of the Software, and to permit persons to whom the
+    Software is furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in
+    all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+    DEALINGS IN THE SOFTWARE.
+*/
+
+#include "QC_TarEntry.h"
+#include "QoreTarFile.h"
+
+//! The TarEntry class represents an entry in a TAR archive
+/**
+    @since %tar 1.0
+*/
+qclass TarEntry [arg=QoreTarEntry* te; ns=Tar];
+
+//! Returns the entry name/path
+/** @return the name/path of the entry
+*/
+string TarEntry::getName() {
+    return te->getName();
+}
+
+//! Returns the uncompressed size
+/** @return the size in bytes
+*/
+int TarEntry::getSize() {
+    return te->getSize();
+}
+
+//! Returns the last modification time
+/** @return the modification time
+*/
+date TarEntry::getModified() {
+    return te->getModified();
+}
+
+//! Returns the last access time
+/** @return the access time, or NOTHING if not available
+*/
+*date TarEntry::getAccessed() {
+    return te->getAccessed();
+}
+
+//! Returns the creation time
+/** @return the creation time, or NOTHING if not available
+*/
+*date TarEntry::getCreated() {
+    return te->getCreated();
+}
+
+//! Returns the Unix file mode
+/** @return the file mode/permissions
+*/
+int TarEntry::getMode() {
+    return te->getMode();
+}
+
+//! Returns the owner user ID
+/** @return the UID
+*/
+int TarEntry::getUid() {
+    return te->getUid();
+}
+
+//! Returns the owner group ID
+/** @return the GID
+*/
+int TarEntry::getGid() {
+    return te->getGid();
+}
+
+//! Returns the owner user name
+/** @return the user name, or NOTHING if not available
+*/
+*string TarEntry::getUname() {
+    return te->getUname();
+}
+
+//! Returns the owner group name
+/** @return the group name, or NOTHING if not available
+*/
+*string TarEntry::getGname() {
+    return te->getGname();
+}
+
+//! Returns the entry type
+/** @return the type: "file", "directory", "symlink", "hardlink", etc.
+*/
+string TarEntry::getType() {
+    return te->getType();
+}
+
+//! Returns the link target
+/** @return the target path for symlinks/hardlinks, or NOTHING
+*/
+*string TarEntry::getLinkTarget() {
+    return te->getLinkTarget();
+}
+
+//! Returns true if this entry is a directory
+/** @return True if directory
+*/
+bool TarEntry::isDirectory() {
+    return te->isDirectory();
+}
+
+//! Returns true if this entry is a symbolic link
+/** @return True if symlink
+*/
+bool TarEntry::isSymlink() {
+    return te->isSymlink();
+}
+
+//! Returns true if this entry is a hard link
+/** @return True if hardlink
+*/
+bool TarEntry::isHardlink() {
+    return te->isHardlink();
+}
+
+//! Destroys the entry object
+/**
+*/
+TarEntry::destructor() {
+    te->deref(xsink);
+}

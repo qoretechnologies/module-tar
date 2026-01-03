@@ -1,0 +1,350 @@
+#!/usr/bin/env qore
+# -*- mode: qore; indent-tabs-mode: nil -*-
+
+/*
+    Qore TarDataProvider module test suite
+
+    Copyright (C) 2026 Qore Technologies, s.r.o.
+
+    Permission is hereby granted, free of charge, to any person obtaining a
+    copy of this software and associated documentation files (the "Software"),
+    to deal in the Software without restriction, including without limitation
+    the rights to use, copy, modify, merge, publish, distribute, sublicense,
+    and/or sell copies of the Software, and to permit persons to whom the
+    Software is furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in
+    all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+    DEALINGS IN THE SOFTWARE.
+*/
+
+%new-style
+%strict-args
+%require-types
+%enable-all-warnings
+
+%requires QUnit
+%requires Util
+%requires DataProvider
+%try-module TarDataProvider
+%define NoTarDataProvider
+%endtry
+
+%exec-class TarDataProviderTest
+
+public class TarDataProviderTest inherits QUnit::Test {
+    private {
+        string testDir;
+    }
+
+    constructor() : Test("TarDataProviderTest", "1.0") {
+        testDir = tmp_location() + "/tar_dp_test_" + string(getpid());
+
+%ifndef NoTarDataProvider
+        addTestCase("Factory tests", \factoryTest());
+        addTestCase("Provider hierarchy tests", \providerHierarchyTest());
+        addTestCase("App registration tests", \appRegistrationTest());
+        addTestCase("Action registration tests", \actionRegistrationTest());
+        addTestCase("Create archive action tests", \createArchiveActionTest());
+        addTestCase("List archive action tests", \listArchiveActionTest());
+        addTestCase("Extract archive action tests", \extractArchiveActionTest());
+        addTestCase("Read file action tests", \readFileActionTest());
+        addTestCase("Compress data action tests", \compressDataActionTest());
+        addTestCase("Decompress data action tests", \decompressDataActionTest());
+        addTestCase("Encrypt/decrypt action tests", \encryptDecryptActionTest());
+        addTestCase("Split/join action tests", \splitJoinActionTest());
+        addTestCase("Error handling tests", \errorHandlingTest());
+%endif
+
+        set_return_value(main());
+    }
+
+    globalSetUp() {
+        mkdir(testDir);
+    }
+
+    globalTearDown() {
+        # Clean up test directory
+        if (is_dir(testDir)) {
+            system("rm -rf " + testDir);
+        }
+    }
+
+%ifndef NoTarDataProvider
+    # Test factory
+    factoryTest() {
+        # Test that factory is registered
+        AbstractDataProviderFactory factory = DataProvider::getFactory("tar");
+        assertEq(True, exists factory, "tar factory exists");
+
+        # Test factory info
+        hash<DataProviderFactoryInfo> info = factory.getInfo();
+        assertEq("tar", info.name, "factory name is 'tar'");
+        assertEq(True, info.children_can_support_apis, "factory supports APIs");
+
+        # Test creating provider
+        AbstractDataProvider provider = factory.create();
+        assertEq("tar", provider.getName(), "provider name is 'tar'");
+    }
+
+    # Test provider hierarchy
+    providerHierarchyTest() {
+        AbstractDataProvider provider = DataProvider::getFactory("tar").create();
+
+        # Test child provider names
+        *list<string> children = provider.getChildProviderNames();
+        assertEq(True, exists children, "provider has children");
+        assertEq(True, children.contains("archive"), "has archive child");
+        assertEq(True, children.contains("file"), "has file child");
+        assertEq(True, children.contains("data"), "has data child");
+        assertEq(True, children.contains("directory"), "has directory child");
+        assertEq(True, children.contains("stream"), "has stream child");
+        assertEq(True, children.contains("entry"), "has entry child");
+
+        # Test archive child
+        AbstractDataProvider archiveProvider = provider.getChildProvider("archive");
+        assertEq("archive", archiveProvider.getName(), "archive provider name");
+
+        *list<string> archiveChildren = archiveProvider.getChildProviderNames();
+        assertEq(True, archiveChildren.contains("create"), "archive has create");
+        assertEq(True, archiveChildren.contains("extract"), "archive has extract");
+        assertEq(True, archiveChildren.contains("list"), "archive has list");
+        assertEq(True, archiveChildren.contains("info"), "archive has info");
+        assertEq(True, archiveChildren.contains("add"), "archive has add");
+        assertEq(True, archiveChildren.contains("encrypt"), "archive has encrypt");
+        assertEq(True, archiveChildren.contains("decrypt"), "archive has decrypt");
+        assertEq(True, archiveChildren.contains("split"), "archive has split");
+        assertEq(True, archiveChildren.contains("join"), "archive has join");
+
+        # Test file child
+        AbstractDataProvider fileProvider = provider.getChildProvider("file");
+        assertEq("file", fileProvider.getName(), "file provider name");
+
+        *list<string> fileChildren = fileProvider.getChildProviderNames();
+        assertEq(True, fileChildren.contains("extract"), "file has extract");
+        assertEq(True, fileChildren.contains("read"), "file has read");
+
+        # Test data child
+        AbstractDataProvider dataProvider = provider.getChildProvider("data");
+        assertEq("data", dataProvider.getName(), "data provider name");
+
+        *list<string> dataChildren = dataProvider.getChildProviderNames();
+        assertEq(True, dataChildren.contains("compress"), "data has compress");
+        assertEq(True, dataChildren.contains("decompress"), "data has decompress");
+
+        # Test directory child
+        AbstractDataProvider dirProvider = provider.getChildProvider("directory");
+        assertEq("directory", dirProvider.getName(), "directory provider name");
+
+        *list<string> dirChildren = dirProvider.getChildProviderNames();
+        assertEq(True, dirChildren.contains("archive"), "directory has archive");
+
+        # Test stream child
+        AbstractDataProvider streamProvider = provider.getChildProvider("stream");
+        assertEq("stream", streamProvider.getName(), "stream provider name");
+
+        *list<string> streamChildren = streamProvider.getChildProviderNames();
+        assertEq(True, streamChildren.contains("extract"), "stream has extract");
+
+        # Test entry child
+        AbstractDataProvider entryProvider = provider.getChildProvider("entry");
+        assertEq("entry", entryProvider.getName(), "entry provider name");
+
+        *list<string> entryChildren = entryProvider.getChildProviderNames();
+        assertEq(True, entryChildren.contains("delete"), "entry has delete");
+    }
+
+    # Test app registration
+    appRegistrationTest() {
+        # Get registered apps
+        hash<string, hash<DataProviderAppInfo>> apps = DataProviderActionCatalog::getApps();
+        assertEq(True, apps.hasKey("Tar"), "Tar app is registered");
+
+        hash<DataProviderAppInfo> tarApp = apps.Tar;
+        assertEq("Tar", tarApp.name, "app name is Tar");
+        assertEq("TAR Archives", tarApp.display_name, "display name is correct");
+        assertEq(True, exists tarApp.short_desc, "short_desc exists");
+        assertEq(True, exists tarApp.desc, "desc exists");
+        assertEq(True, exists tarApp.logo, "logo exists");
+        assertEq("tar-logo.svg", tarApp.logo_file_name, "logo file name is correct");
+        assertEq("image/svg+xml", tarApp.logo_mime_type, "logo mime type is correct");
+    }
+
+    # Test action registration
+    actionRegistrationTest() {
+        # Get actions for Tar app
+        hash<string, list<hash<DataProviderActionInfo>>> appActions =
+            DataProviderActionCatalog::getActionsByApp();
+        assertEq(True, appActions.hasKey("Tar"), "Tar has actions");
+
+        list<hash<DataProviderActionInfo>> tarActions = appActions.Tar;
+        assertEq(True, tarActions.size() >= 16, "Tar has at least 16 actions");
+
+        # Verify specific actions exist
+        list<string> expectedActions = (
+            "create-archive",
+            "extract-archive",
+            "list-archive",
+            "get-archive-info",
+            "add-files",
+            "extract-file",
+            "read-file",
+            "compress-data",
+            "decompress-data",
+            "archive-directory",
+            "stream-extract",
+            "delete-entry",
+            "encrypt-archive",
+            "decrypt-archive",
+            "split-archive",
+            "join-archive",
+        );
+
+        hash<string, bool> foundActions;
+        foreach hash<DataProviderActionInfo> action in (tarActions) {
+            foundActions{action.action} = True;
+        }
+
+        foreach string expected in (expectedActions) {
+            assertEq(True, foundActions{expected} ?? False,
+                sprintf("action '%s' is registered", expected));
+        }
+
+        # Verify action details
+        *hash<DataProviderActionInfo> createAction;
+        foreach hash<DataProviderActionInfo> action in (tarActions) {
+            if (action.action == "create-archive") {
+                createAction = action;
+                break;
+            }
+        }
+        assertEq(True, exists createAction, "create-archive action found");
+        assertEq("Tar", createAction.app, "action app is Tar");
+        assertEq("/archive/create", createAction.path, "action path is correct");
+        assertEq("Create Archive", createAction.display_name, "action display_name is correct");
+        assertEq(True, exists createAction.short_desc, "action short_desc exists");
+        assertEq(True, exists createAction.desc, "action desc exists");
+    }
+
+    # Test create archive action
+    createArchiveActionTest() {
+        AbstractDataProvider provider = DataProvider::getFactory("tar").create();
+        AbstractDataProvider createProvider = provider.getChildProvider("archive").getChildProvider("create");
+
+        assertEq("create", createProvider.getName(), "create provider name");
+
+        hash<DataProviderInfo> info = createProvider.getInfo();
+        assertEq(True, info.supports_request, "create supports request");
+    }
+
+    # Test list archive action
+    listArchiveActionTest() {
+        AbstractDataProvider provider = DataProvider::getFactory("tar").create();
+        AbstractDataProvider listProvider = provider.getChildProvider("archive").getChildProvider("list");
+
+        assertEq("list", listProvider.getName(), "list provider name");
+
+        hash<DataProviderInfo> info = listProvider.getInfo();
+        assertEq(True, info.supports_request, "list supports request");
+    }
+
+    # Test extract archive action
+    extractArchiveActionTest() {
+        AbstractDataProvider provider = DataProvider::getFactory("tar").create();
+        AbstractDataProvider extractProvider = provider.getChildProvider("archive").getChildProvider("extract");
+
+        assertEq("extract", extractProvider.getName(), "extract provider name");
+
+        hash<DataProviderInfo> info = extractProvider.getInfo();
+        assertEq(True, info.supports_request, "extract supports request");
+    }
+
+    # Test read file action
+    readFileActionTest() {
+        AbstractDataProvider provider = DataProvider::getFactory("tar").create();
+        AbstractDataProvider readProvider = provider.getChildProvider("file").getChildProvider("read");
+
+        assertEq("read", readProvider.getName(), "read provider name");
+
+        hash<DataProviderInfo> info = readProvider.getInfo();
+        assertEq(True, info.supports_request, "read supports request");
+    }
+
+    # Test compress data action
+    compressDataActionTest() {
+        AbstractDataProvider provider = DataProvider::getFactory("tar").create();
+        AbstractDataProvider compressProvider = provider.getChildProvider("data").getChildProvider("compress");
+
+        assertEq("compress", compressProvider.getName(), "compress provider name");
+
+        hash<DataProviderInfo> info = compressProvider.getInfo();
+        assertEq(True, info.supports_request, "compress supports request");
+    }
+
+    # Test decompress data action
+    decompressDataActionTest() {
+        AbstractDataProvider provider = DataProvider::getFactory("tar").create();
+        AbstractDataProvider decompressProvider = provider.getChildProvider("data").getChildProvider("decompress");
+
+        assertEq("decompress", decompressProvider.getName(), "decompress provider name");
+
+        hash<DataProviderInfo> info = decompressProvider.getInfo();
+        assertEq(True, info.supports_request, "decompress supports request");
+    }
+
+    # Test encrypt/decrypt actions
+    encryptDecryptActionTest() {
+        AbstractDataProvider provider = DataProvider::getFactory("tar").create();
+
+        AbstractDataProvider encryptProvider = provider.getChildProvider("archive").getChildProvider("encrypt");
+        assertEq("encrypt", encryptProvider.getName(), "encrypt provider name");
+
+        AbstractDataProvider decryptProvider = provider.getChildProvider("archive").getChildProvider("decrypt");
+        assertEq("decrypt", decryptProvider.getName(), "decrypt provider name");
+
+        hash<DataProviderInfo> encInfo = encryptProvider.getInfo();
+        assertEq(True, encInfo.supports_request, "encrypt supports request");
+
+        hash<DataProviderInfo> decInfo = decryptProvider.getInfo();
+        assertEq(True, decInfo.supports_request, "decrypt supports request");
+    }
+
+    # Test split/join actions
+    splitJoinActionTest() {
+        AbstractDataProvider provider = DataProvider::getFactory("tar").create();
+
+        AbstractDataProvider splitProvider = provider.getChildProvider("archive").getChildProvider("split");
+        assertEq("split", splitProvider.getName(), "split provider name");
+
+        AbstractDataProvider joinProvider = provider.getChildProvider("archive").getChildProvider("join");
+        assertEq("join", joinProvider.getName(), "join provider name");
+
+        hash<DataProviderInfo> splitInfo = splitProvider.getInfo();
+        assertEq(True, splitInfo.supports_request, "split supports request");
+
+        hash<DataProviderInfo> joinInfo = joinProvider.getInfo();
+        assertEq(True, joinInfo.supports_request, "join supports request");
+    }
+
+    # Test error handling
+    errorHandlingTest() {
+        AbstractDataProvider provider = DataProvider::getFactory("tar").create();
+
+        # Test getting non-existent child
+        *AbstractDataProvider nonExistent = provider.getChildProvider("nonexistent");
+        assertEq(NOTHING, nonExistent, "non-existent child returns NOTHING");
+
+        # Test getting non-existent grandchild
+        AbstractDataProvider archiveProvider = provider.getChildProvider("archive");
+        *AbstractDataProvider nonExistentAction = archiveProvider.getChildProvider("nonexistent");
+        assertEq(NOTHING, nonExistentAction, "non-existent action returns NOTHING");
+    }
+%endif
+}
