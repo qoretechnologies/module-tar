@@ -97,16 +97,21 @@ string content = tar2.readText("data.txt");
 
 ## Data Provider
 
-The module includes a data provider for integration with Qore's data provider framework:
+The module includes `TarDataProvider` for use with Qore's data provider framework:
 
 ```qore
 %requires TarDataProvider
 
-# Create archive via data provider
-auto result = UserApi::callRestApi("tar", "archive/create", {
-    "files": ("/path/to/file1", "/path/to/file2"),
-    "compression": "gzip",
+# Get the data provider factory and navigate to the action
+AbstractDataProvider dp = DataProvider::getFactoryObjectFromStringEx("tar{}/archive/create");
+
+# Execute the action
+hash<auto> result = dp.doRequest({
     "archive_path": "/tmp/backup.tar.gz",
+    "compression": "gzip",
+    "files": (
+        {"name": "file.txt", "text": "Hello, World!"},
+    ),
 });
 ```
 
@@ -114,6 +119,6 @@ auto result = UserApi::callRestApi("tar", "archive/create", {
 
 MIT License - see COPYING.MIT for details.
 
-## Documentation
+## Copyright
 
-Full API documentation is available at: https://qore.org/manual/modules/tar
+Copyright 2026 Qore Technologies, s.r.o.
