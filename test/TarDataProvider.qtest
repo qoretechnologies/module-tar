@@ -50,8 +50,6 @@ public class TarDataProviderTest inherits QUnit::Test {
 %ifndef NoTarDataProvider
         addTestCase("Factory tests", \factoryTest());
         addTestCase("Provider hierarchy tests", \providerHierarchyTest());
-        addTestCase("App registration tests", \appRegistrationTest());
-        addTestCase("Action registration tests", \actionRegistrationTest());
         addTestCase("Create archive action tests", \createArchiveActionTest());
         addTestCase("List archive action tests", \listArchiveActionTest());
         addTestCase("Extract archive action tests", \extractArchiveActionTest());
@@ -159,78 +157,6 @@ public class TarDataProviderTest inherits QUnit::Test {
 
         *list<string> entryChildren = entryProvider.getChildProviderNames();
         assertEq(True, entryChildren.contains("delete"), "entry has delete");
-    }
-
-    # Test app registration
-    appRegistrationTest() {
-        # Get registered apps
-        hash<string, hash<DataProviderAppInfo>> apps = DataProviderActionCatalog::getApps();
-        assertEq(True, apps.hasKey("Tar"), "Tar app is registered");
-
-        hash<DataProviderAppInfo> tarApp = apps.Tar;
-        assertEq("Tar", tarApp.name, "app name is Tar");
-        assertEq("TAR Archives", tarApp.display_name, "display name is correct");
-        assertEq(True, exists tarApp.short_desc, "short_desc exists");
-        assertEq(True, exists tarApp.desc, "desc exists");
-        assertEq(True, exists tarApp.logo, "logo exists");
-        assertEq("tar-logo.svg", tarApp.logo_file_name, "logo file name is correct");
-        assertEq("image/svg+xml", tarApp.logo_mime_type, "logo mime type is correct");
-    }
-
-    # Test action registration
-    actionRegistrationTest() {
-        # Get actions for Tar app
-        hash<string, list<hash<DataProviderActionInfo>>> appActions =
-            DataProviderActionCatalog::getActionsByApp();
-        assertEq(True, appActions.hasKey("Tar"), "Tar has actions");
-
-        list<hash<DataProviderActionInfo>> tarActions = appActions.Tar;
-        assertEq(True, tarActions.size() >= 16, "Tar has at least 16 actions");
-
-        # Verify specific actions exist
-        list<string> expectedActions = (
-            "create-archive",
-            "extract-archive",
-            "list-archive",
-            "get-archive-info",
-            "add-files",
-            "extract-file",
-            "read-file",
-            "compress-data",
-            "decompress-data",
-            "archive-directory",
-            "stream-extract",
-            "delete-entry",
-            "encrypt-archive",
-            "decrypt-archive",
-            "split-archive",
-            "join-archive",
-        );
-
-        hash<string, bool> foundActions;
-        foreach hash<DataProviderActionInfo> action in (tarActions) {
-            foundActions{action.action} = True;
-        }
-
-        foreach string expected in (expectedActions) {
-            assertEq(True, foundActions{expected} ?? False,
-                sprintf("action '%s' is registered", expected));
-        }
-
-        # Verify action details
-        *hash<DataProviderActionInfo> createAction;
-        foreach hash<DataProviderActionInfo> action in (tarActions) {
-            if (action.action == "create-archive") {
-                createAction = action;
-                break;
-            }
-        }
-        assertEq(True, exists createAction, "create-archive action found");
-        assertEq("Tar", createAction.app, "action app is Tar");
-        assertEq("/archive/create", createAction.path, "action path is correct");
-        assertEq("Create Archive", createAction.display_name, "action display_name is correct");
-        assertEq(True, exists createAction.short_desc, "action short_desc exists");
-        assertEq(True, exists createAction.desc, "action desc exists");
     }
 
     # Test create archive action

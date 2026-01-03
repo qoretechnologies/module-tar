@@ -276,11 +276,11 @@ public class TarDataProvider inherits AbstractDataProvider {
 
     private {
         #! Options passed to constructor
-        hash<auto> opts;
+        *hash<auto> opts;
     }
 
     #! Constructor
-    constructor(hash<auto> opts = {}) {
+    constructor(*hash<auto> opts) {
         self.opts = opts;
     }
 
@@ -336,10 +336,10 @@ public class TarArchiveDataProvider inherits AbstractDataProvider {
     }
 
     private {
-        hash<auto> opts;
+        *hash<auto> opts;
     }
 
-    constructor(hash<auto> opts = {}) {
+    constructor(*hash<auto> opts) {
         self.opts = opts;
     }
 
@@ -392,10 +392,10 @@ public class TarFileDataProvider inherits AbstractDataProvider {
     }
 
     private {
-        hash<auto> opts;
+        *hash<auto> opts;
     }
 
-    constructor(hash<auto> opts = {}) {
+    constructor(*hash<auto> opts) {
         self.opts = opts;
     }
 
@@ -434,10 +434,10 @@ public class TarDataDataProvider inherits AbstractDataProvider {
     }
 
     private {
-        hash<auto> opts;
+        *hash<auto> opts;
     }
 
-    constructor(hash<auto> opts = {}) {
+    constructor(*hash<auto> opts) {
         self.opts = opts;
     }
 
@@ -476,10 +476,10 @@ public class TarDirectoryDataProvider inherits AbstractDataProvider {
     }
 
     private {
-        hash<auto> opts;
+        *hash<auto> opts;
     }
 
-    constructor(hash<auto> opts = {}) {
+    constructor(*hash<auto> opts) {
         self.opts = opts;
     }
 
@@ -515,10 +515,10 @@ public class TarStreamDataProvider inherits AbstractDataProvider {
     }
 
     private {
-        hash<auto> opts;
+        *hash<auto> opts;
     }
 
-    constructor(hash<auto> opts = {}) {
+    constructor(*hash<auto> opts) {
         self.opts = opts;
     }
 
@@ -554,10 +554,10 @@ public class TarEntryDataProvider inherits AbstractDataProvider {
     }
 
     private {
-        hash<auto> opts;
+        *hash<auto> opts;
     }
 
-    constructor(hash<auto> opts = {}) {
+    constructor(*hash<auto> opts) {
         self.opts = opts;
     }
 
@@ -635,10 +635,10 @@ public class TarListArchiveDataProvider inherits DataProvider::AbstractDataProvi
     }
 
     private {
-        hash<auto> opts;
+        *hash<auto> opts;
     }
 
-    constructor(hash<auto> opts = {}) {
+    constructor(*hash<auto> opts) {
         self.opts = opts;
     }
 
@@ -749,10 +749,10 @@ public class TarReadFileDataProvider inherits AbstractDataProvider {
     }
 
     private {
-        hash<auto> opts;
+        *hash<auto> opts;
     }
 
-    constructor(hash<auto> opts = {}) {
+    constructor(*hash<auto> opts) {
         self.opts = opts;
     }
 
@@ -890,10 +890,10 @@ public class TarCreateArchiveDataProvider inherits AbstractDataProvider {
     }
 
     private {
-        hash<auto> opts;
+        *hash<auto> opts;
     }
 
-    constructor(hash<auto> opts = {}) {
+    constructor(*hash<auto> opts) {
         self.opts = opts;
     }
 
@@ -1089,10 +1089,10 @@ public class TarExtractArchiveDataProvider inherits AbstractDataProvider {
     }
 
     private {
-        hash<auto> opts;
+        *hash<auto> opts;
     }
 
-    constructor(hash<auto> opts = {}) {
+    constructor(*hash<auto> opts) {
         self.opts = opts;
     }
 
@@ -1239,10 +1239,10 @@ public class TarArchiveInfoDataProvider inherits AbstractDataProvider {
     }
 
     private {
-        hash<auto> opts;
+        *hash<auto> opts;
     }
 
-    constructor(hash<auto> opts = {}) {
+    constructor(*hash<auto> opts) {
         self.opts = opts;
     }
 
@@ -1381,10 +1381,10 @@ public class TarAddFilesDataProvider inherits AbstractDataProvider {
     }
 
     private {
-        hash<auto> opts;
+        *hash<auto> opts;
     }
 
-    constructor(hash<auto> opts = {}) {
+    constructor(*hash<auto> opts) {
         self.opts = opts;
     }
 
@@ -1520,10 +1520,10 @@ public class TarExtractFileDataProvider inherits AbstractDataProvider {
     }
 
     private {
-        hash<auto> opts;
+        *hash<auto> opts;
     }
 
-    constructor(hash<auto> opts = {}) {
+    constructor(*hash<auto> opts) {
         self.opts = opts;
     }
 
@@ -1641,10 +1641,10 @@ public class TarCompressDataDataProvider inherits AbstractDataProvider {
     }
 
     private {
-        hash<auto> opts;
+        *hash<auto> opts;
     }
 
-    constructor(hash<auto> opts = {}) {
+    constructor(*hash<auto> opts) {
         self.opts = opts;
     }
 
@@ -1773,10 +1773,10 @@ public class TarDecompressDataDataProvider inherits AbstractDataProvider {
     }
 
     private {
-        hash<auto> opts;
+        *hash<auto> opts;
     }
 
-    constructor(hash<auto> opts = {}) {
+    constructor(*hash<auto> opts) {
         self.opts = opts;
     }
 
@@ -1887,10 +1887,10 @@ public class TarArchiveDirectoryDataProvider inherits AbstractDataProvider {
     }
 
     private {
-        hash<auto> opts;
+        *hash<auto> opts;
     }
 
-    constructor(hash<auto> opts = {}) {
+    constructor(*hash<auto> opts) {
         self.opts = opts;
     }
 
@@ -1919,10 +1919,10 @@ public class TarStreamExtractDataProvider inherits AbstractDataProvider {
     }
 
     private {
-        hash<auto> opts;
+        *hash<auto> opts;
     }
 
-    constructor(hash<auto> opts = {}) {
+    constructor(*hash<auto> opts) {
         self.opts = opts;
     }
 
@@ -1951,10 +1951,10 @@ public class TarDeleteEntryDataProvider inherits AbstractDataProvider {
     }
 
     private {
-        hash<auto> opts;
+        *hash<auto> opts;
     }
 
-    constructor(hash<auto> opts = {}) {
+    constructor(*hash<auto> opts) {
         self.opts = opts;
     }
 
@@ -1983,10 +1983,10 @@ public class TarEncryptArchiveDataProvider inherits AbstractDataProvider {
     }
 
     private {
-        hash<auto> opts;
+        *hash<auto> opts;
     }
 
-    constructor(hash<auto> opts = {}) {
+    constructor(*hash<auto> opts) {
         self.opts = opts;
     }
 
@@ -2015,10 +2015,10 @@ public class TarDecryptArchiveDataProvider inherits AbstractDataProvider {
     }
 
     private {
-        hash<auto> opts;
+        *hash<auto> opts;
     }
 
-    constructor(hash<auto> opts = {}) {
+    constructor(*hash<auto> opts) {
         self.opts = opts;
     }
 
@@ -2047,10 +2047,10 @@ public class TarSplitArchiveDataProvider inherits AbstractDataProvider {
     }
 
     private {
-        hash<auto> opts;
+        *hash<auto> opts;
     }
 
-    constructor(hash<auto> opts = {}) {
+    constructor(*hash<auto> opts) {
         self.opts = opts;
     }
 
@@ -2079,10 +2079,10 @@ public class TarJoinArchiveDataProvider inherits AbstractDataProvider {
     }
 
     private {
-        hash<auto> opts;
+        *hash<auto> opts;
     }
 
-    constructor(hash<auto> opts = {}) {
+    constructor(*hash<auto> opts) {
         self.opts = opts;
     }
 
