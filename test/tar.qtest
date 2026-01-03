@@ -835,7 +835,8 @@ public class TarTest inherits QUnit::Test {
         string tarPath = testDir + "/unicode.tar";
 
         # Test various Unicode filenames
-        {
+        # Skip if system doesn't support UTF-8 encoding (some CI environments)
+        try {
             TarFile tar(tarPath, "w", <TarCreateOptions>{"format": TAR_FORMAT_PAX});
             tar.add("日本語.txt", "Japanese content");
             tar.add("中文.txt", "Chinese content");
@@ -844,6 +845,12 @@ public class TarTest inherits QUnit::Test {
             tar.add("Ελληνικά.txt", "Greek content");
             tar.add("العربية.txt", "Arabic content");
             tar.close();
+        } catch (hash<ExceptionInfo> ex) {
+            if (ex.err == "TAR-ERROR" && ex.desc =~ /Can't translate/) {
+                testSkip("System doesn't support UTF-8 pathname encoding");
+                return;
+            }
+            rethrow;
         }
 
         # Read back and verify
