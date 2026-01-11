@@ -35,6 +35,56 @@
 #include <algorithm>
 #include <memory>
 
+#ifdef __APPLE__
+#include <CoreFoundation/CoreFoundation.h>
+#endif
+
+// Helper function to compare entry names with Unicode normalization support
+// On macOS, libarchive returns pathnames in NFD (decomposed) form, so we need
+// to normalize both strings before comparison
+static bool entryNameEquals(const char* archive_name, const char* lookup_name) {
+#ifdef __APPLE__
+    // On macOS, normalize both strings to NFD for comparison
+    CFStringRef archiveStr = CFStringCreateWithCString(kCFAllocatorDefault, archive_name, kCFStringEncodingUTF8);
+    CFStringRef lookupStr = CFStringCreateWithCString(kCFAllocatorDefault, lookup_name, kCFStringEncodingUTF8);
+
+    if (!archiveStr || !lookupStr) {
+        // Fallback to byte comparison if conversion fails
+        if (archiveStr) CFRelease(archiveStr);
+        if (lookupStr) CFRelease(lookupStr);
+        return strcmp(archive_name, lookup_name) == 0;
+    }
+
+    // Create mutable copies for normalization
+    CFMutableStringRef archiveMutable = CFStringCreateMutableCopy(kCFAllocatorDefault, 0, archiveStr);
+    CFMutableStringRef lookupMutable = CFStringCreateMutableCopy(kCFAllocatorDefault, 0, lookupStr);
+
+    CFRelease(archiveStr);
+    CFRelease(lookupStr);
+
+    if (!archiveMutable || !lookupMutable) {
+        if (archiveMutable) CFRelease(archiveMutable);
+        if (lookupMutable) CFRelease(lookupMutable);
+        return strcmp(archive_name, lookup_name) == 0;
+    }
+
+    // Normalize both to NFD (decomposed form)
+    CFStringNormalize(archiveMutable, kCFStringNormalizationFormD);
+    CFStringNormalize(lookupMutable, kCFStringNormalizationFormD);
+
+    // Compare
+    CFComparisonResult result = CFStringCompare(archiveMutable, lookupMutable, 0);
+
+    CFRelease(archiveMutable);
+    CFRelease(lookupMutable);
+
+    return result == kCFCompareEqualTo;
+#else
+    // On other platforms, use simple byte comparison
+    return strcmp(archive_name, lookup_name) == 0;
+#endif
+}
+
 // RAII wrapper for FILE*
 class FileHandle {
 public:
@@ -560,7 +610,7 @@ bool QoreTarFile::hasEntry(const char* name, ExceptionSink* xsink) {
 
     struct archive_entry* entry;
     while (archive_read_next_header(read_archive, &entry) == ARCHIVE_OK) {
-        if (strcmp(archive_entry_pathname(entry), name) == 0) {
+        if (entryNameEquals(archive_entry_pathname(entry), name)) {
             return true;
         }
         archive_read_data_skip(read_archive);
@@ -582,7 +632,7 @@ QoreHashNode* QoreTarFile::getEntry(const char* name, ExceptionSink* xsink) {
 
     struct archive_entry* entry;
     while (archive_read_next_header(read_archive, &entry) == ARCHIVE_OK) {
-        if (strcmp(archive_entry_pathname(entry), name) == 0) {
+        if (entryNameEquals(archive_entry_pathname(entry), name)) {
             return createEntryInfo(entry, xsink);
         }
         archive_read_data_skip(read_archive);
@@ -604,7 +654,7 @@ BinaryNode* QoreTarFile::read(const char* name, ExceptionSink* xsink) {
 
     struct archive_entry* entry;
     while (archive_read_next_header(read_archive, &entry) == ARCHIVE_OK) {
-        if (strcmp(archive_entry_pathname(entry), name) == 0) {
+        if (entryNameEquals(archive_entry_pathname(entry), name)) {
             int64 size = archive_entry_size(entry);
             if (size <= 0) {
                 return new BinaryNode();
@@ -1072,7 +1122,7 @@ void QoreTarFile::extractTo(const char* name, const char* destination, Exception
 
     struct archive_entry* entry;
     while (archive_read_next_header(read_archive, &entry) == ARCHIVE_OK) {
-        if (strcmp(archive_entry_pathname(entry), name) == 0) {
+        if (entryNameEquals(archive_entry_pathname(entry), name)) {
             // Found the entry, write to file
             FILE* fp = fopen(destination, "wb");
             if (!fp) {
@@ -1216,7 +1266,7 @@ QoreObject* QoreTarFile::openInputStream(const char* name, ExceptionSink* xsink)
 
     struct archive_entry* entry;
     while (archive_read_next_header(read_archive, &entry) == ARCHIVE_OK) {
-        if (strcmp(archive_entry_pathname(entry), name) == 0) {
+        if (entryNameEquals(archive_entry_pathname(entry), name)) {
             TarInputStream* is = new TarInputStream(read_archive, entry, xsink);
             if (*xsink) {
                 delete is;

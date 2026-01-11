@@ -83,6 +83,11 @@ add_dependencies(${module_name} QORE_INC_FILES)
 
 target_link_libraries(${module_name} ${LibArchive_LIBRARIES} ${QORE_LIBRARY})
 
+# Link CoreFoundation on macOS for Unicode normalization support
+if(APPLE)
+    target_link_libraries(${module_name} "-framework CoreFoundation")
+endif()
+
 if(OPENSSL_FOUND)
     target_compile_definitions(${module_name} PRIVATE HAVE_OPENSSL)
     target_include_directories(${module_name} PRIVATE ${OPENSSL_INCLUDE_DIR})
