@@ -218,6 +218,56 @@ module TarDataProvider {
     };
 }
 
+/** @mainpage TarDataProvider Module
+
+    @tableofcontents
+
+    @section tardataproviderintro Introduction to the TarDataProvider Module
+
+    The %TarDataProvider module provides a data provider API for TAR archives through the
+    DataProvider API. It exposes archive creation, extraction,
+    listing, and streaming operations with optional compression and encryption support.
+
+    The following classes are provided by this module:
+    - @ref TarDataProvider::TarDataProvider "TarDataProvider"
+    - @ref TarDataProvider::TarDataProviderFactory "TarDataProviderFactory"
+    - @ref TarDataProvider::TarArchiveDataProvider "TarArchiveDataProvider"
+    - @ref TarDataProvider::TarCreateArchiveDataProvider "TarCreateArchiveDataProvider"
+    - @ref TarDataProvider::TarExtractArchiveDataProvider "TarExtractArchiveDataProvider"
+    - @ref TarDataProvider::TarListArchiveDataProvider "TarListArchiveDataProvider"
+    - @ref TarDataProvider::TarArchiveInfoDataProvider "TarArchiveInfoDataProvider"
+    - @ref TarDataProvider::TarAddFilesDataProvider "TarAddFilesDataProvider"
+    - @ref TarDataProvider::TarExtractFileDataProvider "TarExtractFileDataProvider"
+    - @ref TarDataProvider::TarReadFileDataProvider "TarReadFileDataProvider"
+    - @ref TarDataProvider::TarStreamDataProvider "TarStreamDataProvider"
+    - @ref TarDataProvider::TarStreamExtractDataProvider "TarStreamExtractDataProvider"
+    - @ref TarDataProvider::TarDeleteEntryDataProvider "TarDeleteEntryDataProvider"
+    - @ref TarDataProvider::TarEncryptArchiveDataProvider "TarEncryptArchiveDataProvider"
+    - @ref TarDataProvider::TarDecryptArchiveDataProvider "TarDecryptArchiveDataProvider"
+    - @ref TarDataProvider::TarSplitArchiveDataProvider "TarSplitArchiveDataProvider"
+    - @ref TarDataProvider::TarJoinArchiveDataProvider "TarJoinArchiveDataProvider"
+
+    @section tardataprovider_factory TarDataProvider Factory
+
+    The name of the Tar data provider factory is <b><tt>tar</tt></b>.
+
+    @section tardataprovider_examples TarDataProvider Examples
+
+    These examples are with \c qdp, the command-line interface to the Data Provider API.
+
+    @par API Example: Create an Archive
+    @verbatim qdp 'tar{}/archive/create' path=archive.tar,files='({name=readme.txt,data="Hello, World!"})'
+    @endverbatim
+
+    @par API Example: List Archive Contents
+    @verbatim qdp 'tar{}/archive/list' path=archive.tar
+    @endverbatim
+
+    @par API Example: Extract an Archive
+    @verbatim qdp 'tar{}/archive/extract' path=archive.tar,destination=/tmp/extract,overwrite=true
+    @endverbatim
+*/
+
 #! Contains all public definitions in the TarDataProvider module
 public namespace TarDataProvider {
     #! Application name
