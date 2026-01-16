@@ -56,7 +56,7 @@ const TypedHashDecl* hashdeclTarAddOptions = nullptr;
 const TypedHashDecl* hashdeclTarExtractOptions = nullptr;
 const TypedHashDecl* hashdeclTarCreateOptions = nullptr;
 
-QoreNamespace TarNS("Tar");
+QoreNamespace TarNS("Qore::Tar");
 
 static QoreStringNode* tar_module_init() {
     // Set locale to support UTF-8 filenames in archives

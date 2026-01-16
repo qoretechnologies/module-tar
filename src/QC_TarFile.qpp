@@ -1,5 +1,5 @@
 /* -*- mode: c++; indent-tabs-mode: nil -*- */
-/** @file QC_TarFile.qpp defines the %Qore TarFile class and related types */
+/** @file QC_TarFile.cpp defines the %Qore TarFile class and related types */
 /*
     Qore tar module
 
@@ -88,7 +88,7 @@ const TAR_FORMAT_V7 = 3;
 //! Information about a TAR archive entry
 /** @since %tar 1.0
 */
-hashdecl TarEntryInfo {
+hashdecl Qore::Tar::TarEntryInfo {
     //! The name/path of the entry within the archive
     string name;
 
@@ -144,7 +144,7 @@ hashdecl TarEntryInfo {
 //! Options for adding entries to a TAR archive
 /** @since %tar 1.0
 */
-hashdecl TarAddOptions {
+hashdecl Qore::Tar::TarAddOptions {
     //! Compression method (one of @ref tar_compression_methods)
     *int compression_method;
 
@@ -182,7 +182,7 @@ hashdecl TarAddOptions {
 //! Options for extracting entries from a TAR archive
 /** @since %tar 1.0
 */
-hashdecl TarExtractOptions {
+hashdecl Qore::Tar::TarExtractOptions {
     //! Base destination path for extraction
     *string destination;
 
@@ -217,7 +217,7 @@ hashdecl TarExtractOptions {
 //! Options for creating a TAR archive
 /** @since %tar 1.0
 */
-hashdecl TarCreateOptions {
+hashdecl Qore::Tar::TarCreateOptions {
     //! Default compression method
     *int compression_method;
 
@@ -262,7 +262,7 @@ tar.close();
 
     @since %tar 1.0
 */
-qclass TarFile [arg=QoreTarFile* tf; ns=Tar];
+qclass TarFile [arg=QoreTarFile* tf; ns=Qore::Tar];
 
 //! Creates a TarFile object for reading, writing, or appending to an archive
 /** @param path the path to the TAR archive file

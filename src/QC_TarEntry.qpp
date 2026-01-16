@@ -1,5 +1,5 @@
 /* -*- mode: c++; indent-tabs-mode: nil -*- */
-/** @file QC_TarEntry.qpp defines the %Qore TarEntry class */
+/** @file QC_TarEntry.cpp defines the %Qore TarEntry class */
 /*
     Qore tar module
 
@@ -31,7 +31,7 @@
 /**
     @since %tar 1.0
 */
-qclass TarEntry [arg=QoreTarEntry* te; ns=Tar];
+qclass TarEntry [arg=QoreTarEntry* te; ns=Qore::Tar];
 
 //! Returns the entry name/path
 /** @return the name/path of the entry

@@ -46,7 +46,7 @@ tarGz.close();
 
     @code{.py}
 TarFile tar("archive.tar", "r");
-foreach hash<TarEntryInfo> entry in (tar.entries()) {
+foreach hash<Qore::Tar::TarEntryInfo> entry in (tar.entries()) {
     printf("Entry: %s, Size: %d bytes, Type: %s\n", entry.name, entry.size, entry.type);
     if (!entry.is_directory) {
         binary data = tar.read(entry.name);
@@ -104,7 +104,7 @@ tar.close();
 
 # Reading link information
 TarFile readTar("links.tar", "r");
-hash<TarEntryInfo> entry = readTar.getEntry("symlink.txt");
+hash<Qore::Tar::TarEntryInfo> entry = readTar.getEntry("symlink.txt");
 if (entry.is_symlink) {
     printf("Symlink points to: %s\n", entry.link_target);
 }
@@ -137,33 +137,30 @@ readTar.close();
 
     The module supports multiple compression methods:
 
-    |Constant|Extension|Description|
-    |--------|---------|-----------|
-    |@ref Tar::TAR_CM_NONE|.tar|No compression (plain tar)|
-    |@ref Tar::TAR_CM_GZIP|.tar.gz, .tgz|Gzip compression (most common)|
-    |@ref Tar::TAR_CM_BZIP2|.tar.bz2|Bzip2 compression (better ratio, slower)|
-    |@ref Tar::TAR_CM_XZ|.tar.xz|XZ/LZMA2 compression (best ratio, slowest)|
-    |@ref Tar::TAR_CM_ZSTD|.tar.zst|Zstandard compression (fast, good ratio)|
-    |@ref Tar::TAR_CM_LZ4|.tar.lz4|LZ4 compression (fastest, lower ratio)|
+    |!Constant|!Extension|!Description
+    |@ref Qore::Tar::TAR_CM_NONE|.tar|No compression (plain tar)
+    |@ref Qore::Tar::TAR_CM_GZIP|.tar.gz, .tgz|Gzip compression (most common)
+    |@ref Qore::Tar::TAR_CM_BZIP2|.tar.bz2|Bzip2 compression (better ratio, slower)
+    |@ref Qore::Tar::TAR_CM_XZ|.tar.xz|XZ/LZMA2 compression (best ratio, slowest)
+    |@ref Qore::Tar::TAR_CM_ZSTD|.tar.zst|Zstandard compression (fast, good ratio)
+    |@ref Qore::Tar::TAR_CM_LZ4|.tar.lz4|LZ4 compression (fastest, lower ratio)
 
     Compression levels range from 1 (fastest) to 9 (best):
 
-    |Constant|Description|
-    |--------|-----------|
-    |@ref Tar::TAR_COMPRESSION_DEFAULT|Default compression level|
-    |@ref Tar::TAR_COMPRESSION_FASTEST|Fastest compression (level 1)|
-    |@ref Tar::TAR_COMPRESSION_BEST|Best compression (level 9)|
+    |!Constant|!Description
+    |@ref Qore::Tar::TAR_COMPRESSION_DEFAULT|Default compression level
+    |@ref Qore::Tar::TAR_COMPRESSION_FASTEST|Fastest compression (level 1)
+    |@ref Qore::Tar::TAR_COMPRESSION_BEST|Best compression (level 9)
 
     @section tarformats TAR Formats
 
     The module supports multiple TAR formats:
 
-    |Constant|Description|
-    |--------|-----------|
-    |@ref Tar::TAR_FORMAT_USTAR|POSIX.1-1988 ustar format (100-char filename limit)|
-    |@ref Tar::TAR_FORMAT_PAX|POSIX.1-2001 pax format (recommended, no practical limits)|
-    |@ref Tar::TAR_FORMAT_GNU|GNU tar format (extended attributes support)|
-    |@ref Tar::TAR_FORMAT_V7|Original V7 Unix tar format (legacy)|
+    |!Constant|!Description
+    |@ref Qore::Tar::TAR_FORMAT_USTAR|POSIX.1-1988 ustar format (100-char filename limit)
+    |@ref Qore::Tar::TAR_FORMAT_PAX|POSIX.1-2001 pax format (recommended, no practical limits)
+    |@ref Qore::Tar::TAR_FORMAT_GNU|GNU tar format (extended attributes support)
+    |@ref Qore::Tar::TAR_FORMAT_V7|Original V7 Unix tar format (legacy)
 
     The PAX format is recommended for new archives as it supports:
     - Unlimited filename length
@@ -177,7 +174,7 @@ readTar.close();
     Each entry in a TAR archive has associated metadata:
 
     @code{.py}
-hashdecl TarEntryInfo {
+hashdecl Qore::Tar::TarEntryInfo {
     string name;              # Entry path/name
     int size;                 # Uncompressed size
     date modified;            # Modification time
@@ -218,24 +215,23 @@ AbstractDataProvider dp = DataProvider::getFactoryObjectFromStringEx("tar{}/arch
 
     @subsection tardpactions Available Data Provider Actions
 
-    |Path|Action|Description|
-    |----|------|-----------|
-    |/archive/create|create-archive|Create a new tar archive|
-    |/archive/extract|extract-archive|Extract all files from an archive|
-    |/archive/list|list-archive|List archive contents with metadata|
-    |/archive/info|get-archive-info|Get archive metadata and statistics|
-    |/archive/add|add-files|Add files to an existing archive|
-    |/file/extract|extract-file|Extract a single file from archive|
-    |/file/read|read-file|Read file content without extracting to disk|
-    |/data/compress|compress-data|Compress data to tar format (in-memory)|
-    |/data/decompress|decompress-data|Decompress tar data (in-memory)|
-    |/directory/archive|archive-directory|Archive a directory tree|
-    |/stream/extract|stream-extract|Stream extract large files|
-    |/entry/delete|delete-entry|Delete entry from archive|
-    |/archive/encrypt|encrypt-archive|Encrypt a tar archive|
-    |/archive/decrypt|decrypt-archive|Decrypt an encrypted tar archive|
-    |/archive/split|split-archive|Split archive into multiple chunks|
-    |/archive/join|join-archive|Join multiple chunks into single archive|
+    |!Path|!Action|!Description
+    |/archive/create|create-archive|Create a new tar archive
+    |/archive/extract|extract-archive|Extract all files from an archive
+    |/archive/list|list-archive|List archive contents with metadata
+    |/archive/info|get-archive-info|Get archive metadata and statistics
+    |/archive/add|add-files|Add files to an existing archive
+    |/file/extract|extract-file|Extract a single file from archive
+    |/file/read|read-file|Read file content without extracting to disk
+    |/data/compress|compress-data|Compress data to tar format (in-memory)
+    |/data/decompress|decompress-data|Decompress tar data (in-memory)
+    |/directory/archive|archive-directory|Archive a directory tree
+    |/stream/extract|stream-extract|Stream extract large files
+    |/entry/delete|delete-entry|Delete entry from archive
+    |/archive/encrypt|encrypt-archive|Encrypt a tar archive
+    |/archive/decrypt|decrypt-archive|Decrypt an encrypted tar archive
+    |/archive/split|split-archive|Split archive into multiple chunks
+    |/archive/join|join-archive|Join multiple chunks into single archive
 
     @section tarerrors Error Handling
 

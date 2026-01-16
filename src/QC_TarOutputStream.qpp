@@ -1,5 +1,5 @@
 /* -*- mode: c++; indent-tabs-mode: nil -*- */
-/** @file QC_TarOutputStream.qpp defines the %Qore TarOutputStream class */
+/** @file QC_TarOutputStream.cpp defines the %Qore TarOutputStream class */
 /*
     Qore tar module
 
@@ -36,7 +36,7 @@
 
     @since %tar 1.0
 */
-qclass TarOutputStream [arg=TarOutputStream* tos; ns=Tar; vparent=OutputStream];
+qclass TarOutputStream [arg=TarOutputStream* tos; ns=Qore::Tar; vparent=OutputStream];
 
 //! Returns the stream name
 /** @return "TarOutputStream"

@@ -1,17 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
   <defs>
     <linearGradient id="tarGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" style="stop-color:#8B4513;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#5D3A1A;stop-opacity:1" />
+      <stop offset="0%" style="stop-color:#D89B5B;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#B06A2C;stop-opacity:1" />
     </linearGradient>
   </defs>
-  <!-- Main archive box -->
-  <rect x="8" y="12" width="48" height="44" rx="3" ry="3" fill="url(#tarGrad)" stroke="#3D2510" stroke-width="1.5"/>
-  <!-- Folder tab -->
-  <path d="M8 16 L8 12 Q8 8 12 8 L26 8 L30 12 L52 12 Q56 12 56 16" fill="url(#tarGrad)" stroke="#3D2510" stroke-width="1.5"/>
-  <!-- Horizontal bands (tape archive stripes) -->
-  <rect x="12" y="22" width="40" height="4" fill="#D4A574" stroke="#8B6914" stroke-width="0.5"/>
-  <rect x="12" y="30" width="40" height="4" fill="#D4A574" stroke="#8B6914" stroke-width="0.5"/>
-  <rect x="12" y="38" width="40" height="4" fill="#D4A574" stroke="#8B6914" stroke-width="0.5"/>
-  <rect x="12" y="46" width="40" height="4" fill="#D4A574" stroke="#8B6914" stroke-width="0.5"/>
+  <rect x="8" y="12" width="48" height="44" rx="4" ry="4" fill="url(#tarGrad)" stroke="#7A3E12" stroke-width="1.5"/>
+  <path d="M8 16 L8 12 Q8 8 12 8 L28 8 L32 12 L52 12 Q56 12 56 16" fill="url(#tarGrad)" stroke="#7A3E12" stroke-width="1.5"/>
+  <rect x="14" y="28" width="36" height="20" rx="2" ry="2" fill="#F3E1C0" stroke="#7A3E12" stroke-width="1"/>
+  <text x="32" y="42" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#7A3E12">TAR</text>
 </svg>
