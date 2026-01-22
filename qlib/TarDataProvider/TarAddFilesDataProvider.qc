@@ -60,8 +60,9 @@ public class TarAddFilesDataProvider inherits AbstractDataProvider {
     }
 
     private auto doRequestImpl(auto req, *hash<auto> request_options) {
-        if (!req.archive_path) {
-            throw "TAR-ERROR", "archive_path is required for add operation";
+        @debug {
+            printf("TarAddFiles: archive_path=%y files_count=%d\n",
+                req.archive_path, req.files.size());
         }
 
         int compression = getCompressionMethod(req.compression);
@@ -114,8 +115,11 @@ public class TarAddFilesRequestDataType inherits HashDataType {
                 "type": StringOrNothingType,
                 "display_name": "Compression",
                 "short_desc": "Compression for the archive",
-                "desc": "Compression method if archive needs to be rewritten: none, gzip, bzip2, xz, zstd, or lz4",
+                "desc": "Compression method: none, gzip, bzip2, xz, zstd, or lz4. "
+                    "Note: Adding files to a compressed archive may require decompressing and recompressing "
+                    "the entire archive",
                 "example_value": "gzip",
+                "allowed_values": AllowedCompressionValues,
             },
             "format": {
                 "type": StringOrNothingType,
@@ -123,6 +127,7 @@ public class TarAddFilesRequestDataType inherits HashDataType {
                 "short_desc": "TAR format",
                 "desc": "The tar format: ustar, pax, gnu, or v7",
                 "example_value": "pax",
+                "allowed_values": AllowedFormatValues,
             },
             "files": {
                 "type": new ListDataType("AddFileList", AutoHashType, True),

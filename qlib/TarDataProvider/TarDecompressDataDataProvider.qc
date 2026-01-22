@@ -60,8 +60,10 @@ public class TarDecompressDataDataProvider inherits AbstractDataProvider {
     }
 
     private auto doRequestImpl(auto req, *hash<auto> request_options) {
-        if (!req.archive_data) {
-            throw "TAR-ERROR", "archive_data is required";
+        @assert(req.archive_data, "archive_data is required for decompress operation");
+
+        @debug {
+            printf("TarDecompressData: archive_size=%d\n", req.archive_data.size());
         }
 
         TarFile tar(req.archive_data);

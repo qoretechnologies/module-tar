@@ -60,9 +60,18 @@ public class TarCreateArchiveDataProvider inherits AbstractDataProvider {
     }
 
     private auto doRequestImpl(auto req, *hash<auto> request_options) {
+        if (req.require_entries) {
+            @assert(req.files || req.directories, "At least one of 'files' or 'directories' must be provided");
+        }
+
         int compression = getCompressionMethod(req.compression);
         int format = getTarFormat(req.format);
         int level = req.compression_level ?? -1;
+
+        @debug {
+            printf("TarCreateArchive: compression=%y format=%y level=%d in_memory=%y\n",
+                req.compression ?? "none", req.format ?? "pax", level, !req.archive_path);
+        }
 
         hash<TarCreateOptions> create_opts = <TarCreateOptions>{
             "compression_method": compression,
@@ -154,7 +163,8 @@ public class TarCreateArchiveRequestDataType inherits HashDataType {
                 "type": IntOrNothingType,
                 "display_name": "Compression Level",
                 "short_desc": "Compression strength (1-9)",
-                "desc": "Compression level from 1 (fastest) to 9 (best). Default depends on method.",
+                "desc": "Compression level from 1 (fastest, least compression) to 9 (slowest, best compression). "
+                    "Use -1 or omit for the default level. Typical defaults: gzip=6, bzip2=9, xz=6, zstd=3, lz4=1",
                 "example_value": 6,
             },
             "format": {
@@ -178,6 +188,14 @@ public class TarCreateArchiveRequestDataType inherits HashDataType {
                 "short_desc": "Empty directories to create",
                 "desc": "List of directory entries to add (without content)",
                 "example_value": ("subdir/", "another/path/"),
+            },
+            "require_entries": {
+                "type": SoftBoolOrNothingType,
+                "display_name": "Require Entries",
+                "short_desc": "Require at least one entry",
+                "desc": "If true, raises an error if the archive would be created with no entries. "
+                    "Default is false, allowing empty archives",
+                "example_value": False,
             },
         };
     }

@@ -60,13 +60,19 @@ public class TarReadFileDataProvider inherits AbstractDataProvider {
     }
 
     private auto doRequestImpl(auto req, *hash<auto> request_options) {
+        @assert(req.archive_data || req.archive_path, "Either archive_path or archive_data must be provided");
+        @assert(req.entry_name.val(), "entry_name is required and cannot be empty");
+
+        @debug {
+            printf("TarReadFile: entry_name=%y as_text=%y encoding=%y\n",
+                req.entry_name, req.as_text ?? False, req.encoding ?? "UTF-8");
+        }
+
         TarFile tar;
         if (req.archive_data) {
             tar = new TarFile(req.archive_data);
-        } else if (req.archive_path) {
-            tar = new TarFile(req.archive_path, "r");
         } else {
-            throw "TAR-ERROR", "Either archive_path or archive_data must be provided";
+            tar = new TarFile(req.archive_path, "r");
         }
 
         binary content = tar.read(req.entry_name);
@@ -124,8 +130,10 @@ public class TarReadFileRequestDataType inherits HashDataType {
                 "type": StringOrNothingType,
                 "display_name": "Encoding",
                 "short_desc": "Text encoding for as_text mode",
-                "desc": "Character encoding to use when as_text is true (default: UTF-8)",
+                "desc": "Character encoding to use when as_text is true. "
+                    "Common encodings: UTF-8, ISO-8859-1, ASCII, UTF-16, Windows-1252 (default: UTF-8)",
                 "example_value": "UTF-8",
+                "allowed_values": AllowedEncodingValues,
             },
         };
     }

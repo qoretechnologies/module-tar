@@ -33,6 +33,7 @@
 %requires QUnit
 %requires Util
 %requires DataProvider
+%requires tar
 %try-module TarDataProvider
 %define NoTarDataProvider
 %endtry
@@ -59,6 +60,9 @@ public class TarDataProviderTest inherits QUnit::Test {
         addTestCase("Encrypt/decrypt action tests", \encryptDecryptActionTest());
         addTestCase("Split/join action tests", \splitJoinActionTest());
         addTestCase("Error handling tests", \errorHandlingTest());
+        addTestCase("Enum functionality tests", \enumFunctionalityTest());
+        addTestCase("Assert error condition tests", \assertErrorConditionTest());
+        addTestCase("Allowed values validation tests", \allowedValuesTest());
 %endif
 
         set_return_value(main());
@@ -271,6 +275,205 @@ public class TarDataProviderTest inherits QUnit::Test {
         AbstractDataProvider archiveProvider = provider.getChildProvider("archive");
         *AbstractDataProvider nonExistentAction = archiveProvider.getChildProvider("nonexistent");
         assertEq(NOTHING, nonExistentAction, "non-existent action returns NOTHING");
+    }
+
+    # Test enum functionality
+    enumFunctionalityTest() {
+        # Test TarCompression enum values equal their string equivalents
+        assertEq("none", TarDataProvider::TarCompression::None, "TarCompression::None equals 'none'");
+        assertEq("gzip", TarDataProvider::TarCompression::Gzip, "TarCompression::Gzip equals 'gzip'");
+        assertEq("bzip2", TarDataProvider::TarCompression::Bzip2, "TarCompression::Bzip2 equals 'bzip2'");
+        assertEq("xz", TarDataProvider::TarCompression::Xz, "TarCompression::Xz equals 'xz'");
+        assertEq("zstd", TarDataProvider::TarCompression::Zstd, "TarCompression::Zstd equals 'zstd'");
+        assertEq("lz4", TarDataProvider::TarCompression::Lz4, "TarCompression::Lz4 equals 'lz4'");
+
+        # Test TarFormat enum values equal their string equivalents
+        assertEq("ustar", TarDataProvider::TarFormat::Ustar, "TarFormat::Ustar equals 'ustar'");
+        assertEq("pax", TarDataProvider::TarFormat::Pax, "TarFormat::Pax equals 'pax'");
+        assertEq("gnu", TarDataProvider::TarFormat::Gnu, "TarFormat::Gnu equals 'gnu'");
+        assertEq("v7", TarDataProvider::TarFormat::V7, "TarFormat::V7 equals 'v7'");
+
+        # Test AllowedCompressionValues constant
+        assertEq(6, TarDataProvider::AllowedCompressionValues.size(), "AllowedCompressionValues has 6 values");
+        assertEq(True, TarDataProvider::AllowedCompressionValues.contains("none"), "AllowedCompressionValues contains 'none'");
+        assertEq(True, TarDataProvider::AllowedCompressionValues.contains("gzip"), "AllowedCompressionValues contains 'gzip'");
+
+        # Test AllowedFormatValues constant
+        assertEq(4, TarDataProvider::AllowedFormatValues.size(), "AllowedFormatValues has 4 values");
+        assertEq(True, TarDataProvider::AllowedFormatValues.contains("pax"), "AllowedFormatValues contains 'pax'");
+
+        # Test AllowedEncodingValues constant
+        assertEq(7, TarDataProvider::AllowedEncodingValues.size(), "AllowedEncodingValues has 7 values");
+        assertEq(True, TarDataProvider::AllowedEncodingValues.contains("UTF-8"), "AllowedEncodingValues contains 'UTF-8'");
+
+        # Test getCompressionMethod() works with enum values
+        assertEq(TAR_CM_NONE, TarDataProvider::getCompressionMethod(TarDataProvider::TarCompression::None),
+            "getCompressionMethod with enum None");
+        assertEq(TAR_CM_GZIP, TarDataProvider::getCompressionMethod(TarDataProvider::TarCompression::Gzip),
+            "getCompressionMethod with enum Gzip");
+        assertEq(TAR_CM_BZIP2, TarDataProvider::getCompressionMethod(TarDataProvider::TarCompression::Bzip2),
+            "getCompressionMethod with enum Bzip2");
+        assertEq(TAR_CM_XZ, TarDataProvider::getCompressionMethod(TarDataProvider::TarCompression::Xz),
+            "getCompressionMethod with enum Xz");
+        assertEq(TAR_CM_ZSTD, TarDataProvider::getCompressionMethod(TarDataProvider::TarCompression::Zstd),
+            "getCompressionMethod with enum Zstd");
+        assertEq(TAR_CM_LZ4, TarDataProvider::getCompressionMethod(TarDataProvider::TarCompression::Lz4),
+            "getCompressionMethod with enum Lz4");
+
+        # Test getCompressionMethod() works with string values
+        assertEq(TAR_CM_NONE, TarDataProvider::getCompressionMethod("none"),
+            "getCompressionMethod with string 'none'");
+        assertEq(TAR_CM_GZIP, TarDataProvider::getCompressionMethod("gzip"),
+            "getCompressionMethod with string 'gzip'");
+
+        # Test getTarFormat() works with enum values
+        assertEq(TAR_FORMAT_USTAR, TarDataProvider::getTarFormat(TarDataProvider::TarFormat::Ustar),
+            "getTarFormat with enum Ustar");
+        assertEq(TAR_FORMAT_PAX, TarDataProvider::getTarFormat(TarDataProvider::TarFormat::Pax),
+            "getTarFormat with enum Pax");
+        assertEq(TAR_FORMAT_GNU, TarDataProvider::getTarFormat(TarDataProvider::TarFormat::Gnu),
+            "getTarFormat with enum Gnu");
+        assertEq(TAR_FORMAT_V7, TarDataProvider::getTarFormat(TarDataProvider::TarFormat::V7),
+            "getTarFormat with enum V7");
+
+        # Test getTarFormat() works with string values
+        assertEq(TAR_FORMAT_PAX, TarDataProvider::getTarFormat("pax"),
+            "getTarFormat with string 'pax'");
+        assertEq(TAR_FORMAT_GNU, TarDataProvider::getTarFormat("gnu"),
+            "getTarFormat with string 'gnu'");
+
+        # Test default values for NOTHING input
+        assertEq(TAR_CM_NONE, TarDataProvider::getCompressionMethod(NOTHING),
+            "getCompressionMethod with NOTHING returns TAR_CM_NONE");
+        assertEq(TAR_FORMAT_PAX, TarDataProvider::getTarFormat(NOTHING),
+            "getTarFormat with NOTHING returns TAR_FORMAT_PAX");
+    }
+
+    # Test assert error conditions
+    assertErrorConditionTest() {
+        AbstractDataProvider provider = DataProvider::getFactory("tar").create();
+
+        # Test TarReadFileDataProvider throws ASSERTION-ERROR without archive source
+        # Both archive_path and archive_data are optional, so assert catches this
+        AbstractDataProvider readProvider = provider.getChildProvider("file").getChildProvider("read");
+        assertThrows("ASSERTION-ERROR", sub() {
+            readProvider.doRequest({"entry_name": "test.txt"});
+        }, NOTHING, "TarReadFile requires archive source");
+
+        # Test TarReadFileDataProvider throws ASSERTION-ERROR with empty entry_name
+        assertThrows("ASSERTION-ERROR", sub() {
+            readProvider.doRequest({"archive_data": <00>, "entry_name": ""});
+        }, NOTHING, "TarReadFile requires non-empty entry_name");
+
+        # Test TarDecompressDataDataProvider throws INVALID-REQUEST without archive_data
+        # archive_data is BinaryType (required), so type validation catches this
+        AbstractDataProvider decompressProvider = provider.getChildProvider("data").getChildProvider("decompress");
+        assertThrows("INVALID-REQUEST", sub() {
+            decompressProvider.doRequest({});
+        }, NOTHING, "TarDecompress requires archive_data");
+
+        # Test TarCreateArchiveDataProvider throws ASSERTION-ERROR when require_entries=true and no entries
+        AbstractDataProvider createProvider = provider.getChildProvider("archive").getChildProvider("create");
+        assertThrows("ASSERTION-ERROR", sub() {
+            createProvider.doRequest({"require_entries": True});
+        }, NOTHING, "TarCreateArchive requires files or directories when require_entries=true");
+
+        # Test TarCreateArchiveDataProvider allows empty archive when require_entries=false (default)
+        hash<auto> emptyResult = createProvider.doRequest({});
+        assertEq(0, emptyResult.entry_count, "empty archive has 0 entries");
+        assertEq(True, exists emptyResult.archive_data, "empty archive returns binary data");
+
+        # Test TarExtractFileDataProvider throws ASSERTION-ERROR with empty entry_name
+        # entry_name is StringType but assert checks for non-empty
+        AbstractDataProvider extractFileProvider = provider.getChildProvider("file").getChildProvider("extract");
+        assertThrows("ASSERTION-ERROR", sub() {
+            extractFileProvider.doRequest({"archive_data": <00>, "entry_name": ""});
+        }, NOTHING, "TarExtractFile requires non-empty entry_name");
+
+        # Test TarExtractFileDataProvider throws ASSERTION-ERROR without archive source
+        # Both archive_path and archive_data are optional, so assert catches this
+        assertThrows("ASSERTION-ERROR", sub() {
+            extractFileProvider.doRequest({"entry_name": "test.txt"});
+        }, NOTHING, "TarExtractFile requires archive source");
+    }
+
+    # Helper to extract values from allowed_values list
+    private list<string> extractAllowedValues(list<auto> allowedValues) {
+        list<string> values = ();
+        foreach hash<auto> av in (allowedValues) {
+            values += av.value;
+        }
+        return values;
+    }
+
+    # Test allowed values validation
+    allowedValuesTest() {
+        AbstractDataProvider provider = DataProvider::getFactory("tar").create();
+
+        # Test create provider has allowed_values for compression
+        AbstractDataProvider createProvider = provider.getChildProvider("archive").getChildProvider("create");
+        *AbstractDataProviderType reqType = createProvider.getRequestType();
+        hash<string, AbstractDataField> fields = reqType.getFields();
+
+        assertEq(True, exists fields.compression, "create provider has compression field");
+        list<auto> compressionAllowed = fields.compression.getInfo().allowed_values;
+        assertEq(6, compressionAllowed.size(), "compression has 6 allowed values");
+        list<string> compressionValues = extractAllowedValues(compressionAllowed);
+        assertEq(True, compressionValues.contains("none"), "compression allows 'none'");
+        assertEq(True, compressionValues.contains("gzip"), "compression allows 'gzip'");
+        assertEq(True, compressionValues.contains("bzip2"), "compression allows 'bzip2'");
+        assertEq(True, compressionValues.contains("xz"), "compression allows 'xz'");
+        assertEq(True, compressionValues.contains("zstd"), "compression allows 'zstd'");
+        assertEq(True, compressionValues.contains("lz4"), "compression allows 'lz4'");
+
+        # Test create provider has allowed_values for format
+        assertEq(True, exists fields.format, "create provider has format field");
+        list<auto> formatAllowed = fields.format.getInfo().allowed_values;
+        assertEq(4, formatAllowed.size(), "format has 4 allowed values");
+        list<string> formatValues = extractAllowedValues(formatAllowed);
+        assertEq(True, formatValues.contains("ustar"), "format allows 'ustar'");
+        assertEq(True, formatValues.contains("pax"), "format allows 'pax'");
+        assertEq(True, formatValues.contains("gnu"), "format allows 'gnu'");
+        assertEq(True, formatValues.contains("v7"), "format allows 'v7'");
+
+        # Test add provider has allowed_values for compression and format
+        AbstractDataProvider addProvider = provider.getChildProvider("archive").getChildProvider("add");
+        *AbstractDataProviderType addReqType = addProvider.getRequestType();
+        hash<string, AbstractDataField> addFields = addReqType.getFields();
+
+        assertEq(True, exists addFields.compression, "add provider has compression field");
+        assertEq(6, addFields.compression.getInfo().allowed_values.size(), "add compression has 6 allowed values");
+
+        assertEq(True, exists addFields.format, "add provider has format field");
+        assertEq(4, addFields.format.getInfo().allowed_values.size(), "add format has 4 allowed values");
+
+        # Test compress provider has allowed_values for compression and format
+        AbstractDataProvider compressProvider = provider.getChildProvider("data").getChildProvider("compress");
+        *AbstractDataProviderType compressReqType = compressProvider.getRequestType();
+        hash<string, AbstractDataField> compressFields = compressReqType.getFields();
+
+        assertEq(True, exists compressFields.compression, "compress provider has compression field");
+        assertEq(6, compressFields.compression.getInfo().allowed_values.size(), "compress compression has 6 allowed values");
+
+        assertEq(True, exists compressFields.format, "compress provider has format field");
+        assertEq(4, compressFields.format.getInfo().allowed_values.size(), "compress format has 4 allowed values");
+
+        # Test read provider has allowed_values for encoding
+        AbstractDataProvider readProvider = provider.getChildProvider("file").getChildProvider("read");
+        *AbstractDataProviderType readReqType = readProvider.getRequestType();
+        hash<string, AbstractDataField> readFields = readReqType.getFields();
+
+        assertEq(True, exists readFields.encoding, "read provider has encoding field");
+        list<auto> encodingAllowed = readFields.encoding.getInfo().allowed_values;
+        assertEq(7, encodingAllowed.size(), "encoding has 7 allowed values");
+        list<string> encodingValues = extractAllowedValues(encodingAllowed);
+        assertEq(True, encodingValues.contains("UTF-8"), "encoding allows 'UTF-8'");
+        assertEq(True, encodingValues.contains("ISO-8859-1"), "encoding allows 'ISO-8859-1'");
+        assertEq(True, encodingValues.contains("ASCII"), "encoding allows 'ASCII'");
+        assertEq(True, encodingValues.contains("UTF-16"), "encoding allows 'UTF-16'");
+        assertEq(True, encodingValues.contains("UTF-16BE"), "encoding allows 'UTF-16BE'");
+        assertEq(True, encodingValues.contains("UTF-16LE"), "encoding allows 'UTF-16LE'");
+        assertEq(True, encodingValues.contains("Windows-1252"), "encoding allows 'Windows-1252'");
     }
 %endif
 }

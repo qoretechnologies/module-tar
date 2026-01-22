@@ -60,6 +60,11 @@ public class TarExtractArchiveDataProvider inherits AbstractDataProvider {
     }
 
     private auto doRequestImpl(auto req, *hash<auto> request_options) {
+        @debug {
+            printf("TarExtractArchive: archive=%y destination=%y overwrite=%y\n",
+                req.archive_path ?? "(data)", req.destination ?? ".", req.overwrite ?? False);
+        }
+
         TarFile tar;
         if (req.archive_data) {
             tar = new TarFile(req.archive_data);
@@ -82,6 +87,10 @@ public class TarExtractArchiveDataProvider inherits AbstractDataProvider {
         list<hash<TarEntryInfo>> entries = tar.entries();
         tar.extractAll(extract_opts);
         tar.close();
+
+        @debug {
+            printf("TarExtractArchive: extracted %d entries to %y\n", entries.size(), destination);
+        }
 
         return {
             "destination": destination,

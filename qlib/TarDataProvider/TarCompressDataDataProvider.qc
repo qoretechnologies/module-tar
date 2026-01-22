@@ -60,6 +60,11 @@ public class TarCompressDataDataProvider inherits AbstractDataProvider {
     }
 
     private auto doRequestImpl(auto req, *hash<auto> request_options) {
+        @debug {
+            printf("TarCompressData: compression=%y format=%y files_count=%d\n",
+                req.compression ?? "none", req.format ?? "pax", req.files.size());
+        }
+
         int compression = getCompressionMethod(req.compression);
         int format = getTarFormat(req.format);
 
@@ -103,6 +108,7 @@ public class TarCompressDataRequestDataType inherits HashDataType {
                 "short_desc": "Compression method",
                 "desc": "Compression method: none, gzip, bzip2, xz, zstd, or lz4",
                 "example_value": "gzip",
+                "allowed_values": AllowedCompressionValues,
             },
             "format": {
                 "type": StringOrNothingType,
@@ -110,6 +116,7 @@ public class TarCompressDataRequestDataType inherits HashDataType {
                 "short_desc": "TAR format",
                 "desc": "The tar format: ustar, pax, gnu, or v7",
                 "example_value": "pax",
+                "allowed_values": AllowedFormatValues,
             },
             "files": {
                 "type": new ListDataType("CompressFileList", AutoHashType, True),

@@ -276,25 +276,52 @@ public namespace TarDataProvider {
     #! TAR logo
     public const TarLogo = File::readTextFile(get_script_dir() + "/tar-logo.svg");
 
-    #! Compression method names for user-friendly input
-    public const CompressionMethods = {
-        "none": TAR_CM_NONE,
-        "gzip": TAR_CM_GZIP,
-        "bzip2": TAR_CM_BZIP2,
-        "xz": TAR_CM_XZ,
-        "zstd": TAR_CM_ZSTD,
-        "lz4": TAR_CM_LZ4,
+    #! Compression method enum
+    public enum TarCompression : string {
+        None = "none",
+        Gzip = "gzip",
+        Bzip2 = "bzip2",
+        Xz = "xz",
+        Zstd = "zstd",
+        Lz4 = "lz4",
+    }
+
+    #! TAR format enum
+    public enum TarFormat : string {
+        Ustar = "ustar",
+        Pax = "pax",
+        Gnu = "gnu",
+        V7 = "v7",
+    }
+
+    #! Mapping from enum/string values to TAR library constants
+    public const CompressionMethodMap = {
+        TarCompression::None: TAR_CM_NONE,
+        TarCompression::Gzip: TAR_CM_GZIP,
+        TarCompression::Bzip2: TAR_CM_BZIP2,
+        TarCompression::Xz: TAR_CM_XZ,
+        TarCompression::Zstd: TAR_CM_ZSTD,
+        TarCompression::Lz4: TAR_CM_LZ4,
     };
 
-    #! Format names for user-friendly input
-    public const TarFormats = {
-        "ustar": TAR_FORMAT_USTAR,
-        "pax": TAR_FORMAT_PAX,
-        "gnu": TAR_FORMAT_GNU,
-        "v7": TAR_FORMAT_V7,
+    #! Mapping from enum/string values to TAR format constants
+    public const TarFormatMap = {
+        TarFormat::Ustar: TAR_FORMAT_USTAR,
+        TarFormat::Pax: TAR_FORMAT_PAX,
+        TarFormat::Gnu: TAR_FORMAT_GNU,
+        TarFormat::V7: TAR_FORMAT_V7,
     };
 
-    #! Helper to get compression method from string
+    #! List of allowed compression values
+    public const AllowedCompressionValues = ("none", "gzip", "bzip2", "xz", "zstd", "lz4");
+
+    #! List of allowed format values
+    public const AllowedFormatValues = ("ustar", "pax", "gnu", "v7");
+
+    #! List of common encoding values
+    public const AllowedEncodingValues = ("UTF-8", "ISO-8859-1", "ASCII", "UTF-16", "UTF-16BE", "UTF-16LE", "Windows-1252");
+
+    #! Helper to get compression method from string or enum
     public int sub getCompressionMethod(auto val) {
         if (!exists val) {
             return TAR_CM_NONE;
@@ -303,10 +330,10 @@ public namespace TarDataProvider {
             return int(val);
         }
         string method = string(val).lwr();
-        return CompressionMethods{method} ?? TAR_CM_NONE;
+        return CompressionMethodMap{method} ?? TAR_CM_NONE;
     }
 
-    #! Helper to get format from string
+    #! Helper to get format from string or enum
     public int sub getTarFormat(auto val) {
         if (!exists val) {
             return TAR_FORMAT_PAX;
@@ -315,6 +342,6 @@ public namespace TarDataProvider {
             return int(val);
         }
         string fmt = string(val).lwr();
-        return TarFormats{fmt} ?? TAR_FORMAT_PAX;
+        return TarFormatMap{fmt} ?? TAR_FORMAT_PAX;
     }
 }
