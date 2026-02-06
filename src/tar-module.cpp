@@ -33,22 +33,24 @@
 #include <cstring>
 #include <locale.h>
 
-static QoreStringNode* tar_module_init();
-static void tar_module_ns_init(QoreNamespace* rns, QoreNamespace* qns);
+static void tar_module_init(QoreModuleInitContext& ctx, ExceptionSink& xsink);
+static void tar_module_ns_init(QoreNamespace* rns, QoreNamespace* qns, ExceptionSink& xsink);
 static void tar_module_delete();
 
-DLLEXPORT char qore_module_name[] = "tar";
-DLLEXPORT char qore_module_version[] = "1.0.0";
-DLLEXPORT char qore_module_description[] = "Qore TAR archive module";
-DLLEXPORT char qore_module_author[] = "Qore Technologies, s.r.o.";
-DLLEXPORT char qore_module_url[] = "https://github.com/qorelanguage/module-tar";
-DLLEXPORT int qore_module_api_major = QORE_MODULE_API_MAJOR;
-DLLEXPORT int qore_module_api_minor = QORE_MODULE_API_MINOR;
-DLLEXPORT qore_module_init_t qore_module_init = tar_module_init;
-DLLEXPORT qore_module_ns_init_t qore_module_ns_init = tar_module_ns_init;
-DLLEXPORT qore_module_delete_t qore_module_delete = tar_module_delete;
-DLLEXPORT qore_license_t qore_module_license = QL_MIT;
-DLLEXPORT char qore_module_license_str[] = "MIT";
+extern "C" DLLEXPORT void tar_qore_module_desc(QoreModuleInfo& mod_info) {
+    mod_info.name = "tar";
+    mod_info.version = "1.0.0";
+    mod_info.desc = "Qore TAR archive module";
+    mod_info.author = "Qore Technologies, s.r.o.";
+    mod_info.url = "https://github.com/qorelanguage/module-tar";
+    mod_info.api_major = QORE_MODULE_API_MAJOR;
+    mod_info.api_minor = QORE_MODULE_API_MINOR;
+    mod_info.init = tar_module_init;
+    mod_info.ns_init = tar_module_ns_init;
+    mod_info.del = tar_module_delete;
+    mod_info.license = QL_MIT;
+    mod_info.license_str = "MIT";
+}
 
 // Global hashdecl pointers
 const TypedHashDecl* hashdeclTarEntryInfo = nullptr;
@@ -58,7 +60,7 @@ const TypedHashDecl* hashdeclTarCreateOptions = nullptr;
 
 QoreNamespace TarNS("Qore::Tar");
 
-static QoreStringNode* tar_module_init() {
+static void tar_module_init(QoreModuleInitContext& ctx, ExceptionSink& xsink) {
     // Set locale to support UTF-8 filenames in archives
     setlocale(LC_ALL, "");
 
@@ -75,10 +77,9 @@ static QoreStringNode* tar_module_init() {
     TarNS.addSystemClass(initTarFileClass(TarNS));
     TarNS.addSystemClass(initTarEntryClass(TarNS));
 
-    return nullptr;
 }
 
-static void tar_module_ns_init(QoreNamespace* rns, QoreNamespace* qns) {
+static void tar_module_ns_init(QoreNamespace* rns, QoreNamespace* qns, ExceptionSink& xsink) {
     qns->addNamespace(TarNS.copy());
 }
 
