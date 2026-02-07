@@ -280,6 +280,14 @@ BinaryNode* QoreTarFile::toData(ExceptionSink* xsink) {
 
 // Open for reading
 void QoreTarFile::openRead(ExceptionSink* xsink) {
+    // check filesystem sandbox access before opening file for reading
+    if (!in_memory && !input_stream && !filepath.empty()) {
+        QoreSandboxManager* sm = runtime_get_sandbox_manager();
+        if (sm && !sm->checkFilesystemAccess(filepath.c_str(), QSEC_READ, xsink)) {
+            return;
+        }
+    }
+
     read_archive = archive_read_new();
     if (!read_archive) {
         xsink->raiseException("TAR-ERROR", "failed to create archive reader");
@@ -313,6 +321,14 @@ void QoreTarFile::openRead(ExceptionSink* xsink) {
 
 // Open for writing
 void QoreTarFile::openWrite(ExceptionSink* xsink) {
+    // check filesystem sandbox access before opening file for writing
+    if (!in_memory && !output_stream && !filepath.empty()) {
+        QoreSandboxManager* sm = runtime_get_sandbox_manager();
+        if (sm && !sm->checkFilesystemAccess(filepath.c_str(), QSEC_WRITE | QSEC_CREATE, xsink)) {
+            return;
+        }
+    }
+
     write_archive = archive_write_new();
     if (!write_archive) {
         xsink->raiseException("TAR-ERROR", "failed to create archive writer");
@@ -361,6 +377,14 @@ void QoreTarFile::openAppend(ExceptionSink* xsink) {
     // 2. Create a temporary write archive
     // 3. Copy all existing entries
     // 4. Then allow new entries to be added
+
+    // check filesystem sandbox access for both reading and writing
+    {
+        QoreSandboxManager* sm = runtime_get_sandbox_manager();
+        if (sm && !sm->checkFilesystemAccess(filepath.c_str(), QSEC_READ | QSEC_WRITE | QSEC_CREATE, xsink)) {
+            return;
+        }
+    }
 
     // Check if file exists
     struct stat st;
@@ -432,6 +456,11 @@ void QoreTarFile::copyEntries(ExceptionSink* xsink) {
     char buffer[TAR_BUFFER_SIZE];
 
     while (archive_read_next_header(read_archive, &entry) == ARCHIVE_OK) {
+        // check for interrupt during entry copy
+        if (qore_check_io_interrupt(xsink, "tar archive copy")) {
+            return;
+        }
+
         // Write header to new archive
         int r = archive_write_header(write_archive, entry);
         if (r != ARCHIVE_OK) {
@@ -564,6 +593,11 @@ QoreListNode* QoreTarFile::entries(ExceptionSink* xsink) {
 
     struct archive_entry* entry;
     while (archive_read_next_header(read_archive, &entry) == ARCHIVE_OK) {
+        // check for interrupt during entry enumeration
+        if (qore_check_io_interrupt(xsink, "tar archive entry enumeration")) {
+            list->deref(xsink);
+            return nullptr;
+        }
         QoreHashNode* info = createEntryInfo(entry, xsink);
         if (*xsink) {
             list->deref(xsink);
@@ -666,6 +700,10 @@ BinaryNode* QoreTarFile::read(const char* name, ExceptionSink* xsink) {
             char buffer[TAR_BUFFER_SIZE];
             la_ssize_t bytes_read;
             while ((bytes_read = archive_read_data(read_archive, buffer, sizeof(buffer))) > 0) {
+                // check for interrupt during data read
+                if (qore_check_io_interrupt(xsink, "tar archive data read")) {
+                    return nullptr;
+                }
                 data->append(buffer, bytes_read);
             }
 
@@ -860,6 +898,12 @@ void QoreTarFile::addFile(const char* name, const char* filepath, const QoreHash
         return;
     }
 
+    // check filesystem sandbox access before reading source file
+    QoreSandboxManager* sm = runtime_get_sandbox_manager();
+    if (sm && !sm->checkFilesystemAccess(filepath, QSEC_READ, xsink)) {
+        return;
+    }
+
     struct stat st;
     if (stat(filepath, &st) != 0) {
         xsink->raiseException("TAR-ERROR", "failed to stat file '%s': %s", filepath, strerror(errno));
@@ -893,6 +937,10 @@ void QoreTarFile::addFile(const char* name, const char* filepath, const QoreHash
         char buffer[TAR_BUFFER_SIZE];
         size_t bytes_read;
         while ((bytes_read = fread(buffer, 1, sizeof(buffer), fp.get())) > 0) {
+            // check for interrupt during file data read
+            if (qore_check_io_interrupt(xsink, "tar archive file add")) {
+                return;
+            }
             if (archive_write_data(write_archive, buffer, bytes_read) < 0) {
                 xsink->raiseException("TAR-ERROR", "failed to write file data: %s",
                                       get_archive_error(write_archive));
@@ -1008,6 +1056,14 @@ void QoreTarFile::extractAll(const char* destPath, const QoreHashNode* opts, Exc
         }
     }
 
+    // check filesystem sandbox access before extracting to destination
+    {
+        QoreSandboxManager* sm = runtime_get_sandbox_manager();
+        if (sm && !sm->checkFilesystemAccess(destination.c_str(), QSEC_WRITE | QSEC_CREATE, xsink)) {
+            return;
+        }
+    }
+
     reopenRead(xsink);
     if (*xsink) {
         return;
@@ -1036,6 +1092,11 @@ void QoreTarFile::extractAll(const char* destPath, const QoreHashNode* opts, Exc
 
     struct archive_entry* entry;
     while (archive_read_next_header(read_archive, &entry) == ARCHIVE_OK) {
+        // check for interrupt during extraction
+        if (qore_check_io_interrupt(xsink, "tar archive extraction")) {
+            break;
+        }
+
         // Build destination path
         const char* entry_name = archive_entry_pathname(entry);
 
@@ -1115,6 +1176,14 @@ void QoreTarFile::extractTo(const char* name, const char* destination, Exception
         return;
     }
 
+    // check filesystem sandbox access before writing to destination
+    {
+        QoreSandboxManager* sm = runtime_get_sandbox_manager();
+        if (sm && !sm->checkFilesystemAccess(destination, QSEC_WRITE | QSEC_CREATE, xsink)) {
+            return;
+        }
+    }
+
     reopenRead(xsink);
     if (*xsink) {
         return;
@@ -1134,6 +1203,11 @@ void QoreTarFile::extractTo(const char* name, const char* destination, Exception
             char buffer[TAR_BUFFER_SIZE];
             la_ssize_t bytes_read;
             while ((bytes_read = archive_read_data(read_archive, buffer, sizeof(buffer))) > 0) {
+                // check for interrupt during extraction
+                if (qore_check_io_interrupt(xsink, "tar archive entry extraction")) {
+                    fclose(fp);
+                    return;
+                }
                 if (fwrite(buffer, 1, bytes_read, fp) != (size_t)bytes_read) {
                     xsink->raiseException("TAR-ERROR", "failed to write to destination file");
                     fclose(fp);

@@ -28,6 +28,7 @@
 #define _QORE_TAR_MODULE_H
 
 #include <qore/Qore.h>
+#include <qore/QoreSandboxManager.h>
 #include <archive.h>
 #include <archive_entry.h>
 

@@ -272,7 +272,7 @@ qclass TarFile [arg=QoreTarFile* tf; ns=Qore::Tar];
 
     @note Compression is auto-detected from the filename extension (e.g., .tar.gz, .tar.bz2, .tar.xz)
 */
-TarFile::constructor(string path, string mode = "r") {
+TarFile::constructor(string path, string mode = "r") [dom=FILESYSTEM] {
     TarMode tm = TAR_MODE_READ;
     if (mode->empty() || mode->c_str()[0] == 'r') {
         tm = TAR_MODE_READ;
@@ -299,7 +299,7 @@ TarFile::constructor(string path, string mode = "r") {
 
     @throw TAR-ERROR error opening the archive
 */
-TarFile::constructor(string path, string mode, *hash<TarCreateOptions> opts) {
+TarFile::constructor(string path, string mode, *hash<TarCreateOptions> opts) [dom=FILESYSTEM] {
     TarMode tm = TAR_MODE_READ;
     if (mode->empty() || mode->c_str()[0] == 'r') {
         tm = TAR_MODE_READ;
@@ -486,7 +486,7 @@ nothing TarFile::add(string name, string text, *string encoding, *hash<TarAddOpt
 
     @throw TAR-ERROR error adding file or archive not open for writing
 */
-nothing TarFile::addFile(string archive_name, string source_path, *hash<TarAddOptions> opts) {
+nothing TarFile::addFile(string archive_name, string source_path, *hash<TarAddOptions> opts) [dom=FILESYSTEM] {
     tf->addFile(archive_name->c_str(), source_path->c_str(), opts, xsink);
 }
 
@@ -527,7 +527,7 @@ nothing TarFile::addHardlink(string name, string target, *hash<TarAddOptions> op
 
     @throw TAR-ERROR error extracting archive
 */
-nothing TarFile::extractAll(*hash<TarExtractOptions> opts) {
+nothing TarFile::extractAll(*hash<TarExtractOptions> opts) [dom=FILESYSTEM] {
     const char* dest = ".";
     if (opts) {
         QoreValue v = opts->getKeyValue("destination");
@@ -544,7 +544,7 @@ nothing TarFile::extractAll(*hash<TarExtractOptions> opts) {
 
     @throw TAR-ERROR error extracting entry or entry not found
 */
-nothing TarFile::extract(string name, *hash<TarExtractOptions> opts) {
+nothing TarFile::extract(string name, *hash<TarExtractOptions> opts) [dom=FILESYSTEM] {
     const char* dest = ".";
     if (opts) {
         QoreValue v = opts->getKeyValue("destination");
@@ -561,7 +561,7 @@ nothing TarFile::extract(string name, *hash<TarExtractOptions> opts) {
 
     @throw TAR-ERROR error extracting entry or entry not found
 */
-nothing TarFile::extractTo(string name, string destination) {
+nothing TarFile::extractTo(string name, string destination) [dom=FILESYSTEM] {
     tf->extractTo(name->c_str(), destination->c_str(), xsink);
 }
 
