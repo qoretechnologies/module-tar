@@ -282,8 +282,8 @@ BinaryNode* QoreTarFile::toData(ExceptionSink* xsink) {
 void QoreTarFile::openRead(ExceptionSink* xsink) {
     // check filesystem sandbox access before opening file for reading
     if (!in_memory && !input_stream && !filepath.empty()) {
-        QoreSandboxManager* sm = runtime_get_sandbox_manager();
-        if (sm && !sm->checkFilesystemAccess(filepath.c_str(), QSEC_READ, xsink)) {
+        QoreSandboxManagerHelper smh;
+        if (smh && !smh->checkFilesystemAccess(filepath.c_str(), QSEC_READ, xsink)) {
             return;
         }
     }
@@ -323,8 +323,8 @@ void QoreTarFile::openRead(ExceptionSink* xsink) {
 void QoreTarFile::openWrite(ExceptionSink* xsink) {
     // check filesystem sandbox access before opening file for writing
     if (!in_memory && !output_stream && !filepath.empty()) {
-        QoreSandboxManager* sm = runtime_get_sandbox_manager();
-        if (sm && !sm->checkFilesystemAccess(filepath.c_str(), QSEC_WRITE | QSEC_CREATE, xsink)) {
+        QoreSandboxManagerHelper smh;
+        if (smh && !smh->checkFilesystemAccess(filepath.c_str(), QSEC_WRITE | QSEC_CREATE, xsink)) {
             return;
         }
     }
@@ -380,8 +380,8 @@ void QoreTarFile::openAppend(ExceptionSink* xsink) {
 
     // check filesystem sandbox access for both reading and writing
     {
-        QoreSandboxManager* sm = runtime_get_sandbox_manager();
-        if (sm && !sm->checkFilesystemAccess(filepath.c_str(), QSEC_READ | QSEC_WRITE | QSEC_CREATE, xsink)) {
+        QoreSandboxManagerHelper smh;
+        if (smh && !smh->checkFilesystemAccess(filepath.c_str(), QSEC_READ | QSEC_WRITE | QSEC_CREATE, xsink)) {
             return;
         }
     }
@@ -899,8 +899,8 @@ void QoreTarFile::addFile(const char* name, const char* filepath, const QoreHash
     }
 
     // check filesystem sandbox access before reading source file
-    QoreSandboxManager* sm = runtime_get_sandbox_manager();
-    if (sm && !sm->checkFilesystemAccess(filepath, QSEC_READ, xsink)) {
+    QoreSandboxManagerHelper smh;
+    if (smh && !smh->checkFilesystemAccess(filepath, QSEC_READ, xsink)) {
         return;
     }
 
@@ -1058,8 +1058,8 @@ void QoreTarFile::extractAll(const char* destPath, const QoreHashNode* opts, Exc
 
     // check filesystem sandbox access before extracting to destination
     {
-        QoreSandboxManager* sm = runtime_get_sandbox_manager();
-        if (sm && !sm->checkFilesystemAccess(destination.c_str(), QSEC_WRITE | QSEC_CREATE, xsink)) {
+        QoreSandboxManagerHelper smh;
+        if (smh && !smh->checkFilesystemAccess(destination.c_str(), QSEC_WRITE | QSEC_CREATE, xsink)) {
             return;
         }
     }
@@ -1178,8 +1178,8 @@ void QoreTarFile::extractTo(const char* name, const char* destination, Exception
 
     // check filesystem sandbox access before writing to destination
     {
-        QoreSandboxManager* sm = runtime_get_sandbox_manager();
-        if (sm && !sm->checkFilesystemAccess(destination, QSEC_WRITE | QSEC_CREATE, xsink)) {
+        QoreSandboxManagerHelper smh;
+        if (smh && !smh->checkFilesystemAccess(destination, QSEC_WRITE | QSEC_CREATE, xsink)) {
             return;
         }
     }
