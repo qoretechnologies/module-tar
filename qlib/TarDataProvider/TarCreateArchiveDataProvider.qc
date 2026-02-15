@@ -61,7 +61,9 @@ public class TarCreateArchiveDataProvider inherits AbstractDataProvider {
 
     private auto doRequestImpl(auto req, *hash<auto> request_options) {
         if (req.require_entries) {
-            @assert(req.files || req.directories, "At least one of 'files' or 'directories' must be provided");
+            if (!req.files && !req.directories) {
+                throw "ASSERTION-ERROR", "At least one of 'files' or 'directories' must be provided";
+            }
         }
 
         int compression = getCompressionMethod(req.compression);
@@ -125,6 +127,16 @@ public class TarCreateArchiveDataProvider inherits AbstractDataProvider {
         tar.close();
 
         if (in_memory) {
+            # Write to output_location if specified
+            if (req.output_location) {
+                FileLocationHandler::writeFileToLocation(req.output_location, archive_data);
+                return {
+                    "archive_data": archive_data,
+                    "output_location": req.output_location,
+                    "entry_count": entry_count,
+                    "compression": req.compression ?? "none",
+                };
+            }
             return {
                 "archive_data": archive_data,
                 "entry_count": entry_count,
@@ -150,6 +162,13 @@ public class TarCreateArchiveRequestDataType inherits HashDataType {
                 "short_desc": "Output archive file path",
                 "desc": "The path where the tar archive will be created. If not specified, returns binary data.",
                 "example_value": "/tmp/backup.tar.gz",
+            },
+            "output_location": {
+                "type": StringOrNothingType,
+                "display_name": "Output Location",
+                "short_desc": "Output location URL",
+                "desc": "A FileLocationHandler location URL where the archive will be written (alternative to archive_path)",
+                "example_value": "file:///tmp/backup.tar.gz",
             },
             "compression": {
                 "type": StringOrNothingType,
@@ -220,6 +239,12 @@ public class TarCreateArchiveResponseDataType inherits HashDataType {
                 "display_name": "Archive Data",
                 "short_desc": "Archive binary data",
                 "desc": "The archive as binary data (when no path was specified)",
+            },
+            "output_location": {
+                "type": StringOrNothingType,
+                "display_name": "Output Location",
+                "short_desc": "Output location URL",
+                "desc": "The location URL where the archive was written",
             },
             "entry_count": {
                 "type": IntType,

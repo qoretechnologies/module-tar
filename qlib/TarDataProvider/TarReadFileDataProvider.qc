@@ -60,19 +60,27 @@ public class TarReadFileDataProvider inherits AbstractDataProvider {
     }
 
     private auto doRequestImpl(auto req, *hash<auto> request_options) {
-        @assert(req.archive_data || req.archive_path, "Either archive_path or archive_data must be provided");
-        @assert(req.entry_name.val(), "entry_name is required and cannot be empty");
+        if (!req.entry_name.val()) {
+            throw "ASSERTION-ERROR", "entry_name is required and cannot be empty";
+        }
 
         @debug {
             printf("TarReadFile: entry_name=%y as_text=%y encoding=%y\n",
                 req.entry_name, req.as_text ?? False, req.encoding ?? "UTF-8");
         }
 
+        *binary archive_data = req.archive_data;
+        if (!archive_data && req.archive_location) {
+            archive_data = FileLocationHandler::getBinaryFileFromLocation(req.archive_location);
+        }
+
         TarFile tar;
-        if (req.archive_data) {
-            tar = new TarFile(req.archive_data);
-        } else {
+        if (archive_data) {
+            tar = new TarFile(archive_data);
+        } else if (req.archive_path) {
             tar = new TarFile(req.archive_path, "r");
+        } else {
+            throw "TAR-ERROR", "one of 'archive_path', 'archive_data', or 'archive_location' must be provided";
         }
 
         binary content = tar.read(req.entry_name);
@@ -112,6 +120,13 @@ public class TarReadFileRequestDataType inherits HashDataType {
                 "short_desc": "Binary archive data",
                 "desc": "The tar archive as binary data (alternative to archive_path)",
             },
+            "archive_location": {
+                "type": StringOrNothingType,
+                "display_name": "Archive Location",
+                "short_desc": "Archive location URL",
+                "desc": "A FileLocationHandler location URL for the tar archive (alternative to archive_path or archive_data)",
+                "example_value": "file:///path/to/archive.tar.gz",
+            },
             "entry_name": {
                 "type": StringType,
                 "display_name": "Entry Name",
@@ -140,6 +155,7 @@ public class TarReadFileRequestDataType inherits HashDataType {
 
     constructor() : HashDataType("TarReadFileRequest") {
         addQoreFields(Fields);
+        setRequiredGroups((("archive_path", "archive_data", "archive_location"),));
     }
 }
 

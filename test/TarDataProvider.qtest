@@ -60,6 +60,7 @@ public class TarDataProviderTest inherits QUnit::Test {
         addTestCase("Enum functionality tests", \enumFunctionalityTest());
         addTestCase("Assert error condition tests", \assertErrorConditionTest());
         addTestCase("Allowed values validation tests", \allowedValuesTest());
+        addTestCase("Location input tests", \locationInputTest());
 %endif
 
         set_return_value(main());
@@ -350,10 +351,10 @@ public class TarDataProviderTest inherits QUnit::Test {
     assertErrorConditionTest() {
         AbstractDataProvider provider = DataProvider::getFactory("tar").create();
 
-        # Test TarReadFileDataProvider throws ASSERTION-ERROR without archive source
-        # Both archive_path and archive_data are optional, so assert catches this
+        # Test TarReadFileDataProvider throws REQUIRED-FIELD-GROUP-ERROR without archive source
+        # setRequiredGroups validates that one of archive_path/archive_data/archive_location is provided
         AbstractDataProvider readProvider = provider.getChildProvider("file").getChildProvider("read");
-        assertThrows("ASSERTION-ERROR", sub() {
+        assertThrows("REQUIRED-FIELD-GROUP-ERROR", sub() {
             readProvider.doRequest({"entry_name": "test.txt"});
         }, NOTHING, "TarReadFile requires archive source");
 
@@ -362,12 +363,12 @@ public class TarDataProviderTest inherits QUnit::Test {
             readProvider.doRequest({"archive_data": <00>, "entry_name": ""});
         }, NOTHING, "TarReadFile requires non-empty entry_name");
 
-        # Test TarDecompressDataDataProvider throws INVALID-REQUEST without archive_data
-        # archive_data is BinaryType (required), so type validation catches this
+        # Test TarDecompressDataDataProvider throws REQUIRED-FIELD-GROUP-ERROR without archive source
+        # setRequiredGroups validates that one of archive_data/archive_path/archive_location is provided
         AbstractDataProvider decompressProvider = provider.getChildProvider("data").getChildProvider("decompress");
-        assertThrows("INVALID-REQUEST", sub() {
+        assertThrows("REQUIRED-FIELD-GROUP-ERROR", sub() {
             decompressProvider.doRequest({});
-        }, NOTHING, "TarDecompress requires archive_data");
+        }, NOTHING, "TarDecompress requires archive source");
 
         # Test TarCreateArchiveDataProvider throws ASSERTION-ERROR when require_entries=true and no entries
         AbstractDataProvider createProvider = provider.getChildProvider("archive").getChildProvider("create");
@@ -387,9 +388,9 @@ public class TarDataProviderTest inherits QUnit::Test {
             extractFileProvider.doRequest({"archive_data": <00>, "entry_name": ""});
         }, NOTHING, "TarExtractFile requires non-empty entry_name");
 
-        # Test TarExtractFileDataProvider throws ASSERTION-ERROR without archive source
-        # Both archive_path and archive_data are optional, so assert catches this
-        assertThrows("ASSERTION-ERROR", sub() {
+        # Test TarExtractFileDataProvider throws REQUIRED-FIELD-GROUP-ERROR without archive source
+        # setRequiredGroups validates that one of archive_path/archive_data/archive_location is provided
+        assertThrows("REQUIRED-FIELD-GROUP-ERROR", sub() {
             extractFileProvider.doRequest({"entry_name": "test.txt"});
         }, NOTHING, "TarExtractFile requires archive source");
     }
@@ -471,6 +472,96 @@ public class TarDataProviderTest inherits QUnit::Test {
         assertEq(True, encodingValues.contains("UTF-16BE"), "encoding allows 'UTF-16BE'");
         assertEq(True, encodingValues.contains("UTF-16LE"), "encoding allows 'UTF-16LE'");
         assertEq(True, encodingValues.contains("Windows-1252"), "encoding allows 'Windows-1252'");
+    }
+
+    # Test location input/output support
+    locationInputTest() {
+        AbstractDataProvider provider = DataProvider::getFactory("tar").create();
+
+        # Create a test archive file to use as source
+        string archive_path = testDir + "/location_test.tar";
+        AbstractDataProvider createProvider = provider.getChildProvider("archive").getChildProvider("create");
+        hash<auto> create_response = createProvider.doRequest({
+            "archive_path": archive_path,
+            "files": (
+                {"name": "hello.txt", "text": "Hello Location"},
+                {"name": "data.bin", "data": binary("binary data")},
+            ),
+        });
+        assertEq(2, create_response.entry_count, "create test archive");
+
+        string file_location = "file://" + archive_path;
+
+        # Test 1: List archive with location input
+        AbstractDataProvider listProvider = provider.getChildProvider("archive").getChildProvider("list");
+        hash<auto> list_response = listProvider.doRequest({
+            "archive_location": file_location,
+        });
+        assertEq(2, list_response.count, "location input list count");
+
+        # Test 2: Archive info with location input
+        AbstractDataProvider infoProvider = provider.getChildProvider("archive").getChildProvider("info");
+        hash<auto> info_response = infoProvider.doRequest({
+            "archive_location": file_location,
+        });
+        assertEq(2, info_response.entry_count, "location input info count");
+        assertEq(2, info_response.file_count, "location input info file count");
+
+        # Test 3: Read file with location input
+        AbstractDataProvider readProvider = provider.getChildProvider("file").getChildProvider("read");
+        hash<auto> read_response = readProvider.doRequest({
+            "archive_location": file_location,
+            "entry_name": "hello.txt",
+            "as_text": True,
+        });
+        assertEq("Hello Location", read_response.content, "location input read content");
+
+        # Test 4: Extract archive with location input
+        string extract_dir = testDir + "/location_extract";
+        mkdir(extract_dir);
+        AbstractDataProvider extractProvider = provider.getChildProvider("archive").getChildProvider("extract");
+        hash<auto> extract_response = extractProvider.doRequest({
+            "archive_location": file_location,
+            "destination": extract_dir,
+            "overwrite": True,
+        });
+        assertEq(2, extract_response.extracted_count, "location input extract count");
+
+        # Test 5: Extract single file with location input
+        string extract_file_path = testDir + "/location_extract_hello.txt";
+        AbstractDataProvider extractFileProvider = provider.getChildProvider("file").getChildProvider("extract");
+        hash<auto> extract_file_response = extractFileProvider.doRequest({
+            "archive_location": file_location,
+            "entry_name": "hello.txt",
+            "destination": extract_file_path,
+        });
+        assertEq("hello.txt", extract_file_response.entry_name, "location input extract file entry name");
+
+        # Test 6: Decompress with location input
+        AbstractDataProvider decompressProvider = provider.getChildProvider("data").getChildProvider("decompress");
+        hash<auto> decompress_response = decompressProvider.doRequest({
+            "archive_location": file_location,
+        });
+        assertEq(2, decompress_response.file_count, "location input decompress file count");
+
+        # Test 7: Create archive with output_location
+        string output_loc_path = testDir + "/location_output.tar";
+        string output_location = "file://" + output_loc_path;
+        hash<auto> create_loc_response = createProvider.doRequest({
+            "output_location": output_location,
+            "files": (
+                {"name": "out.txt", "text": "Output location test"},
+            ),
+        });
+        assertEq(1, create_loc_response.entry_count, "output_location create count");
+        assertEq(output_location, create_loc_response.output_location, "output_location matches");
+        assertTrue(is_file(output_loc_path), "output_location file created");
+
+        # Verify the output_location archive
+        hash<auto> verify_response = listProvider.doRequest({
+            "archive_path": output_loc_path,
+        });
+        assertEq(1, verify_response.count, "output_location archive has 1 entry");
     }
 %endif
 }

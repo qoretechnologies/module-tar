@@ -60,13 +60,22 @@ public class TarDecompressDataDataProvider inherits AbstractDataProvider {
     }
 
     private auto doRequestImpl(auto req, *hash<auto> request_options) {
-        @assert(req.archive_data, "archive_data is required for decompress operation");
-
-        @debug {
-            printf("TarDecompressData: archive_size=%d\n", req.archive_data.size());
+        *binary archive_data = req.archive_data;
+        if (!archive_data && req.archive_location) {
+            archive_data = FileLocationHandler::getBinaryFileFromLocation(req.archive_location);
+        }
+        if (!archive_data && req.archive_path) {
+            archive_data = ReadOnlyFile::readBinaryFile(req.archive_path);
+        }
+        if (!archive_data) {
+            throw "TAR-ERROR", "one of 'archive_data', 'archive_path', or 'archive_location' must be provided";
         }
 
-        TarFile tar(req.archive_data);
+        @debug {
+            printf("TarDecompressData: archive_size=%d\n", archive_data.size());
+        }
+
+        TarFile tar(archive_data);
 
         list<hash<TarEntryInfo>> entries = tar.entries();
         hash<string, auto> files = {};
@@ -97,16 +106,31 @@ public class TarDecompressDataRequestDataType inherits HashDataType {
     public {
         const Fields = {
             "archive_data": {
-                "type": BinaryType,
+                "type": BinaryOrNothingType,
                 "display_name": "Archive Data",
                 "short_desc": "TAR archive binary data",
                 "desc": "The tar archive as binary data to decompress",
+            },
+            "archive_path": {
+                "type": StringOrNothingType,
+                "display_name": "Archive Path",
+                "short_desc": "Path to the tar archive",
+                "desc": "The filesystem path to the tar archive (alternative to archive_data)",
+                "example_value": "/path/to/archive.tar.gz",
+            },
+            "archive_location": {
+                "type": StringOrNothingType,
+                "display_name": "Archive Location",
+                "short_desc": "Archive location URL",
+                "desc": "A FileLocationHandler location URL for the tar archive (alternative to archive_data or archive_path)",
+                "example_value": "file:///path/to/archive.tar.gz",
             },
         };
     }
 
     constructor() : HashDataType("TarDecompressDataRequest") {
         addQoreFields(Fields);
+        setRequiredGroups((("archive_data", "archive_path", "archive_location"),));
     }
 }
 

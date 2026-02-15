@@ -60,23 +60,20 @@ public class TarListArchiveDataProvider inherits DataProvider::AbstractDataProvi
     }
 
     private auto doRequestImpl(auto req, *hash<auto> request_options) {
-        string archive_path;
         *binary archive_data;
-
-        if (req.archive_path) {
-            archive_path = req.archive_path;
-        }
         if (req.archive_data) {
             archive_data = req.archive_data;
+        } else if (req.archive_location) {
+            archive_data = FileLocationHandler::getBinaryFileFromLocation(req.archive_location);
         }
 
         TarFile tar;
         if (archive_data) {
             tar = new TarFile(archive_data);
-        } else if (archive_path) {
-            tar = new TarFile(archive_path, "r");
+        } else if (req.archive_path) {
+            tar = new TarFile(req.archive_path, "r");
         } else {
-            throw "TAR-ERROR", "Either archive_path or archive_data must be provided";
+            throw "TAR-ERROR", "one of 'archive_path', 'archive_data', or 'archive_location' must be provided";
         }
 
         list<hash<TarEntryInfo>> entries = tar.entries();
@@ -106,11 +103,19 @@ public class TarListRequestDataType inherits HashDataType {
                 "short_desc": "Binary archive data",
                 "desc": "The tar archive as binary data (alternative to archive_path)",
             },
+            "archive_location": {
+                "type": StringOrNothingType,
+                "display_name": "Archive Location",
+                "short_desc": "Archive location URL",
+                "desc": "A FileLocationHandler location URL for the tar archive (alternative to archive_path or archive_data)",
+                "example_value": "file:///path/to/archive.tar.gz",
+            },
         };
     }
 
     constructor() : HashDataType("TarListRequest") {
         addQoreFields(Fields);
+        setRequiredGroups((("archive_path", "archive_data", "archive_location"),));
     }
 }
 

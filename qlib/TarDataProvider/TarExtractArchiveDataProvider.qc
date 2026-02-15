@@ -65,13 +65,18 @@ public class TarExtractArchiveDataProvider inherits AbstractDataProvider {
                 req.archive_path ?? "(data)", req.destination ?? ".", req.overwrite ?? False);
         }
 
+        *binary archive_data = req.archive_data;
+        if (!archive_data && req.archive_location) {
+            archive_data = FileLocationHandler::getBinaryFileFromLocation(req.archive_location);
+        }
+
         TarFile tar;
-        if (req.archive_data) {
-            tar = new TarFile(req.archive_data);
+        if (archive_data) {
+            tar = new TarFile(archive_data);
         } else if (req.archive_path) {
             tar = new TarFile(req.archive_path, "r");
         } else {
-            throw "TAR-ERROR", "Either archive_path or archive_data must be provided";
+            throw "TAR-ERROR", "one of 'archive_path', 'archive_data', or 'archive_location' must be provided";
         }
 
         string destination = req.destination ?? ".";
@@ -117,6 +122,13 @@ public class TarExtractArchiveRequestDataType inherits HashDataType {
                 "short_desc": "Binary archive data",
                 "desc": "The tar archive as binary data (alternative to archive_path)",
             },
+            "archive_location": {
+                "type": StringOrNothingType,
+                "display_name": "Archive Location",
+                "short_desc": "Archive location URL",
+                "desc": "A FileLocationHandler location URL for the tar archive (alternative to archive_path or archive_data)",
+                "example_value": "file:///path/to/archive.tar.gz",
+            },
             "destination": {
                 "type": StringOrNothingType,
                 "display_name": "Destination",
@@ -128,28 +140,29 @@ public class TarExtractArchiveRequestDataType inherits HashDataType {
                 "type": SoftBoolType,
                 "display_name": "Preserve Permissions",
                 "short_desc": "Restore file permissions",
-                "desc": "If true, restores original file permissions (default: true)",
-                "example_value": True,
+                "desc": "If true, restores original file permissions",
+                "default_value": True,
             },
             "preserve_times": {
                 "type": SoftBoolType,
                 "display_name": "Preserve Times",
                 "short_desc": "Restore modification times",
-                "desc": "If true, restores original modification times (default: true)",
-                "example_value": True,
+                "desc": "If true, restores original modification times",
+                "default_value": True,
             },
             "overwrite": {
                 "type": SoftBoolType,
                 "display_name": "Overwrite",
                 "short_desc": "Overwrite existing files",
-                "desc": "If true, overwrites existing files (default: false)",
-                "example_value": False,
+                "desc": "If true, overwrites existing files",
+                "default_value": False,
             },
         };
     }
 
     constructor() : HashDataType("TarExtractArchiveRequest") {
         addQoreFields(Fields);
+        setRequiredGroups((("archive_path", "archive_data", "archive_location"),));
     }
 }
 
