@@ -26,6 +26,7 @@
 %requires qore >= 2.0
 
 %requires(reexport) DataProvider
+%requires FileLocationHandler
 %requires Mime
 %requires tar
 
@@ -47,6 +48,7 @@ module TarDataProvider {
             "display_name": "TAR Archives",
             "short_desc": "TAR archive operations",
             "desc": "Create, extract, and manage TAR archives with support for gzip, bzip2, xz, and zstd compression",
+            "groups": (DataProvider::AppGroup::DataTransformation,),
             "logo": TarLogo,
             "logo_file_name": "tar-logo.svg",
             "logo_mime_type": MimeTypeSvg,
