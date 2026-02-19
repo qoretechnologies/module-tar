@@ -212,8 +212,8 @@ public class TarCreateArchiveRequestDataType inherits HashDataType {
                 "type": SoftBoolOrNothingType,
                 "display_name": "Require Entries",
                 "short_desc": "Require at least one entry",
-                "desc": "If true, raises an error if the archive would be created with no entries. "
-                    "Default is false, allowing empty archives",
+                "desc": "If `true`, raises an error if the archive would be created with no entries. "
+                    "Default is `false`, allowing empty archives",
                 "example_value": False,
             },
         };

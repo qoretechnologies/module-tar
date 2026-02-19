@@ -138,7 +138,7 @@ public class TarReadFileRequestDataType inherits HashDataType {
                 "type": SoftBoolOrNothingType,
                 "display_name": "Read as Text",
                 "short_desc": "Return content as text string",
-                "desc": "If true, returns content as text string instead of binary (default: false)",
+                "desc": "If `true`, returns content as text string instead of binary (default: `false`)",
                 "example_value": False,
             },
             "encoding": {
