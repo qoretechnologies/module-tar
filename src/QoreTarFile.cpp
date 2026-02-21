@@ -457,7 +457,7 @@ void QoreTarFile::copyEntries(ExceptionSink* xsink) {
 
     while (archive_read_next_header(read_archive, &entry) == ARCHIVE_OK) {
         // check for interrupt during entry copy
-        if (qore_check_io_interrupt(xsink, "tar archive copy")) {
+        if (qore_check_cancel(xsink, "tar archive copy")) {
             return;
         }
 
@@ -594,7 +594,7 @@ QoreListNode* QoreTarFile::entries(ExceptionSink* xsink) {
     struct archive_entry* entry;
     while (archive_read_next_header(read_archive, &entry) == ARCHIVE_OK) {
         // check for interrupt during entry enumeration
-        if (qore_check_io_interrupt(xsink, "tar archive entry enumeration")) {
+        if (qore_check_cancel(xsink, "tar archive entry enumeration")) {
             list->deref(xsink);
             return nullptr;
         }
@@ -701,7 +701,7 @@ BinaryNode* QoreTarFile::read(const char* name, ExceptionSink* xsink) {
             la_ssize_t bytes_read;
             while ((bytes_read = archive_read_data(read_archive, buffer, sizeof(buffer))) > 0) {
                 // check for interrupt during data read
-                if (qore_check_io_interrupt(xsink, "tar archive data read")) {
+                if (qore_check_cancel(xsink, "tar archive data read")) {
                     return nullptr;
                 }
                 data->append(buffer, bytes_read);
@@ -938,7 +938,7 @@ void QoreTarFile::addFile(const char* name, const char* filepath, const QoreHash
         size_t bytes_read;
         while ((bytes_read = fread(buffer, 1, sizeof(buffer), fp.get())) > 0) {
             // check for interrupt during file data read
-            if (qore_check_io_interrupt(xsink, "tar archive file add")) {
+            if (qore_check_cancel(xsink, "tar archive file add")) {
                 return;
             }
             if (archive_write_data(write_archive, buffer, bytes_read) < 0) {
@@ -1093,7 +1093,7 @@ void QoreTarFile::extractAll(const char* destPath, const QoreHashNode* opts, Exc
     struct archive_entry* entry;
     while (archive_read_next_header(read_archive, &entry) == ARCHIVE_OK) {
         // check for interrupt during extraction
-        if (qore_check_io_interrupt(xsink, "tar archive extraction")) {
+        if (qore_check_cancel(xsink, "tar archive extraction")) {
             break;
         }
 
@@ -1204,7 +1204,7 @@ void QoreTarFile::extractTo(const char* name, const char* destination, Exception
             la_ssize_t bytes_read;
             while ((bytes_read = archive_read_data(read_archive, buffer, sizeof(buffer))) > 0) {
                 // check for interrupt during extraction
-                if (qore_check_io_interrupt(xsink, "tar archive entry extraction")) {
+                if (qore_check_cancel(xsink, "tar archive entry extraction")) {
                     fclose(fp);
                     return;
                 }
