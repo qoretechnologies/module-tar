@@ -685,7 +685,7 @@ class QTarApp {
         if (alias) {
             return sprintf("  %s  %s  %s", tc.yellow(alias), tc.bold(padded), desc);
         }
-        return sprintf("      %s  %s", tc.bold(padded), desc);
+        return sprintf("     %s  %s", tc.bold(padded), desc);
     }
 
     private usage() {
