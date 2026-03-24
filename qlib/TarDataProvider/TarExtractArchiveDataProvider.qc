@@ -98,27 +98,39 @@ public class TarExtractArchiveDataProvider inherits AbstractDataProvider {
         if (req.exclude) {
             extract_opts.exclude = req.exclude;
         }
+        if (req.strip_count) {
+            extract_opts.strip_count = req.strip_count;
+        }
 
         list<hash<TarEntryInfo>> all_entries = tar.entries();
         list<string> extracted_names = tar.extractAll(extract_opts);
         tar.close();
 
-        # Use extracted names from C++ to filter the entries list
+        # Build response entries list
         list<hash<TarEntryInfo>> entries;
-        if (req.include || req.exclude) {
+        if (req.include || req.exclude || req.strip_count) {
+            # When filtering or stripping is active, use extracted_names from C++ as
+            # source of truth; with strip_count the names are transformed so we can't
+            # match against all_entries by name
             hash<string, bool> name_set = map {$1: True}, extracted_names;
             entries = (map $1, all_entries, name_set{$1.name});
+            # If stripping changed names such that no all_entries match, fall back to
+            # reporting extracted_names count directly
+            if (!entries && extracted_names) {
+                entries = (map <TarEntryInfo>{"name": $1}, extracted_names);
+            }
         } else {
             entries = all_entries;
         }
 
         @debug {
-            printf("TarExtractArchive: extracted %d entries to %y\n", entries.size(), destination);
+            printf("TarExtractArchive: extracted %d entries to %y\n",
+                extracted_names.size(), destination);
         }
 
         return {
             "destination": destination,
-            "extracted_count": entries.size(),
+            "extracted_count": extracted_names.size(),
             "entries": entries,
         };
     }
@@ -195,6 +207,16 @@ public class TarExtractArchiveRequestDataType inherits HashDataType {
                     "**Supported wildcards**: `*` matches any characters (including `/`), "
                     "`?` matches any single character, `[abc]` matches one character from the set",
                 "example_value": ("*.log", "tmp/*"),
+            },
+            "strip_count": {
+                "type": IntOrNothingType,
+                "display_name": "Strip Components",
+                "short_desc": "Strip N leading path components",
+                "desc": "Number of leading path components to strip from entry names during "
+                    "extraction. For example, with `strip_count` = `1`, the entry "
+                    "`project/src/main.c` becomes `src/main.c`. Entries with fewer components "
+                    "than `strip_count` are skipped",
+                "example_value": 1,
             },
         };
     }

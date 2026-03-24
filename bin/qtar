@@ -85,6 +85,7 @@ class QTarApp {
             "directory": "C,directory=s",
             "include": "include=s@",
             "exclude": "exclude=s@",
+            "strip": "strip=i",
             "no_preserve": "no-preserve",
             "overwrite": "o,overwrite",
             "no_overwrite": "no-overwrite",
@@ -268,6 +269,9 @@ class QTarApp {
         }
         if (opts.exclude) {
             extract_opts.exclude = opts.exclude;
+        }
+        if (opts.strip) {
+            extract_opts.strip_count = opts.strip;
         }
 
         TarFile tar(archive_path, "r");
@@ -735,6 +739,7 @@ class QTarApp {
         printf("  %s   Include only matching entries (repeatable)\n",
             tc.dim("    --include=GLOB"));
         printf("  %s   Exclude matching entries (repeatable)\n", tc.dim("    --exclude=GLOB"));
+        printf("  %s      Strip N leading path components\n", tc.dim("    --strip=N"));
         printf("  %s    Do not preserve permissions\n", tc.dim("    --no-preserve"));
         printf("  %s  Do not overwrite existing files\n", tc.dim("    --no-overwrite"));
         printf("  %s       Verbose (list files as extracted)\n", tc.dim("-v, --verbose"));

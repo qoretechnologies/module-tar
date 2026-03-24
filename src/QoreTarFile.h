@@ -167,6 +167,9 @@ private:
                                         const std::vector<std::string>& include_patterns,
                                         const std::vector<std::string>& exclude_patterns);
 
+    //! Strip N leading path components from a path; returns empty string if too few components
+    DLLLOCAL static std::string stripPathComponents(const std::string& path, int count);
+
     //! Check archive is open and in correct mode
     DLLLOCAL bool checkOpen(ExceptionSink* xsink, bool forWrite = false);
 

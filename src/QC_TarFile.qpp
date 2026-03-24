@@ -145,15 +145,6 @@ hashdecl Qore::Tar::TarEntryInfo {
 /** @since %tar 1.0
 */
 hashdecl Qore::Tar::TarAddOptions {
-    //! Compression method (one of @ref tar_compression_methods)
-    *int compression_method;
-
-    //! Compression level (1-9, where 1=fastest, 9=best)
-    *int compression_level;
-
-    //! TAR format (one of @ref tar_formats)
-    *int format;
-
     //! Override file permissions
     *int mode;
 
@@ -207,10 +198,10 @@ hashdecl Qore::Tar::TarExtractOptions {
     //! Patterns to exclude (glob-style)
     *list<string> exclude;
 
-    //! Strip leading path components
-    *bool strip_components;
-
-    //! Number of path components to strip
+    //! Number of leading path components to strip from entry names during extraction
+    /** For example, with strip_count = 1, the entry "project/src/main.c" becomes "src/main.c".
+        Entries with fewer components than strip_count are skipped.
+    */
     *int strip_count;
 }
 

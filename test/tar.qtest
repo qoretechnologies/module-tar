@@ -54,6 +54,7 @@ public class TarTest inherits QUnit::Test {
         addTestCase("Tar format tests", \tarFormatTest());
         addTestCase("Extraction tests", \extractionTest());
         addTestCase("Extraction filter tests", \extractionFilterTest());
+        addTestCase("Extraction strip tests", \extractionStripTest());
         addTestCase("Symlink tests", \symlinkTest());
         addTestCase("Hardlink tests", \hardlinkTest());
         addTestCase("Error handling tests", \errorHandlingTest());
@@ -669,6 +670,128 @@ public class TarTest inherits QUnit::Test {
 
             assertEq(False, is_file(extractDir + "/root.txt"), "no match: no files extracted");
             assertEq(False, is_file(extractDir + "/src/main.qm"), "no match: no files extracted");
+        }
+    }
+
+    # Test extraction with strip_count
+    extractionStripTest() {
+        # Create archive with nested paths
+        string tarPath = testDir + "/strip_test.tar";
+        {
+            TarFile tar(tarPath, "w");
+            tar.addDirectory("project/");
+            tar.addDirectory("project/src/");
+            tar.addDirectory("project/src/lib/");
+            tar.add("project/src/main.c", "int main() {}");
+            tar.add("project/src/lib/util.c", "void util() {}");
+            tar.add("project/README", "Read me");
+            tar.close();
+        }
+
+        # Test strip_count=1: "project/src/main.c" -> "src/main.c"
+        {
+            string extractDir = testDir + "/strip1";
+            mkdir(extractDir);
+
+            TarFile tar(tarPath, "r");
+            list<string> extracted = tar.extractAll(<TarExtractOptions>{
+                "destination": extractDir,
+                "strip_count": 1,
+            });
+            tar.close();
+
+            assertEq(True, is_file(extractDir + "/src/main.c"), "strip=1: src/main.c exists");
+            assertEq(True, is_file(extractDir + "/src/lib/util.c"),
+                "strip=1: src/lib/util.c exists");
+            assertEq(True, is_file(extractDir + "/README"), "strip=1: README exists");
+            assertEq(False, is_dir(extractDir + "/project"), "strip=1: project/ not created");
+
+            # Verify content preserved
+            string content = ReadOnlyFile::readTextFile(extractDir + "/src/main.c");
+            assertEq("int main() {}", content, "strip=1: content preserved");
+
+            # Extracted names should be stripped
+            assertEq(True, extracted.contains("src/"), "strip=1: stripped dir name in list");
+            assertEq(True, extracted.contains("src/main.c"),
+                "strip=1: stripped file name in list");
+        }
+
+        # Test strip_count=2: "project/src/main.c" -> "main.c"
+        # "project/README" has only 2 components, gets skipped
+        {
+            string extractDir = testDir + "/strip2";
+            mkdir(extractDir);
+
+            TarFile tar(tarPath, "r");
+            list<string> extracted = tar.extractAll(<TarExtractOptions>{
+                "destination": extractDir,
+                "strip_count": 2,
+            });
+            tar.close();
+
+            assertEq(True, is_file(extractDir + "/main.c"), "strip=2: main.c exists");
+            assertEq(True, is_file(extractDir + "/lib/util.c"), "strip=2: lib/util.c exists");
+            assertEq(False, is_file(extractDir + "/README"),
+                "strip=2: README skipped (too few components)");
+        }
+
+        # Test strip_count=0: no stripping
+        {
+            string extractDir = testDir + "/strip0";
+            mkdir(extractDir);
+
+            TarFile tar(tarPath, "r");
+            tar.extractAll(<TarExtractOptions>{
+                "destination": extractDir,
+                "strip_count": 0,
+            });
+            tar.close();
+
+            assertEq(True, is_dir(extractDir + "/project"),
+                "strip=0: project/ preserved");
+            assertEq(True, is_file(extractDir + "/project/src/main.c"),
+                "strip=0: full path preserved");
+        }
+
+        # Test strip_count larger than all paths: nothing extracted
+        {
+            string extractDir = testDir + "/strip_large";
+            mkdir(extractDir);
+
+            TarFile tar(tarPath, "r");
+            list<string> extracted = tar.extractAll(<TarExtractOptions>{
+                "destination": extractDir,
+                "strip_count": 10,
+            });
+            tar.close();
+
+            assertEq(0, extracted.size(), "strip=10: nothing extracted");
+        }
+
+        # Test strip with hardlinks
+        {
+            string hlTarPath = testDir + "/strip_hardlink.tar";
+            {
+                TarFile tar(hlTarPath, "w", <TarCreateOptions>{"format": TAR_FORMAT_PAX});
+                tar.add("prefix/file.txt", "Original");
+                tar.addHardlink("prefix/link.txt", "prefix/file.txt");
+                tar.close();
+            }
+
+            string extractDir = testDir + "/strip_hl";
+            mkdir(extractDir);
+
+            TarFile tar(hlTarPath, "r");
+            list<string> extracted = tar.extractAll(<TarExtractOptions>{
+                "destination": extractDir,
+                "strip_count": 1,
+            });
+            tar.close();
+
+            assertEq(True, is_file(extractDir + "/file.txt"),
+                "strip hardlink: file.txt exists");
+            assertEq(True, extracted.contains("file.txt"),
+                "strip hardlink: file.txt in extracted list");
         }
     }
 

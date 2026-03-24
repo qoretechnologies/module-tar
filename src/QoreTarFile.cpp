@@ -1116,12 +1116,21 @@ QoreListNode* QoreTarFile::extractAll(const char* destPath, const QoreHashNode* 
             break;
         }
 
-        // Apply include/exclude filters
+        // Apply include/exclude filters (on original name before stripping)
         if (!matchesFilters(entry_name.c_str(), include_patterns, exclude_patterns)) {
             continue;
         }
 
-        std::string dest_path = destination + "/" + entry_name;
+        // Apply path component stripping
+        std::string effective_name = entry_name;
+        if (strip_count > 0) {
+            effective_name = stripPathComponents(entry_name, strip_count);
+            if (effective_name.empty()) {
+                continue;  // Not enough components; skip this entry
+            }
+        }
+
+        std::string dest_path = destination + "/" + effective_name;
         archive_entry_set_pathname(entry, dest_path.c_str());
 
         // Update hardlink target path if this is a hardlink
@@ -1134,7 +1143,15 @@ QoreListNode* QoreTarFile::extractAll(const char* destPath, const QoreHashNode* 
                     hardlink_target);
                 break;
             }
-            std::string dest_link = destination + "/" + hardlink_target;
+            // Strip hardlink target path the same way
+            std::string hl_target(hardlink_target);
+            if (strip_count > 0) {
+                hl_target = stripPathComponents(hl_target, strip_count);
+                if (hl_target.empty()) {
+                    continue;  // Target stripped away; skip
+                }
+            }
+            std::string dest_link = destination + "/" + hl_target;
             archive_entry_set_hardlink(entry, dest_link.c_str());
         }
 
@@ -1173,8 +1190,8 @@ QoreListNode* QoreTarFile::extractAll(const char* destPath, const QoreHashNode* 
 
         archive_write_finish_entry(disk);
 
-        // Track successfully extracted entry name
-        extracted_names->push(new QoreStringNode(entry_name), xsink);
+        // Track successfully extracted entry name (use effective name after stripping)
+        extracted_names->push(new QoreStringNode(effective_name), xsink);
     }
 
     archive_write_close(disk);
@@ -1394,6 +1411,51 @@ bool QoreTarFile::matchesFilters(const char* name,
     }
 
     return true;
+}
+
+std::string QoreTarFile::stripPathComponents(const std::string& path, int count) {
+    if (count <= 0 || path.empty()) {
+        return path;
+    }
+
+    // Check for trailing slash (directory entry)
+    bool trailing_slash = path.back() == '/';
+
+    // Split on '/' and skip empty components
+    std::vector<std::string> components;
+    size_t start = 0;
+    while (start < path.size()) {
+        size_t pos = path.find('/', start);
+        if (pos == std::string::npos) {
+            components.push_back(path.substr(start));
+            break;
+        }
+        if (pos > start) {
+            components.push_back(path.substr(start, pos - start));
+        }
+        start = pos + 1;
+    }
+
+    // If not enough components remain after stripping, skip this entry
+    if ((int)components.size() <= count) {
+        return std::string();
+    }
+
+    // Rejoin remaining components
+    std::string result;
+    for (int i = count; i < (int)components.size(); ++i) {
+        if (i > count) {
+            result += '/';
+        }
+        result += components[i];
+    }
+
+    // Preserve trailing slash for directory entries
+    if (trailing_slash && !result.empty()) {
+        result += '/';
+    }
+
+    return result;
 }
 
 // Open an input stream for reading an entry
