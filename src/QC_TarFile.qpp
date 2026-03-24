@@ -362,6 +362,56 @@ TarFile::constructor(*hash<TarCreateOptions> opts) {
     self->setPrivate(CID_TARFILE, holder.release());
 }
 
+//! Creates a TarFile object for reading from an InputStream
+/** @param input the input stream to read archive data from
+
+    @throw TAR-ERROR error reading the archive
+
+    @note The input stream must remain valid for the lifetime of the TarFile object.
+    Compression is auto-detected from the stream data.
+
+    @since %tar 1.1
+*/
+TarFile::constructor(Qore::InputStream[InputStream] input) {
+    ReferenceHolder<QoreTarFile> holder(new QoreTarFile(*input, xsink), xsink);
+    if (*xsink) {
+        return;
+    }
+    self->setPrivate(CID_TARFILE, holder.release());
+}
+
+//! Creates a TarFile object for writing to an OutputStream
+/** @param output the output stream to write archive data to
+    @param opts optional @ref TarCreateOptions for compression and format settings
+
+    @throw TAR-ERROR error opening the archive for writing
+
+    @note The output stream must remain valid for the lifetime of the TarFile object.
+
+    @since %tar 1.1
+*/
+TarFile::constructor(Qore::OutputStream[OutputStream] output, *hash<TarCreateOptions> opts) {
+    int cm = -1;
+    int fmt = -1;
+    if (opts) {
+        QoreValue v = opts->getKeyValue("compression_method");
+        if (!v.isNothing()) {
+            cm = (int)v.getAsBigInt();
+        }
+        v = opts->getKeyValue("format");
+        if (!v.isNothing()) {
+            fmt = (int)v.getAsBigInt();
+        }
+    }
+
+    ReferenceHolder<QoreTarFile> holder(new QoreTarFile(*output, cm >= 0 ? cm : 0,
+        fmt >= 0 ? fmt : 1, xsink), xsink);
+    if (*xsink) {
+        return;
+    }
+    self->setPrivate(CID_TARFILE, holder.release());
+}
+
 //! Destroys the object and closes the archive if still open
 /**
 */

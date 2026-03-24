@@ -204,7 +204,9 @@ QoreTarFile::QoreTarFile(InputStream* input, ExceptionSink* xsink)
     if (input) {
         input->ref();
     }
-    openRead(xsink);
+    // NOTE: don't call openRead() here; defer to first use via reopenRead()
+    // Opening and then closing the libarchive reader consumes stream data,
+    // making the stream unusable for a subsequent reopenRead() call
 }
 
 // Constructor for stream-based writing
@@ -547,6 +549,27 @@ void QoreTarFile::setupCompressionFilter(ExceptionSink* xsink) {
 
 // Reopen archive for reading
 void QoreTarFile::reopenRead(ExceptionSink* xsink) {
+    // For stream-based reading: buffer the entire stream into memory on first pass
+    // so subsequent reopenRead calls can re-read from the buffer (streams are not seekable)
+    if (input_stream && memory_buffer.empty()) {
+        // First pass: read entire stream into memory_buffer
+        std::vector<char> buf(TAR_BUFFER_SIZE);
+        while (true) {
+            int64 bytes = input_stream->read(buf.data(), TAR_BUFFER_SIZE, xsink);
+            if (*xsink) {
+                return;
+            }
+            if (bytes <= 0) {
+                break;
+            }
+            memory_buffer.insert(memory_buffer.end(), buf.data(), buf.data() + bytes);
+        }
+        // Switch to in-memory mode so openRead uses memory_buffer
+        in_memory = true;
+        input_stream->deref(xsink);
+        input_stream = nullptr;
+    }
+
     if (read_archive) {
         archive_read_close(read_archive);
         archive_read_free(read_archive);
@@ -569,7 +592,7 @@ bool QoreTarFile::checkOpen(ExceptionSink* xsink, bool forWrite) {
             return false;
         }
     } else {
-        if (!read_archive && !in_memory) {
+        if (!read_archive && !in_memory && !input_stream) {
             xsink->raiseException("TAR-ERROR", "archive is not open for reading");
             return false;
         }

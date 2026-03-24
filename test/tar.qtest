@@ -61,6 +61,7 @@ public class TarTest inherits QUnit::Test {
         addTestCase("Corner case tests", \cornerCaseTest());
         addTestCase("Unicode filename tests", \unicodeFilenameTest());
         addTestCase("Streaming API tests", \streamingApiTest());
+        addTestCase("Stream constructor tests", \streamConstructorTest());
         addTestCase("Metadata tests", \metadataTest());
         addTestCase("Path traversal protection tests", \pathTraversalTest());
         addTestCase("Append mode tests", \appendModeTest());
@@ -1294,6 +1295,77 @@ public class TarTest inherits QUnit::Test {
                 assertEq(False, info.is_directory, "stream entry is not directory");
                 tar.close();
             }
+        }
+    }
+
+    # Test stream-based constructors
+    streamConstructorTest() {
+        # Test write to FileOutputStream, read from FileInputStream
+        {
+            string outPath = testDir + "/stream_ctor.tar";
+
+            # Write via OutputStream constructor
+            {
+                FileOutputStream fos(outPath);
+                TarFile tar(fos);
+                tar.add("hello.txt", "Hello from stream!");
+                tar.add("data.bin", binary("binary data"));
+                tar.addDirectory("subdir/");
+                tar.close();
+            }
+
+            # Read via InputStream constructor
+            {
+                FileInputStream fis(outPath);
+                TarFile tar(fis);
+                list<hash<TarEntryInfo>> entries = tar.entries();
+                assertEq(3, entries.size(), "stream ctor: 3 entries");
+                assertEq(True, tar.hasEntry("hello.txt"), "stream ctor: hello.txt exists");
+                string content = tar.readText("hello.txt");
+                assertEq("Hello from stream!", content, "stream ctor: content matches");
+                tar.close();
+            }
+        }
+
+        # Test write to OutputStream with compression
+        {
+            string outPath = testDir + "/stream_ctor.tar.gz";
+
+            {
+                FileOutputStream fos(outPath);
+                TarFile tar(fos, <TarCreateOptions>{"compression_method": TAR_CM_GZIP});
+                tar.add("compressed.txt", "Compressed via stream");
+                tar.close();
+            }
+
+            {
+                FileInputStream fis(outPath);
+                TarFile tar(fis);
+                assertEq(1, tar.entryCount(), "stream ctor gz: 1 entry");
+                string content = tar.readText("compressed.txt");
+                assertEq("Compressed via stream", content, "stream ctor gz: content matches");
+                tar.close();
+            }
+        }
+
+        # Test round-trip with BinaryOutputStream (in-memory)
+        {
+            BinaryOutputStream bos();
+            {
+                TarFile tar(bos);
+                tar.add("mem.txt", "Memory stream test");
+                tar.close();
+            }
+
+            binary data = bos.getData();
+            assertEq(True, data.size() > 0, "stream ctor mem: produced data");
+
+            # Read back via binary constructor to verify
+            TarFile tar(data);
+            assertEq(1, tar.entryCount(), "stream ctor mem: 1 entry");
+            assertEq("Memory stream test", tar.readText("mem.txt"),
+                "stream ctor mem: content matches");
+            tar.close();
         }
     }
 
