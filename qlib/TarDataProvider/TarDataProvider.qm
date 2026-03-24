@@ -247,9 +247,20 @@ module TarDataProvider {
             "path": "/entry/delete",
             "action": "delete-entry",
             "display_name": "Delete Entry",
-            "short_desc": "Delete file from archive",
-            "desc": "Delete a file or directory entry from an existing tar archive",
+            "short_desc": "Delete entry from archive",
+            "desc": "Delete a file or directory entry from a tar archive by recreating the "
+                "archive without the specified entry",
             "action_code": DPAT_API,
+            "options": DataProviderActionCatalog::getActionOptionFromFields(
+                TarDeleteEntryRequestDataType::Fields{"archive_data", "archive_path",
+                    "archive_location", "entry_name"}, {
+                    "preselected": True,
+                },
+            ) + DataProviderActionCatalog::getActionOptionFromFields(
+                TarDeleteEntryRequestDataType::Fields - ("archive_data", "archive_path",
+                    "archive_location", "entry_name"),
+            ),
+            "output_type": TarDeleteEntryDataProvider::ResponseType,
         });
 
         DataProviderActionCatalog::registerAction(<DataProviderActionInfo>{

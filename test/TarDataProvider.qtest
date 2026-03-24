@@ -57,6 +57,7 @@ public class TarDataProviderTest inherits QUnit::Test {
         addTestCase("Decompress data action tests", \decompressDataActionTest());
         addTestCase("Encrypt/decrypt action tests", \encryptDecryptActionTest());
         addTestCase("Split/join action tests", \splitJoinActionTest());
+        addTestCase("Delete entry action tests", \deleteEntryActionTest());
         addTestCase("Error handling tests", \errorHandlingTest());
         addTestCase("Enum functionality tests", \enumFunctionalityTest());
         addTestCase("Assert error condition tests", \assertErrorConditionTest());
@@ -677,6 +678,120 @@ public class TarDataProviderTest inherits QUnit::Test {
             *AbstractDataProviderType joinReqType = joinProvider.getRequestType();
             hash<string, AbstractDataField> joinFields = joinReqType.getFields();
             assertEq(True, exists joinFields.chunks, "join has chunks field");
+        }
+    }
+
+    # Test delete entry action
+    deleteEntryActionTest() {
+        AbstractDataProvider provider = DataProvider::getFactory("tar").create();
+        AbstractDataProvider deleteProvider = provider.getChildProvider("entry").getChildProvider("delete");
+        AbstractDataProvider createProvider = provider.getChildProvider("archive").getChildProvider("create");
+        AbstractDataProvider listProvider = provider.getChildProvider("archive").getChildProvider("list");
+
+        assertEq("delete", deleteProvider.getName(), "delete provider name");
+
+        # Create a test archive with multiple entry types
+        hash<auto> create_result = createProvider.doRequest({
+            "files": (
+                {"name": "file1.txt", "text": "First file"},
+                {"name": "file2.txt", "text": "Second file"},
+                {"name": "dir/nested.txt", "text": "Nested"},
+            ),
+        });
+        binary original_data = create_result.archive_data;
+
+        # Test delete middle entry
+        {
+            hash<auto> result = deleteProvider.doRequest({
+                "archive_data": original_data,
+                "entry_name": "file2.txt",
+            });
+
+            assertEq(True, result.deleted, "file2.txt deleted");
+            assertEq(2, result.remaining_count, "2 entries remaining");
+            assertEq(True, result.archive_size > 0, "output archive has data");
+
+            # Verify the remaining archive contents
+            hash<auto> list_result = listProvider.doRequest({
+                "archive_data": result.archive_data,
+            });
+            assertEq(2, list_result.count, "remaining archive has 2 entries");
+            list<string> names = (map $1.name, list_result.entries);
+            assertEq(True, names.contains("file1.txt"), "file1.txt preserved");
+            assertEq(True, names.contains("dir/nested.txt"), "dir/nested.txt preserved");
+            assertEq(False, names.contains("file2.txt"), "file2.txt removed");
+
+            # Verify content preserved
+            AbstractDataProvider readProvider =
+                provider.getChildProvider("file").getChildProvider("read");
+            hash<auto> read_result = readProvider.doRequest({
+                "archive_data": result.archive_data,
+                "entry_name": "file1.txt",
+                "as_text": True,
+            });
+            assertEq("First file", read_result.content, "file1.txt content preserved");
+        }
+
+        # Test delete non-existent entry
+        {
+            hash<auto> result = deleteProvider.doRequest({
+                "archive_data": original_data,
+                "entry_name": "nonexistent.txt",
+            });
+
+            assertEq(False, result.deleted, "non-existent entry not deleted");
+            assertEq(3, result.remaining_count, "all 3 entries remain");
+            assertEq(original_data, result.archive_data,
+                "archive unchanged when entry not found");
+        }
+
+        # Test delete single entry (results in empty archive)
+        {
+            hash<auto> single_result = createProvider.doRequest({
+                "files": ({"name": "only.txt", "text": "Only file"},),
+            });
+
+            hash<auto> result = deleteProvider.doRequest({
+                "archive_data": single_result.archive_data,
+                "entry_name": "only.txt",
+            });
+
+            assertEq(True, result.deleted, "only entry deleted");
+            assertEq(0, result.remaining_count, "0 entries remaining");
+        }
+
+        # Test delete with compression option
+        {
+            hash<auto> result = deleteProvider.doRequest({
+                "archive_data": original_data,
+                "entry_name": "file1.txt",
+                "compression": "gzip",
+            });
+
+            assertEq(True, result.deleted, "deleted with compression");
+            assertEq(2, result.remaining_count, "2 entries remaining with compression");
+        }
+
+        # Test delete with empty entry_name
+        assertThrows("ASSERTION-ERROR", sub() {
+            deleteProvider.doRequest({
+                "archive_data": original_data,
+                "entry_name": "",
+            });
+        }, NOTHING, "delete rejects empty entry_name");
+
+        # Test missing archive source
+        assertThrows("REQUIRED-FIELD-GROUP-ERROR", sub() {
+            deleteProvider.doRequest({"entry_name": "test.txt"});
+        }, NOTHING, "delete requires archive source");
+
+        # Test request/response types
+        {
+            *AbstractDataProviderType reqType = deleteProvider.getRequestType();
+            hash<string, AbstractDataField> fields = reqType.getFields();
+            assertEq(True, exists fields.entry_name, "delete has entry_name field");
+            assertEq(True, exists fields.compression, "delete has compression field");
+            assertEq(True, exists fields.format, "delete has format field");
         }
     }
 
