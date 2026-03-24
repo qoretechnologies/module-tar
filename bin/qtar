@@ -678,18 +678,28 @@ class QTarApp {
 
     # --- Usage ---
 
+    #! Format a command entry for the help text with aligned columns
+    private string fmtCmd(string name, *string alias, string desc) {
+        # Pad command name to 7 chars (length of "extract"/"encrypt"/"decrypt")
+        string padded = name + strmul(" ", 7 - name.length());
+        if (alias) {
+            return sprintf("  %s %s  %s", tc.bold(padded), tc.yellow(alias), desc);
+        }
+        return sprintf("  %s      %s", tc.bold(padded), desc);
+    }
+
     private usage() {
         printf("%s - Qore TAR archive tool\n\n", tc.bold("qtar"));
         printf("%s qtar <command> [options] <archive> [files...]\n\n", tc.key("Usage:"));
         printf("%s\n", tc.key("Commands:"));
-        printf("  %s  (%s)  Create a new archive\n", tc.bold("create "), tc.dim("c"));
-        printf("  %s (%s)  Extract archive contents\n", tc.bold("extract"), tc.dim("x"));
-        printf("  %s    (%s)  List archive contents\n", tc.bold("list"), tc.dim("t"));
-        printf("  %s     (%s)  Add files to an existing archive\n", tc.bold("add"), tc.dim("a"));
-        printf("  %s    (%s)  Show archive metadata\n", tc.bold("info"), tc.dim("i"));
-        printf("  %s (%s)  Encrypt an archive (AES-256-CBC)\n", tc.bold("encrypt"), tc.dim("e"));
-        printf("  %s (%s)  Decrypt an encrypted archive\n", tc.bold("decrypt"), tc.dim("d"));
-        printf("  %s           Read a single entry to stdout\n", tc.bold("cat"));
+        printf("%s\n", fmtCmd("create",  "c", "Create a new archive"));
+        printf("%s\n", fmtCmd("extract", "x", "Extract archive contents"));
+        printf("%s\n", fmtCmd("list",    "t", "List archive contents"));
+        printf("%s\n", fmtCmd("add",     "a", "Add files to an existing archive"));
+        printf("%s\n", fmtCmd("info",    "i", "Show archive metadata"));
+        printf("%s\n", fmtCmd("encrypt", "e", "Encrypt an archive (AES-256-CBC)"));
+        printf("%s\n", fmtCmd("decrypt", "d", "Decrypt an encrypted archive"));
+        printf("%s\n", fmtCmd("cat",     NOTHING, "Read a single entry to stdout"));
         printf("\n%s\n", tc.key("Options:"));
         printf("  %s          Show help (or command-specific help)\n", tc.dim("-h, --help"));
         printf("  %s       Show version\n", tc.dim("-V, --version"));
