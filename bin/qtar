@@ -22,6 +22,8 @@
 # FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 # DEALINGS IN THE SOFTWARE.
 
+%modern
+
 %requires tar
 %requires Util
 
@@ -545,10 +547,13 @@ class QTarApp {
 
     #! Walk a directory recursively, adding entries to the tar archive
     private int walkDirectory(TarFile tar, string fs_path, string archive_prefix,
-            bool dereference, bool verbose) {
+            bool dereference, bool verbose, *hash<string, bool> visited) {
+        # Symlink loop detection via canonical path tracking
         string canonical = realpath(fs_path);
-        # Symlink loop detection done by caller tracking visited set
-        # For simplicity in CLI, we rely on depth limit
+        if (visited{canonical}) {
+            return 0;
+        }
+        visited{canonical} = True;
 
         tar.addDirectory(archive_prefix.endsWith("/") ? archive_prefix : archive_prefix + "/");
         if (verbose) {
@@ -585,7 +590,8 @@ class QTarApp {
                 }
                 ++count;
             } else {
-                count += walkDirectory(tar, full_path, archive_name, dereference, verbose);
+                count += walkDirectory(tar, full_path, archive_name, dereference, verbose,
+                    visited);
             }
         }
 

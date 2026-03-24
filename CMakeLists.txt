@@ -23,6 +23,7 @@ if (UNIX AND NOT APPLE)
 endif()
 
 find_package(Qore 2.0 REQUIRED)
+include(GNUInstallDirs)
 
 # Find libarchive (required)
 find_package(LibArchive REQUIRED)
@@ -124,12 +125,10 @@ else()
             DESTINATION ${CMAKE_INSTALL_DATADIR}/qore/metadata)
 endif()
 
-# install CLI tool
-install(PROGRAMS bin/qtar.qr
-        DESTINATION ${CMAKE_INSTALL_FULL_BINDIR}
-        RENAME qtar)
-
 qore_config_info()
+
+# install CLI tool
+install(PROGRAMS bin/qtar DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 if (DOXYGEN_FOUND)
     qore_wrap_dox(QORE_DOX_SRC ${QORE_DOX_TMPL_SRC})
