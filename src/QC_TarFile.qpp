@@ -609,3 +609,56 @@ TarInputStream TarFile::getInputStream(string name) {
 TarOutputStream TarFile::getOutputStream(string name, *hash<TarAddOptions> opts) {
     return tf->openOutputStream(name->c_str(), opts, xsink);
 }
+
+/** @defgroup tar_utility_functions Tar Utility Functions
+    These functions provide name lookups for TAR constants.
+*/
+///@{
+
+//! Returns the human-readable name of a compression method constant
+/** @param method one of @ref tar_compression_methods (e.g. @ref TAR_CM_GZIP)
+
+    @return the compression method name (e.g. \c "gzip"), or \c "unknown" for unrecognized values
+
+    @par Example:
+    @code{.py}
+    string name = get_compression_name(TAR_CM_GZIP);  # returns "gzip"
+    @endcode
+
+    @since %tar 1.1
+*/
+string get_compression_name(int method) [flags=CONSTANT] {
+    switch (method) {
+        case 0: return new QoreStringNode("none");
+        case 1: return new QoreStringNode("gzip");
+        case 2: return new QoreStringNode("bzip2");
+        case 3: return new QoreStringNode("xz");
+        case 4: return new QoreStringNode("zstd");
+        case 5: return new QoreStringNode("lz4");
+        default: return new QoreStringNode("unknown");
+    }
+}
+
+//! Returns the human-readable name of an archive format constant
+/** @param format one of @ref tar_formats (e.g. @ref TAR_FORMAT_PAX)
+
+    @return the format name (e.g. \c "pax"), or \c "unknown" for unrecognized values
+
+    @par Example:
+    @code{.py}
+    string name = get_format_name(TAR_FORMAT_PAX);  # returns "pax"
+    @endcode
+
+    @since %tar 1.1
+*/
+string get_format_name(int format) [flags=CONSTANT] {
+    switch (format) {
+        case 0: return new QoreStringNode("ustar");
+        case 1: return new QoreStringNode("pax");
+        case 2: return new QoreStringNode("gnu");
+        case 3: return new QoreStringNode("v7");
+        default: return new QoreStringNode("unknown");
+    }
+}
+
+///@}

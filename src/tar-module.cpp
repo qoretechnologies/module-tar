@@ -33,6 +33,9 @@
 #include <cstring>
 #include <locale.h>
 
+// Forward declaration for qpp-generated function initializer
+DLLLOCAL void init_TarFile_functions(QoreNamespace& ns);
+
 static void tar_module_init(QoreModuleInitContext& ctx, ExceptionSink& xsink);
 static void tar_module_ns_init(QoreNamespace* rns, QoreNamespace* qns, ExceptionSink& xsink);
 static void tar_module_delete();
@@ -77,6 +80,8 @@ static void tar_module_init(QoreModuleInitContext& ctx, ExceptionSink& xsink) {
     TarNS.addSystemClass(initTarFileClass(TarNS));
     TarNS.addSystemClass(initTarEntryClass(TarNS));
 
+    // Initialize namespace-level functions
+    init_TarFile_functions(TarNS);
 }
 
 static void tar_module_ns_init(QoreNamespace* rns, QoreNamespace* qns, ExceptionSink& xsink) {

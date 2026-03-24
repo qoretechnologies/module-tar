@@ -64,6 +64,7 @@ public class TarTest inherits QUnit::Test {
         addTestCase("Metadata tests", \metadataTest());
         addTestCase("Path traversal protection tests", \pathTraversalTest());
         addTestCase("Append mode tests", \appendModeTest());
+        addTestCase("Name lookup function tests", \nameLookupTest());
 
         set_return_value(main());
     }
@@ -1704,5 +1705,24 @@ public class TarTest inherits QUnit::Test {
                 tar.close();
             }
         }
+    }
+
+    # Test name lookup functions
+    nameLookupTest() {
+        # Compression method names
+        assertEq("none", get_compression_name(TAR_CM_NONE), "CM_NONE -> none");
+        assertEq("gzip", get_compression_name(TAR_CM_GZIP), "CM_GZIP -> gzip");
+        assertEq("bzip2", get_compression_name(TAR_CM_BZIP2), "CM_BZIP2 -> bzip2");
+        assertEq("xz", get_compression_name(TAR_CM_XZ), "CM_XZ -> xz");
+        assertEq("zstd", get_compression_name(TAR_CM_ZSTD), "CM_ZSTD -> zstd");
+        assertEq("lz4", get_compression_name(TAR_CM_LZ4), "CM_LZ4 -> lz4");
+        assertEq("unknown", get_compression_name(99), "unknown compression -> unknown");
+
+        # Format names
+        assertEq("ustar", get_format_name(TAR_FORMAT_USTAR), "FORMAT_USTAR -> ustar");
+        assertEq("pax", get_format_name(TAR_FORMAT_PAX), "FORMAT_PAX -> pax");
+        assertEq("gnu", get_format_name(TAR_FORMAT_GNU), "FORMAT_GNU -> gnu");
+        assertEq("v7", get_format_name(TAR_FORMAT_V7), "FORMAT_V7 -> v7");
+        assertEq("unknown", get_format_name(99), "unknown format -> unknown");
     }
 }

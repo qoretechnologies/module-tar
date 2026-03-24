@@ -44,27 +44,11 @@ class QTarApp {
             ".tar.lz4": TAR_CM_LZ4,
         };
 
-        const CompressionNames = {
-            TAR_CM_NONE: "none",
-            TAR_CM_GZIP: "gzip",
-            TAR_CM_BZIP2: "bzip2",
-            TAR_CM_XZ: "xz",
-            TAR_CM_ZSTD: "zstd",
-            TAR_CM_LZ4: "lz4",
-        };
-
         const FormatMap = {
             "pax": TAR_FORMAT_PAX,
             "ustar": TAR_FORMAT_USTAR,
             "gnu": TAR_FORMAT_GNU,
             "v7": TAR_FORMAT_V7,
-        };
-
-        const FormatNames = {
-            TAR_FORMAT_PAX: "pax",
-            TAR_FORMAT_USTAR: "ustar",
-            TAR_FORMAT_GNU: "gnu",
-            TAR_FORMAT_V7: "v7",
         };
 
         const CreateOpts = {
@@ -236,8 +220,8 @@ class QTarApp {
             tc.success("ok:"),
             tc.bold(archive_path),
             tc.info(sprintf("%d entr%s", count, count == 1 ? "y" : "ies")),
-            CompressionNames{cm},
-            FormatNames{fmt},
+            get_compression_name(cm),
+            get_format_name(fmt),
         );
     }
 
@@ -433,8 +417,8 @@ class QTarApp {
         tar.close();
 
         printf("%s %s\n", tc.key("Archive:"), tc.bold(path ?? archive_path));
-        printf("%s %s\n", tc.key("Format:"), FormatNames{fmt} ?? "unknown");
-        printf("%s %s\n", tc.key("Compression:"), CompressionNames{cm} ?? "unknown");
+        printf("%s %s\n", tc.key("Format:"), get_format_name(fmt));
+        printf("%s %s\n", tc.key("Compression:"), get_compression_name(cm));
         printf("%s %s\n", tc.key("Entries:"), tc.number(string(entries.size())));
         printf("%s %s\n", tc.key("Files:"), tc.number(string(file_count)));
         printf("%s %s\n", tc.key("Directories:"), tc.number(string(dir_count)));
