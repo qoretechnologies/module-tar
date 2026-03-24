@@ -283,6 +283,23 @@ module TarDataProvider {
 
         DataProviderActionCatalog::registerAction(<DataProviderActionInfo>{
             "app": TarDataProvider::AppName,
+            "path": "/archive/verify",
+            "action": "verify-archive",
+            "display_name": "Verify Archive",
+            "short_desc": "Verify archive integrity",
+            "desc": "Verify the integrity of a tar archive by reading all entries and their "
+                "data blocks without extracting to disk",
+            "action_code": DPAT_API,
+            "options": DataProviderActionCatalog::getActionOptionFromFields(
+                TarVerifyArchiveRequestDataType::Fields, {
+                    "preselected": True,
+                },
+            ),
+            "output_type": TarVerifyArchiveDataProvider::ResponseType,
+        });
+
+        DataProviderActionCatalog::registerAction(<DataProviderActionInfo>{
+            "app": TarDataProvider::AppName,
             "path": "/archive/encrypt",
             "action": "encrypt-archive",
             "display_name": "Encrypt Archive",

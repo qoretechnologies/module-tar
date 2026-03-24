@@ -48,7 +48,7 @@ public class TarArchiveDataProvider inherits AbstractDataProvider {
     }
 
     private *list<string> getChildProviderNamesImpl() {
-        return ("create", "extract", "list", "info", "add", "encrypt", "decrypt", "split", "join");
+        return ("create", "extract", "list", "info", "add", "verify", "encrypt", "decrypt", "split", "join");
     }
 
     private *AbstractDataProvider getChildProviderImpl(string name) {
@@ -63,6 +63,8 @@ public class TarArchiveDataProvider inherits AbstractDataProvider {
                 return new TarArchiveInfoDataProvider(opts);
             case "add":
                 return new TarAddFilesDataProvider(opts);
+            case "verify":
+                return new TarVerifyArchiveDataProvider(opts);
             case "encrypt":
                 return new TarEncryptArchiveDataProvider(opts);
             case "decrypt":

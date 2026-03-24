@@ -60,6 +60,7 @@ public class TarDataProviderTest inherits QUnit::Test {
         addTestCase("Delete entry action tests", \deleteEntryActionTest());
         addTestCase("Archive directory action tests", \archiveDirectoryActionTest());
         addTestCase("Stream extract action tests", \streamExtractActionTest());
+        addTestCase("Verify archive action tests", \verifyArchiveActionTest());
         addTestCase("Error handling tests", \errorHandlingTest());
         addTestCase("Enum functionality tests", \enumFunctionalityTest());
         addTestCase("Assert error condition tests", \assertErrorConditionTest());
@@ -1051,6 +1052,69 @@ public class TarDataProviderTest inherits QUnit::Test {
             hash<string, AbstractDataField> respFields = respType.getFields();
             assertEq(True, exists respFields.stream, "response has stream field");
             assertEq(True, exists respFields.tar_file, "response has tar_file field");
+        }
+    }
+
+    # Test verify archive action
+    verifyArchiveActionTest() {
+        AbstractDataProvider provider = DataProvider::getFactory("tar").create();
+        AbstractDataProvider verifyProvider =
+            provider.getChildProvider("archive").getChildProvider("verify");
+
+        assertEq("verify", verifyProvider.getName(), "verify provider name");
+
+        # Create a valid test archive
+        AbstractDataProvider createProvider = provider.getChildProvider("archive").getChildProvider("create");
+        hash<auto> create_result = createProvider.doRequest({
+            "files": (
+                {"name": "file1.txt", "text": "Hello"},
+                {"name": "file2.bin", "data": binary("binary data")},
+            ),
+        });
+
+        # Verify valid archive
+        {
+            hash<auto> result = verifyProvider.doRequest({
+                "archive_data": create_result.archive_data,
+            });
+
+            assertEq(True, result.valid, "valid archive passes verification");
+            assertEq(2, result.entry_count, "verify reports 2 entries");
+            assertEq(True, result.total_size > 0, "verify reports data size");
+            assertEq(0, result.errors.size(), "no errors in valid archive");
+            assertEq("none", result.compression, "verify reports compression");
+        }
+
+        # Verify from file path
+        {
+            string archive_path = testDir + "/verify_test.tar";
+            createProvider.doRequest({
+                "archive_path": archive_path,
+                "files": ({"name": "test.txt", "text": "test"},),
+            });
+
+            hash<auto> result = verifyProvider.doRequest({
+                "archive_path": archive_path,
+            });
+            assertEq(True, result.valid, "file-based verify passes");
+            assertEq(1, result.entry_count, "file verify: 1 entry");
+        }
+
+        # Test missing archive source
+        assertThrows("REQUIRED-FIELD-GROUP-ERROR", sub() {
+            verifyProvider.doRequest({});
+        }, NOTHING, "verify requires archive source");
+
+        # Test request/response types
+        {
+            *AbstractDataProviderType reqType = verifyProvider.getRequestType();
+            hash<string, AbstractDataField> fields = reqType.getFields();
+            assertEq(True, exists fields.archive_path, "verify has archive_path field");
+
+            *AbstractDataProviderType respType = verifyProvider.getResponseType();
+            hash<string, AbstractDataField> respFields = respType.getFields();
+            assertEq(True, exists respFields.valid, "response has valid field");
+            assertEq(True, exists respFields.errors, "response has errors field");
         }
     }
 

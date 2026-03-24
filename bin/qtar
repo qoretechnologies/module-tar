@@ -146,6 +146,12 @@ class QTarApp {
                 case "cat":
                     cmdCat();
                     break;
+                case "verify":
+                    cmdVerify();
+                    break;
+                case "diff":
+                    cmdDiff();
+                    break;
                 case "--help": case "-h": case "help":
                     usage();
                     break;
@@ -531,6 +537,192 @@ class QTarApp {
         stdout.write(data);
     }
 
+    # --- Verify command ---
+    private cmdVerify() {
+        if (!ARGV || ARGV[0] == "-h" || ARGV[0] == "--help") {
+            usageVerify();
+            return;
+        }
+
+        string archive_path = shift ARGV;
+        TarFile tar(archive_path, "r");
+        list<hash<TarEntryInfo>> entries = tar.entries();
+
+        *int cm = tar.getCompressionMethod();
+        *int fmt = tar.getFormat();
+
+        int total_size = 0;
+        int file_count = 0;
+        int error_count = 0;
+
+        foreach hash<TarEntryInfo> entry in (entries) {
+            if (!entry.is_directory && !entry.is_symlink && !entry.is_hardlink) {
+                try {
+                    binary content = tar.read(entry.name);
+                    total_size += content.size();
+                    ++file_count;
+                    if (content.size() != entry.size) {
+                        stderr.printf("  %s %s: size mismatch (expected %d, got %d)\n",
+                            tc.error("FAIL"), entry.name, entry.size, content.size());
+                        ++error_count;
+                    }
+                } catch (hash<ExceptionInfo> ex) {
+                    stderr.printf("  %s %s: %s: %s\n",
+                        tc.error("FAIL"), entry.name, ex.err, ex.desc);
+                    ++error_count;
+                }
+            }
+        }
+
+        tar.close();
+
+        printf("%s %s\n", tc.key("Archive:"), tc.bold(archive_path));
+        printf("%s %s\n", tc.key("Entries:"), tc.number(string(entries.size())));
+        printf("%s %s\n", tc.key("Files verified:"), tc.number(string(file_count)));
+        printf("%s %s\n", tc.key("Total data:"), tc.number(formatSize(total_size)));
+        printf("%s %s\n", tc.key("Compression:"), get_compression_name(cm ?? 0));
+        printf("%s %s\n", tc.key("Format:"), get_format_name(fmt ?? 0));
+
+        if (error_count) {
+            printf("%s %s\n", tc.key("Result:"),
+                tc.error(sprintf("FAILED (%d error%s)", error_count,
+                    error_count == 1 ? "" : "s")));
+            exit(1);
+        } else {
+            printf("%s %s\n", tc.key("Result:"), tc.success("OK"));
+        }
+    }
+
+    # --- Diff command ---
+    private cmdDiff() {
+        if (!ARGV || ARGV[0] == "-h" || ARGV[0] == "--help") {
+            usageDiff();
+            return;
+        }
+
+        if (ARGV.size() < 1) {
+            stderr.printf("%s diff requires <archive> [<directory>]\n", tc.error("error:"));
+            exit(1);
+        }
+
+        string archive_path = shift ARGV;
+        string directory = ARGV ? shift ARGV : ".";
+
+        TarFile tar(archive_path, "r");
+        list<hash<TarEntryInfo>> entries = tar.entries();
+
+        int matched = 0;
+        int modified = 0;
+        int archive_only = 0;
+
+        # Track archive entry names for detecting disk-only files
+        hash<string, bool> archive_names;
+
+        foreach hash<TarEntryInfo> entry in (entries) {
+            archive_names{entry.name} = True;
+            string fs_path = directory + "/" + entry.name;
+
+            if (entry.is_directory) {
+                if (is_dir(fs_path)) {
+                    ++matched;
+                } else {
+                    printf("  %s %s %s\n", tc.yellow("A"), tc.dim("dir "), entry.name);
+                    ++archive_only;
+                }
+            } else if (entry.is_symlink) {
+                if (is_link(fs_path)) {
+                    string target = readlink(fs_path);
+                    if (target == entry.link_target) {
+                        ++matched;
+                    } else {
+                        printf("  %s %s %s (link target: %s vs %s)\n",
+                            tc.red("M"), tc.dim("link"), entry.name,
+                            entry.link_target, target);
+                        ++modified;
+                    }
+                } else {
+                    printf("  %s %s %s\n", tc.yellow("A"), tc.dim("link"), entry.name);
+                    ++archive_only;
+                }
+            } else {
+                # Regular file
+                if (is_file(fs_path)) {
+                    hash<StatInfo> st = hstat(fs_path);
+                    if (st.size != entry.size) {
+                        printf("  %s %s %s (size: %d vs %d)\n",
+                            tc.red("M"), tc.dim("file"), entry.name,
+                            entry.size, st.size);
+                        ++modified;
+                    } else {
+                        # Same size — compare content
+                        binary archive_content = tar.read(entry.name);
+                        binary disk_content = ReadOnlyFile::readBinaryFile(fs_path);
+                        if (archive_content == disk_content) {
+                            ++matched;
+                        } else {
+                            printf("  %s %s %s (content differs)\n",
+                                tc.red("M"), tc.dim("file"), entry.name);
+                            ++modified;
+                        }
+                    }
+                } else {
+                    printf("  %s %s %s\n", tc.yellow("A"), tc.dim("file"), entry.name);
+                    ++archive_only;
+                }
+            }
+        }
+
+        tar.close();
+
+        # Scan filesystem for files not in archive
+        int disk_only = 0;
+        scanDiskOnly(directory, "", archive_names, \disk_only);
+
+        # Summary
+        printf("\n");
+        if (matched > 0) {
+            printf("  %s matched\n", tc.success(string(matched)));
+        }
+        if (modified > 0) {
+            printf("  %s modified\n", tc.error(string(modified)));
+        }
+        if (archive_only > 0) {
+            printf("  %s archive only\n", tc.warning(string(archive_only)));
+        }
+        if (disk_only > 0) {
+            printf("  %s disk only\n", tc.warning(string(disk_only)));
+        }
+
+        if (modified > 0 || archive_only > 0 || disk_only > 0) {
+            exit(1);
+        }
+    }
+
+    #! Recursively scan for files on disk not in the archive
+    private scanDiskOnly(string fs_path, string prefix, hash<string, bool> archive_names,
+            reference<int> count) {
+        Dir d();
+        d.chdir(fs_path);
+
+        foreach string name in (d.listFiles()) {
+            string rel = prefix ? prefix + "/" + name : name;
+            if (!archive_names{rel}) {
+                printf("  %s %s %s\n", tc.cyan("D"), tc.dim("file"), rel);
+                ++count;
+            }
+        }
+
+        foreach string name in (d.listDirs()) {
+            string rel = prefix ? prefix + "/" + name : name;
+            string dir_rel = rel + "/";
+            if (!archive_names{dir_rel} && !archive_names{rel}) {
+                printf("  %s %s %s\n", tc.cyan("D"), tc.dim("dir "), rel + "/");
+                ++count;
+            }
+            scanDiskOnly(fs_path + "/" + name, rel, archive_names, \count);
+        }
+    }
+
     # --- Helpers ---
 
     #! Walk a directory recursively, adding entries to the tar archive
@@ -688,6 +880,8 @@ class QTarApp {
         printf("%s\n", fmtCmd("encrypt", "e", "Encrypt an archive (AES-256-CBC)"));
         printf("%s\n", fmtCmd("decrypt", "d", "Decrypt an encrypted archive"));
         printf("%s\n", fmtCmd("cat",     NOTHING, "Read a single entry to stdout"));
+        printf("%s\n", fmtCmd("verify",  NOTHING, "Verify archive integrity"));
+        printf("%s\n", fmtCmd("diff",    NOTHING, "Compare archive vs filesystem"));
         printf("\n%s\n", tc.key("Options:"));
         printf("  %s          Show help (or command-specific help)\n", tc.dim("-h, --help"));
         printf("  %s       Show version\n", tc.dim("-V, --version"));
@@ -765,5 +959,20 @@ class QTarApp {
 
     private usageCat() {
         printf("%s qtar cat <archive> <entry-name>\n", tc.key("Usage:"));
+    }
+
+    private usageVerify() {
+        printf("%s qtar verify <archive>\n\n", tc.key("Usage:"));
+        printf("Reads all entries and data blocks to verify archive integrity.\n");
+        printf("Exits with code 0 if valid, 1 if errors found.\n");
+    }
+
+    private usageDiff() {
+        printf("%s qtar diff <archive> [<directory>]\n\n", tc.key("Usage:"));
+        printf("Compares archive contents against a filesystem directory (default: .).\n\n");
+        printf("%s\n", tc.key("Legend:"));
+        printf("  %s  Modified (content or metadata differs)\n", tc.red("M"));
+        printf("  %s  Archive only (not on disk)\n", tc.yellow("A"));
+        printf("  %s  Disk only (not in archive)\n", tc.cyan("D"));
     }
 }
