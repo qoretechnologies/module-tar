@@ -412,6 +412,145 @@ public class TarDataProviderTest inherits QUnit::Test {
 
         hash<DataProviderInfo> joinInfo = joinProvider.getInfo();
         assertEq(True, joinInfo.supports_request, "join supports request");
+
+        # Create a test archive for split/join round-trip
+        AbstractDataProvider createProvider = provider.getChildProvider("archive").getChildProvider("create");
+        hash<auto> create_result = createProvider.doRequest({
+            "files": (
+                {"name": "file1.txt", "text": "Hello World"},
+                {"name": "file2.txt", "text": "Second file content"},
+                {"name": "dir/nested.txt", "text": "Nested content"},
+            ),
+        });
+        binary original_data = create_result.archive_data;
+        int original_size = original_data.size();
+
+        # Test split into chunks
+        {
+            hash<auto> split_result = splitProvider.doRequest({
+                "archive_data": original_data,
+                "chunk_size": 512,
+            });
+
+            assertEq(True, split_result.chunk_count > 1,
+                "split produces multiple chunks");
+            assertEq(original_size, split_result.total_size,
+                "split total_size matches original");
+            assertEq(split_result.chunks.size(), split_result.chunk_count,
+                "chunk_count matches chunks list size");
+
+            # Verify each chunk is at most chunk_size bytes
+            foreach binary chunk in (split_result.chunks) {
+                assertEq(True, chunk.size() <= 512, "chunk size <= 512");
+            }
+
+            # Test round-trip: join chunks back
+            hash<auto> join_result = joinProvider.doRequest({
+                "chunks": split_result.chunks,
+            });
+
+            assertEq(original_size, join_result.total_size,
+                "join total_size matches original");
+            assertEq(split_result.chunk_count, join_result.chunk_count,
+                "join chunk_count matches split count");
+            assertEq(original_data, join_result.archive_data,
+                "round-trip produces identical binary");
+
+            # Verify the joined archive is valid by listing contents
+            AbstractDataProvider listProvider =
+                provider.getChildProvider("archive").getChildProvider("list");
+            hash<auto> list_result = listProvider.doRequest({
+                "archive_data": join_result.archive_data,
+            });
+            assertEq(3, list_result.count, "joined archive has 3 entries");
+        }
+
+        # Test split with chunk_size larger than archive (single chunk)
+        {
+            hash<auto> split_result = splitProvider.doRequest({
+                "archive_data": original_data,
+                "chunk_size": original_size + 1000,
+            });
+
+            assertEq(1, split_result.chunk_count, "large chunk_size produces 1 chunk");
+            assertEq(original_data, split_result.chunks[0],
+                "single chunk equals original data");
+        }
+
+        # Test split with chunk_size == 1
+        {
+            # Use small data to avoid huge list
+            binary small_data = binary("test");
+            hash<auto> split_result = splitProvider.doRequest({
+                "archive_data": small_data,
+                "chunk_size": 1,
+            });
+
+            assertEq(4, split_result.chunk_count, "chunk_size=1 splits into 4 chunks");
+
+            # Round-trip
+            hash<auto> join_result = joinProvider.doRequest({
+                "chunks": split_result.chunks,
+            });
+            assertEq(small_data, join_result.archive_data,
+                "chunk_size=1 round-trip produces identical data");
+        }
+
+        # Test split from file path
+        {
+            string archive_path = testDir + "/split_test.tar";
+            createProvider.doRequest({
+                "archive_path": archive_path,
+                "files": ({"name": "test.txt", "text": "test"},),
+            });
+
+            hash<auto> split_result = splitProvider.doRequest({
+                "archive_path": archive_path,
+                "chunk_size": 1024,
+            });
+            assertEq(True, split_result.chunk_count >= 1, "split from file works");
+            assertEq(True, split_result.total_size > 0, "split from file has size");
+        }
+
+        # Test split with chunk_size <= 0 raises error
+        assertThrows("TAR-ERROR", sub() {
+            splitProvider.doRequest({
+                "archive_data": original_data,
+                "chunk_size": 0,
+            });
+        }, NOTHING, "split rejects chunk_size=0");
+
+        assertThrows("TAR-ERROR", sub() {
+            splitProvider.doRequest({
+                "archive_data": original_data,
+                "chunk_size": -1,
+            });
+        }, NOTHING, "split rejects chunk_size=-1");
+
+        # Test split without archive source
+        assertThrows("REQUIRED-FIELD-GROUP-ERROR", sub() {
+            splitProvider.doRequest({
+                "chunk_size": 512,
+            });
+        }, NOTHING, "split requires archive source");
+
+        # Test join with empty chunks
+        assertThrows("TAR-ERROR", sub() {
+            joinProvider.doRequest({
+                "chunks": (),
+            });
+        }, NOTHING, "join rejects empty chunks");
+
+        # Test request/response types exist
+        {
+            *AbstractDataProviderType splitReqType = splitProvider.getRequestType();
+            hash<string, AbstractDataField> splitFields = splitReqType.getFields();
+            assertEq(True, exists splitFields.chunk_size, "split has chunk_size field");
+
+            *AbstractDataProviderType joinReqType = joinProvider.getRequestType();
+            hash<string, AbstractDataField> joinFields = joinReqType.getFields();
+            assertEq(True, exists joinFields.chunks, "join has chunks field");
+        }
     }
 
     # Test error handling

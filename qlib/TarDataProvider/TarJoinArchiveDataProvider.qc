@@ -29,10 +29,13 @@ public class TarJoinArchiveDataProvider inherits AbstractDataProvider {
     public {
         const ProviderInfo = <DataProviderInfo>{
             "name": "join",
-            "desc": "Join archive chunks back into a single TAR archive",
+            "desc": "Join binary archive chunks back into a single TAR archive",
             "type": "TarJoinArchiveDataProvider",
             "supports_request": True,
         };
+
+        #! Response type for action catalog output_type
+        static TarJoinArchiveResponseDataType ResponseType();
     }
 
     private {
@@ -51,8 +54,79 @@ public class TarJoinArchiveDataProvider inherits AbstractDataProvider {
         return ProviderInfo;
     }
 
+    private *AbstractDataProviderType getRequestTypeImpl() {
+        return new TarJoinArchiveRequestDataType();
+    }
+
+    private *AbstractDataProviderType getResponseTypeImpl() {
+        return new TarJoinArchiveResponseDataType();
+    }
+
     private auto doRequestImpl(auto req, *hash<auto> request_options) {
-        throw "NOT-IMPLEMENTED", "Join archive operation not yet implemented";
+        list<binary> chunks = req.chunks;
+        if (!chunks || !chunks.size()) {
+            throw "TAR-ERROR", "at least one chunk must be provided";
+        }
+
+        binary archive_data = binary();
+        foreach binary chunk in (chunks) {
+            archive_data += chunk;
+        }
+
+        return {
+            "archive_data": archive_data,
+            "total_size": archive_data.size(),
+            "chunk_count": chunks.size(),
+        };
+    }
+}
+
+#! Request type for join archive operation
+public class TarJoinArchiveRequestDataType inherits HashDataType {
+    public {
+        const Fields = {
+            "chunks": {
+                "type": new ListDataType("JoinChunkList", BinaryType, True),
+                "display_name": "Chunks",
+                "short_desc": "Binary chunks to join",
+                "desc": "A list of binary chunks to concatenate back into a single tar archive. "
+                    "Chunks must be in the correct order as produced by the split operation",
+            },
+        };
+    }
+
+    constructor() : HashDataType("TarJoinArchiveRequest") {
+        addQoreFields(Fields);
+    }
+}
+
+#! Response type for join archive operation
+public class TarJoinArchiveResponseDataType inherits HashDataType {
+    public {
+        const Fields = {
+            "archive_data": {
+                "type": BinaryType,
+                "display_name": "Archive Data",
+                "short_desc": "Reassembled archive binary",
+                "desc": "The reassembled tar archive as binary data",
+            },
+            "total_size": {
+                "type": IntType,
+                "display_name": "Total Size",
+                "short_desc": "Archive size in bytes",
+                "desc": "The total size of the reassembled archive in bytes",
+            },
+            "chunk_count": {
+                "type": IntType,
+                "display_name": "Chunk Count",
+                "short_desc": "Number of chunks joined",
+                "desc": "The number of chunks that were concatenated",
+            },
+        };
+    }
+
+    constructor() : HashDataType("TarJoinArchiveResponse") {
+        addQoreFields(Fields);
     }
 }
 }

@@ -277,9 +277,16 @@ module TarDataProvider {
             "path": "/archive/split",
             "action": "split-archive",
             "display_name": "Split Archive",
-            "short_desc": "Split archive into chunks",
-            "desc": "Split a tar archive into multiple smaller chunks for multi-volume storage",
+            "short_desc": "Split archive into fixed-size chunks",
+            "desc": "Split a tar archive into multiple fixed-size binary chunks for multi-volume "
+                "storage or transfer",
             "action_code": DPAT_API,
+            "options": DataProviderActionCatalog::getActionOptionFromFields(
+                TarSplitArchiveRequestDataType::Fields, {
+                    "preselected": True,
+                },
+            ),
+            "output_type": TarSplitArchiveDataProvider::ResponseType,
         });
 
         DataProviderActionCatalog::registerAction(<DataProviderActionInfo>{
@@ -287,9 +294,15 @@ module TarDataProvider {
             "path": "/archive/join",
             "action": "join-archive",
             "display_name": "Join Archive Chunks",
-            "short_desc": "Join archive chunks",
-            "desc": "Join multiple archive chunks back into a single tar archive",
+            "short_desc": "Join archive chunks into single archive",
+            "desc": "Join binary archive chunks back into a single tar archive",
             "action_code": DPAT_API,
+            "options": DataProviderActionCatalog::getActionOptionFromFields(
+                TarJoinArchiveRequestDataType::Fields, {
+                    "preselected": True,
+                },
+            ),
+            "output_type": TarJoinArchiveDataProvider::ResponseType,
         });
     };
 }
