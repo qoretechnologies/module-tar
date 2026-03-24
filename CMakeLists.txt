@@ -124,6 +124,11 @@ else()
             DESTINATION ${CMAKE_INSTALL_DATADIR}/qore/metadata)
 endif()
 
+# install CLI tool
+install(PROGRAMS bin/qtar.qr
+        DESTINATION ${CMAKE_INSTALL_FULL_BINDIR}
+        RENAME qtar)
+
 qore_config_info()
 
 if (DOXYGEN_FOUND)
