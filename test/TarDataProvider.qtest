@@ -58,6 +58,7 @@ public class TarDataProviderTest inherits QUnit::Test {
         addTestCase("Encrypt/decrypt action tests", \encryptDecryptActionTest());
         addTestCase("Split/join action tests", \splitJoinActionTest());
         addTestCase("Delete entry action tests", \deleteEntryActionTest());
+        addTestCase("Archive directory action tests", \archiveDirectoryActionTest());
         addTestCase("Error handling tests", \errorHandlingTest());
         addTestCase("Enum functionality tests", \enumFunctionalityTest());
         addTestCase("Assert error condition tests", \assertErrorConditionTest());
@@ -792,6 +793,164 @@ public class TarDataProviderTest inherits QUnit::Test {
             assertEq(True, exists fields.entry_name, "delete has entry_name field");
             assertEq(True, exists fields.compression, "delete has compression field");
             assertEq(True, exists fields.format, "delete has format field");
+        }
+    }
+
+    # Test archive directory action
+    archiveDirectoryActionTest() {
+        AbstractDataProvider provider = DataProvider::getFactory("tar").create();
+        AbstractDataProvider archiveDirProvider =
+            provider.getChildProvider("directory").getChildProvider("archive");
+
+        assertEq("archive", archiveDirProvider.getName(), "archive dir provider name");
+
+        # Create a test directory structure
+        string srcDir = testDir + "/archive_src";
+        mkdir(srcDir);
+        mkdir(srcDir + "/subdir");
+        mkdir(srcDir + "/subdir/nested");
+        {
+            File f();
+            f.open(srcDir + "/root.txt", O_CREAT|O_WRONLY);
+            f.write("Root file");
+        }
+        {
+            File f();
+            f.open(srcDir + "/subdir/child.txt", O_CREAT|O_WRONLY);
+            f.write("Child file");
+        }
+        {
+            File f();
+            f.open(srcDir + "/subdir/nested/deep.txt", O_CREAT|O_WRONLY);
+            f.write("Deep file");
+        }
+
+        # Test archive to binary data
+        {
+            hash<auto> result = archiveDirProvider.doRequest({
+                "directory_path": srcDir,
+            });
+
+            assertEq(True, exists result.archive_data, "archive returns binary data");
+            assertEq(True, result.entry_count > 0, "archive has entries");
+            assertEq(3, result.file_count, "archive has 3 files");
+            assertEq(True, result.directory_count >= 3, "archive has at least 3 dirs");
+            assertEq("none", result.compression, "default compression is none");
+
+            # Verify archive contents
+            AbstractDataProvider listProvider =
+                provider.getChildProvider("archive").getChildProvider("list");
+            hash<auto> list_result = listProvider.doRequest({
+                "archive_data": result.archive_data,
+            });
+            assertEq(result.entry_count, list_result.count, "list count matches entry_count");
+
+            # Verify file content via extract
+            AbstractDataProvider readProvider =
+                provider.getChildProvider("file").getChildProvider("read");
+            hash<auto> read_result = readProvider.doRequest({
+                "archive_data": result.archive_data,
+                "entry_name": "archive_src/root.txt",
+                "as_text": True,
+            });
+            assertEq("Root file", read_result.content, "root.txt content preserved");
+
+            hash<auto> deep_result = readProvider.doRequest({
+                "archive_data": result.archive_data,
+                "entry_name": "archive_src/subdir/nested/deep.txt",
+                "as_text": True,
+            });
+            assertEq("Deep file", deep_result.content, "deep.txt content preserved");
+        }
+
+        # Test archive with custom base_name
+        {
+            hash<auto> result = archiveDirProvider.doRequest({
+                "directory_path": srcDir,
+                "base_name": "myproject",
+            });
+
+            AbstractDataProvider readProvider =
+                provider.getChildProvider("file").getChildProvider("read");
+            hash<auto> read_result = readProvider.doRequest({
+                "archive_data": result.archive_data,
+                "entry_name": "myproject/root.txt",
+                "as_text": True,
+            });
+            assertEq("Root file", read_result.content,
+                "custom base_name: root.txt accessible via myproject/root.txt");
+        }
+
+        # Test archive to file path
+        {
+            string out_path = testDir + "/dir_archive.tar";
+            hash<auto> result = archiveDirProvider.doRequest({
+                "directory_path": srcDir,
+                "archive_path": out_path,
+            });
+
+            assertEq(out_path, result.archive_path, "archive_path in response");
+            assertEq(True, is_file(out_path), "archive file created");
+            assertEq(3, result.file_count, "file archive has 3 files");
+        }
+
+        # Test archive with compression
+        {
+            hash<auto> result = archiveDirProvider.doRequest({
+                "directory_path": srcDir,
+                "compression": "gzip",
+            });
+
+            assertEq("gzip", result.compression, "compression is gzip");
+            assertEq(True, exists result.archive_data, "compressed archive has data");
+        }
+
+        # Test symlinks (without following)
+        {
+            string linkDir = testDir + "/link_src";
+            mkdir(linkDir);
+            {
+                File f();
+                f.open(linkDir + "/target.txt", O_CREAT|O_WRONLY);
+                f.write("Target");
+            }
+            symlink(linkDir + "/target.txt", linkDir + "/link.txt");
+
+            hash<auto> result = archiveDirProvider.doRequest({
+                "directory_path": linkDir,
+                "follow_symlinks": False,
+            });
+
+            assertEq(2, result.file_count, "symlink dir: 2 files (target + link)");
+        }
+
+        # Test empty directory
+        {
+            string emptyDir = testDir + "/empty_src";
+            mkdir(emptyDir);
+
+            hash<auto> result = archiveDirProvider.doRequest({
+                "directory_path": emptyDir,
+            });
+
+            assertEq(0, result.file_count, "empty dir: 0 files");
+            assertEq(1, result.directory_count, "empty dir: 1 directory entry");
+        }
+
+        # Test non-existent directory
+        assertThrows("TAR-ERROR", sub() {
+            archiveDirProvider.doRequest({
+                "directory_path": testDir + "/nonexistent",
+            });
+        }, NOTHING, "non-existent directory rejected");
+
+        # Test request type fields
+        {
+            *AbstractDataProviderType reqType = archiveDirProvider.getRequestType();
+            hash<string, AbstractDataField> fields = reqType.getFields();
+            assertEq(True, exists fields.directory_path, "has directory_path field");
+            assertEq(True, exists fields.follow_symlinks, "has follow_symlinks field");
+            assertEq(True, exists fields.base_name, "has base_name field");
         }
     }
 

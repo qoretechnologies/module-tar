@@ -228,8 +228,19 @@ module TarDataProvider {
             "action": "archive-directory",
             "display_name": "Archive Directory",
             "short_desc": "Archive a directory tree",
-            "desc": "Create a tar archive from a directory and all its contents",
+            "desc": "Recursively archive a directory tree into a tar archive, preserving file "
+                "permissions and optionally following symlinks",
             "action_code": DPAT_API,
+            "options": DataProviderActionCatalog::getActionOptionFromFields(
+                TarArchiveDirectoryRequestDataType::Fields{"directory_path", "archive_path",
+                    "compression"}, {
+                    "preselected": True,
+                },
+            ) + DataProviderActionCatalog::getActionOptionFromFields(
+                TarArchiveDirectoryRequestDataType::Fields
+                    - ("directory_path", "archive_path", "compression"),
+            ),
+            "output_type": TarArchiveDirectoryDataProvider::ResponseType,
         });
 
         DataProviderActionCatalog::registerAction(<DataProviderActionInfo>{
