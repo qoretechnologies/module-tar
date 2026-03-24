@@ -96,8 +96,8 @@ public:
     //! Add hardlink entry
     DLLLOCAL void addHardlink(const char* name, const char* target, const QoreHashNode* opts, ExceptionSink* xsink);
 
-    //! Extract all entries to directory
-    DLLLOCAL void extractAll(const char* destPath, const QoreHashNode* opts, ExceptionSink* xsink);
+    //! Extract all entries to directory, returns list of extracted entry names
+    DLLLOCAL QoreListNode* extractAll(const char* destPath, const QoreHashNode* opts, ExceptionSink* xsink);
 
     //! Extract single entry
     DLLLOCAL void extractEntry(const char* name, const char* destPath, ExceptionSink* xsink);
@@ -158,7 +158,14 @@ private:
     DLLLOCAL void parseExtractOptions(const QoreHashNode* opts, std::string& destination,
                                        bool& preserve_permissions, bool& preserve_ownership,
                                        bool& preserve_times, bool& overwrite, bool& create_directories,
-                                       int& strip_count, ExceptionSink* xsink) const;
+                                       int& strip_count, std::vector<std::string>& include_patterns,
+                                       std::vector<std::string>& exclude_patterns,
+                                       ExceptionSink* xsink) const;
+
+    //! Check if an entry name matches the include/exclude filter patterns
+    DLLLOCAL static bool matchesFilters(const char* name,
+                                        const std::vector<std::string>& include_patterns,
+                                        const std::vector<std::string>& exclude_patterns);
 
     //! Check archive is open and in correct mode
     DLLLOCAL bool checkOpen(ExceptionSink* xsink, bool forWrite = false);

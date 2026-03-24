@@ -61,8 +61,19 @@ module TarDataProvider {
             "action": "create-archive",
             "display_name": "Create Archive",
             "short_desc": "Create a new tar archive",
-            "desc": "Create a new tar archive from files, directories, or binary data",
+            "desc": "Create a new tar archive from files, directories, or binary data with optional "
+                "compression and format settings",
             "action_code": DPAT_API,
+            "options": DataProviderActionCatalog::getActionOptionFromFields(
+                TarCreateArchiveRequestDataType::Fields{"archive_path", "output_location",
+                    "compression", "files"}, {
+                    "preselected": True,
+                },
+            ) + DataProviderActionCatalog::getActionOptionFromFields(
+                TarCreateArchiveRequestDataType::Fields
+                    - ("archive_path", "output_location", "compression", "files"),
+            ),
+            "output_type": TarCreateArchiveDataProvider::ResponseType,
         });
 
         DataProviderActionCatalog::registerAction(<DataProviderActionInfo>{
@@ -70,9 +81,25 @@ module TarDataProvider {
             "path": "/archive/extract",
             "action": "extract-archive",
             "display_name": "Extract Archive",
-            "short_desc": "Extract a tar archive",
-            "desc": "Extract all contents of a tar archive to a destination directory",
+            "short_desc": "Extract a tar archive with optional filters",
+            "desc": "Extract contents of a tar archive to a destination directory with optional "
+                "`include`/`exclude` glob-style filename filters",
             "action_code": DPAT_API,
+            "options": DataProviderActionCatalog::getActionOptionFromFields(
+                TarExtractArchiveRequestDataType::Fields{"archive_path", "archive_data",
+                    "archive_location", "destination"}, {
+                    "preselected": True,
+                },
+            ) + DataProviderActionCatalog::getActionOptionFromFields(
+                TarExtractArchiveRequestDataType::Fields{"include", "exclude"}, {
+                    "preselected": True,
+                },
+            ) + DataProviderActionCatalog::getActionOptionFromFields(
+                TarExtractArchiveRequestDataType::Fields
+                    - ("archive_path", "archive_data", "archive_location", "destination",
+                       "include", "exclude"),
+            ),
+            "output_type": TarExtractArchiveDataProvider::ResponseType,
         });
 
         DataProviderActionCatalog::registerAction(<DataProviderActionInfo>{
@@ -83,6 +110,12 @@ module TarDataProvider {
             "short_desc": "List files in a tar archive",
             "desc": "Get a list of all entries in a tar archive with metadata",
             "action_code": DPAT_API,
+            "options": DataProviderActionCatalog::getActionOptionFromFields(
+                TarListRequestDataType::Fields, {
+                    "preselected": True,
+                },
+            ),
+            "output_type": TarListArchiveDataProvider::ResponseType,
         });
 
         DataProviderActionCatalog::registerAction(<DataProviderActionInfo>{
@@ -91,8 +124,15 @@ module TarDataProvider {
             "action": "get-archive-info",
             "display_name": "Get Archive Info",
             "short_desc": "Get tar archive metadata",
-            "desc": "Get metadata and statistics about a tar archive",
+            "desc": "Get metadata and statistics about a tar archive including entry counts, "
+                "compression method, and total size",
             "action_code": DPAT_API,
+            "options": DataProviderActionCatalog::getActionOptionFromFields(
+                TarArchiveInfoRequestDataType::Fields, {
+                    "preselected": True,
+                },
+            ),
+            "output_type": TarArchiveInfoDataProvider::ResponseType,
         });
 
         DataProviderActionCatalog::registerAction(<DataProviderActionInfo>{
@@ -103,6 +143,14 @@ module TarDataProvider {
             "short_desc": "Add files to an existing archive",
             "desc": "Add new files or update existing files in a tar archive",
             "action_code": DPAT_API,
+            "options": DataProviderActionCatalog::getActionOptionFromFields(
+                TarAddFilesRequestDataType::Fields{"archive_path", "files"}, {
+                    "preselected": True,
+                },
+            ) + DataProviderActionCatalog::getActionOptionFromFields(
+                TarAddFilesRequestDataType::Fields - ("archive_path", "files"),
+            ),
+            "output_type": TarAddFilesDataProvider::ResponseType,
         });
 
         DataProviderActionCatalog::registerAction(<DataProviderActionInfo>{
@@ -111,8 +159,14 @@ module TarDataProvider {
             "action": "extract-file",
             "display_name": "Extract Single File",
             "short_desc": "Extract one file from archive",
-            "desc": "Extract a single file from a tar archive to memory or disk",
+            "desc": "Extract a single file from a tar archive to a destination path on disk",
             "action_code": DPAT_API,
+            "options": DataProviderActionCatalog::getActionOptionFromFields(
+                TarExtractFileRequestDataType::Fields, {
+                    "preselected": True,
+                },
+            ),
+            "output_type": TarExtractFileDataProvider::ResponseType,
         });
 
         DataProviderActionCatalog::registerAction(<DataProviderActionInfo>{
@@ -123,6 +177,15 @@ module TarDataProvider {
             "short_desc": "Read file without extracting",
             "desc": "Read the contents of a file from a tar archive without extracting to disk",
             "action_code": DPAT_API,
+            "options": DataProviderActionCatalog::getActionOptionFromFields(
+                TarReadFileRequestDataType::Fields{"archive_path", "archive_data",
+                    "archive_location", "entry_name", "as_text"}, {
+                    "preselected": True,
+                },
+            ) + DataProviderActionCatalog::getActionOptionFromFields(
+                TarReadFileRequestDataType::Fields{"encoding",},
+            ),
+            "output_type": TarReadFileDataProvider::ResponseType,
         });
 
         DataProviderActionCatalog::registerAction(<DataProviderActionInfo>{
@@ -133,6 +196,14 @@ module TarDataProvider {
             "short_desc": "Compress data to tar format",
             "desc": "Compress binary data or files into an in-memory tar archive",
             "action_code": DPAT_API,
+            "options": DataProviderActionCatalog::getActionOptionFromFields(
+                TarCompressDataRequestDataType::Fields{"compression", "files"}, {
+                    "preselected": True,
+                },
+            ) + DataProviderActionCatalog::getActionOptionFromFields(
+                TarCompressDataRequestDataType::Fields{"format",},
+            ),
+            "output_type": TarCompressDataDataProvider::ResponseType,
         });
 
         DataProviderActionCatalog::registerAction(<DataProviderActionInfo>{
@@ -141,8 +212,14 @@ module TarDataProvider {
             "action": "decompress-data",
             "display_name": "Decompress Data",
             "short_desc": "Decompress tar data",
-            "desc": "Decompress an in-memory tar archive and return file contents",
+            "desc": "Decompress a tar archive and return file contents as in-memory data",
             "action_code": DPAT_API,
+            "options": DataProviderActionCatalog::getActionOptionFromFields(
+                TarDecompressDataRequestDataType::Fields, {
+                    "preselected": True,
+                },
+            ),
+            "output_type": TarDecompressDataDataProvider::ResponseType,
         });
 
         DataProviderActionCatalog::registerAction(<DataProviderActionInfo>{
@@ -312,13 +389,33 @@ public namespace TarDataProvider {
     };
 
     #! List of allowed compression values
-    public const AllowedCompressionValues = ("none", "gzip", "bzip2", "xz", "zstd", "lz4");
+    public const AllowedCompressionValues = (
+        <AllowedValueInfo>{"value": "none", "display_name": "None"},
+        <AllowedValueInfo>{"value": "gzip", "display_name": "Gzip"},
+        <AllowedValueInfo>{"value": "bzip2", "display_name": "Bzip2"},
+        <AllowedValueInfo>{"value": "xz", "display_name": "XZ/LZMA"},
+        <AllowedValueInfo>{"value": "zstd", "display_name": "Zstandard"},
+        <AllowedValueInfo>{"value": "lz4", "display_name": "LZ4"},
+    );
 
     #! List of allowed format values
-    public const AllowedFormatValues = ("ustar", "pax", "gnu", "v7");
+    public const AllowedFormatValues = (
+        <AllowedValueInfo>{"value": "ustar", "display_name": "POSIX Ustar"},
+        <AllowedValueInfo>{"value": "pax", "display_name": "POSIX Pax"},
+        <AllowedValueInfo>{"value": "gnu", "display_name": "GNU Tar"},
+        <AllowedValueInfo>{"value": "v7", "display_name": "V7"},
+    );
 
     #! List of common encoding values
-    public const AllowedEncodingValues = ("UTF-8", "ISO-8859-1", "ASCII", "UTF-16", "UTF-16BE", "UTF-16LE", "Windows-1252");
+    public const AllowedEncodingValues = (
+        <AllowedValueInfo>{"value": "UTF-8", "display_name": "UTF-8"},
+        <AllowedValueInfo>{"value": "ISO-8859-1", "display_name": "ISO-8859-1 (Latin-1)"},
+        <AllowedValueInfo>{"value": "ASCII", "display_name": "ASCII"},
+        <AllowedValueInfo>{"value": "UTF-16", "display_name": "UTF-16"},
+        <AllowedValueInfo>{"value": "UTF-16BE", "display_name": "UTF-16 Big Endian"},
+        <AllowedValueInfo>{"value": "UTF-16LE", "display_name": "UTF-16 Little Endian"},
+        <AllowedValueInfo>{"value": "Windows-1252", "display_name": "Windows-1252"},
+    );
 
     #! Helper to get compression method from string or enum
     public int sub getCompressionMethod(auto val) {

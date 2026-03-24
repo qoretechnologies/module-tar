@@ -34,6 +34,7 @@
 #include <cstring>
 #include <algorithm>
 #include <memory>
+#include <fnmatch.h>
 
 #ifdef __APPLE__
 #include <CoreFoundation/CoreFoundation.h>
@@ -1034,10 +1035,10 @@ void QoreTarFile::addHardlink(const char* name, const char* target, const QoreHa
     archive_entry_free(entry);
 }
 
-// Extract all entries
-void QoreTarFile::extractAll(const char* destPath, const QoreHashNode* opts, ExceptionSink* xsink) {
+// Extract all entries, returns list of extracted entry names
+QoreListNode* QoreTarFile::extractAll(const char* destPath, const QoreHashNode* opts, ExceptionSink* xsink) {
     if (!checkOpen(xsink, false)) {
-        return;
+        return nullptr;
     }
 
     std::string destination = destPath ? destPath : ".";
@@ -1047,12 +1048,15 @@ void QoreTarFile::extractAll(const char* destPath, const QoreHashNode* opts, Exc
     bool overwrite = true;
     bool create_directories = true;
     int strip_count = 0;
+    std::vector<std::string> include_patterns;
+    std::vector<std::string> exclude_patterns;
 
     if (opts) {
         parseExtractOptions(opts, destination, preserve_permissions, preserve_ownership,
-                            preserve_times, overwrite, create_directories, strip_count, xsink);
+                            preserve_times, overwrite, create_directories, strip_count,
+                            include_patterns, exclude_patterns, xsink);
         if (*xsink) {
-            return;
+            return nullptr;
         }
     }
 
@@ -1060,21 +1064,24 @@ void QoreTarFile::extractAll(const char* destPath, const QoreHashNode* opts, Exc
     {
         QoreSandboxManagerHelper smh;
         if (smh && !smh->checkFilesystemAccess(destination.c_str(), QSEC_WRITE | QSEC_CREATE, xsink)) {
-            return;
+            return nullptr;
         }
     }
 
     reopenRead(xsink);
     if (*xsink) {
-        return;
+        return nullptr;
     }
 
     // Set up disk writer
     struct archive* disk = archive_write_disk_new();
     if (!disk) {
         xsink->raiseException("TAR-ERROR", "failed to create disk writer");
-        return;
+        return nullptr;
     }
+
+    // Track extracted entry names
+    ReferenceHolder<QoreListNode> extracted_names(new QoreListNode(stringTypeInfo), xsink);
 
     int flags = ARCHIVE_EXTRACT_TIME;
     if (preserve_permissions) {
@@ -1097,15 +1104,21 @@ void QoreTarFile::extractAll(const char* destPath, const QoreHashNode* opts, Exc
             break;
         }
 
-        // Build destination path
-        const char* entry_name = archive_entry_pathname(entry);
+        // Build destination path; save name before archive_entry_set_pathname invalidates the pointer
+        const char* raw_name = archive_entry_pathname(entry);
+        std::string entry_name(raw_name ? raw_name : "");
 
         // Security check: prevent path traversal attacks
-        if (!isPathSafe(entry_name)) {
+        if (!isPathSafe(entry_name.c_str())) {
             xsink->raiseException("TAR-SECURITY-ERROR",
                 "refusing to extract entry with unsafe path: '%s' (potential path traversal attack)",
-                entry_name);
+                entry_name.c_str());
             break;
+        }
+
+        // Apply include/exclude filters
+        if (!matchesFilters(entry_name.c_str(), include_patterns, exclude_patterns)) {
+            continue;
         }
 
         std::string dest_path = destination + "/" + entry_name;
@@ -1139,7 +1152,7 @@ void QoreTarFile::extractAll(const char* destPath, const QoreHashNode* opts, Exc
         int r = archive_write_header(disk, entry);
         if (r != ARCHIVE_OK) {
             xsink->raiseException("TAR-ERROR", "failed to extract '%s': %s",
-                                  entry_name, get_archive_error(disk));
+                                  entry_name.c_str(), get_archive_error(disk));
             break;
         }
 
@@ -1152,17 +1165,22 @@ void QoreTarFile::extractAll(const char* destPath, const QoreHashNode* opts, Exc
             while (archive_read_data_block(read_archive, &buffer, &size, &offset) == ARCHIVE_OK) {
                 if (archive_write_data_block(disk, buffer, size, offset) != ARCHIVE_OK) {
                     xsink->raiseException("TAR-ERROR", "failed to write data for '%s': %s",
-                                          entry_name, get_archive_error(disk));
+                                          entry_name.c_str(), get_archive_error(disk));
                     break;
                 }
             }
         }
 
         archive_write_finish_entry(disk);
+
+        // Track successfully extracted entry name
+        extracted_names->push(new QoreStringNode(entry_name), xsink);
     }
 
     archive_write_close(disk);
     archive_write_free(disk);
+
+    return extracted_names.release();
 }
 
 // Extract single entry
@@ -1286,7 +1304,9 @@ void QoreTarFile::parseAddOptions(const QoreHashNode* opts, int& mode, int& uid,
 void QoreTarFile::parseExtractOptions(const QoreHashNode* opts, std::string& destination,
                                        bool& preserve_permissions, bool& preserve_ownership,
                                        bool& preserve_times, bool& overwrite, bool& create_directories,
-                                       int& strip_count, ExceptionSink* xsink) const {
+                                       int& strip_count, std::vector<std::string>& include_patterns,
+                                       std::vector<std::string>& exclude_patterns,
+                                       ExceptionSink* xsink) const {
     if (!opts) {
         return;
     }
@@ -1325,6 +1345,55 @@ void QoreTarFile::parseExtractOptions(const QoreHashNode* opts, std::string& des
     if (!v.isNothing()) {
         strip_count = (int)v.getAsBigInt();
     }
+
+    v = opts->getKeyValue("include");
+    if (v.getType() == NT_LIST) {
+        const QoreListNode* l = v.get<const QoreListNode>();
+        for (size_t i = 0, e = l->size(); i < e; ++i) {
+            QoreValue elem = l->retrieveEntry(i);
+            if (elem.getType() == NT_STRING) {
+                include_patterns.push_back(elem.get<const QoreStringNode>()->c_str());
+            }
+        }
+    }
+
+    v = opts->getKeyValue("exclude");
+    if (v.getType() == NT_LIST) {
+        const QoreListNode* l = v.get<const QoreListNode>();
+        for (size_t i = 0, e = l->size(); i < e; ++i) {
+            QoreValue elem = l->retrieveEntry(i);
+            if (elem.getType() == NT_STRING) {
+                exclude_patterns.push_back(elem.get<const QoreStringNode>()->c_str());
+            }
+        }
+    }
+}
+
+bool QoreTarFile::matchesFilters(const char* name,
+                                  const std::vector<std::string>& include_patterns,
+                                  const std::vector<std::string>& exclude_patterns) {
+    // If include patterns are specified, the entry must match at least one
+    if (!include_patterns.empty()) {
+        bool matched = false;
+        for (const auto& pattern : include_patterns) {
+            if (fnmatch(pattern.c_str(), name, 0) == 0) {
+                matched = true;
+                break;
+            }
+        }
+        if (!matched) {
+            return false;
+        }
+    }
+
+    // If exclude patterns are specified, the entry must not match any
+    for (const auto& pattern : exclude_patterns) {
+        if (fnmatch(pattern.c_str(), name, 0) == 0) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 // Open an input stream for reading an entry

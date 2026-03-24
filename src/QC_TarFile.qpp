@@ -525,9 +525,11 @@ nothing TarFile::addHardlink(string name, string target, *hash<TarAddOptions> op
 //! Extracts all entries to a destination directory
 /** @param opts optional @ref TarExtractOptions for extraction settings
 
+    @return a list of entry names that were extracted (useful when include/exclude filters are active)
+
     @throw TAR-ERROR error extracting archive
 */
-nothing TarFile::extractAll(*hash<TarExtractOptions> opts) [dom=FILESYSTEM] {
+list<string> TarFile::extractAll(*hash<TarExtractOptions> opts) [dom=FILESYSTEM] {
     const char* dest = ".";
     if (opts) {
         QoreValue v = opts->getKeyValue("destination");
@@ -535,7 +537,7 @@ nothing TarFile::extractAll(*hash<TarExtractOptions> opts) [dom=FILESYSTEM] {
             dest = v.get<const QoreStringNode>()->c_str();
         }
     }
-    tf->extractAll(dest, opts, xsink);
+    return tf->extractAll(dest, opts, xsink);
 }
 
 //! Extracts a single entry to a destination directory

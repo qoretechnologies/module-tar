@@ -51,6 +51,7 @@ public class TarDataProviderTest inherits QUnit::Test {
         addTestCase("Create archive action tests", \createArchiveActionTest());
         addTestCase("List archive action tests", \listArchiveActionTest());
         addTestCase("Extract archive action tests", \extractArchiveActionTest());
+        addTestCase("Extract archive filter tests", \extractArchiveFilterTest());
         addTestCase("Read file action tests", \readFileActionTest());
         addTestCase("Compress data action tests", \compressDataActionTest());
         addTestCase("Decompress data action tests", \decompressDataActionTest());
@@ -194,6 +195,158 @@ public class TarDataProviderTest inherits QUnit::Test {
         assertEq(True, info.supports_request, "extract supports request");
     }
 
+    # Test extract archive with include/exclude filters
+    extractArchiveFilterTest() {
+        AbstractDataProvider provider = DataProvider::getFactory("tar").create();
+        AbstractDataProvider createProvider = provider.getChildProvider("archive").getChildProvider("create");
+        AbstractDataProvider extractProvider = provider.getChildProvider("archive").getChildProvider("extract");
+
+        # Create an archive with various file types
+        string archivePath = testDir + "/filter_test.tar";
+        createProvider.doRequest({
+            "archive_path": archivePath,
+            "files": (
+                {"name": "src/main.qm", "text": "module content"},
+                {"name": "src/helper.qm", "text": "helper content"},
+                {"name": "src/util.txt", "text": "util content"},
+                {"name": "docs/readme.txt", "text": "readme content"},
+                {"name": "docs/guide.md", "text": "guide content"},
+                {"name": "root.txt", "text": "root content"},
+                {"name": "root.log", "text": "log content"},
+            ),
+        });
+
+        # Test include filter: only *.txt files
+        {
+            string extractDir = testDir + "/dp_filter_include";
+            mkdir(extractDir);
+
+            hash<auto> result = extractProvider.doRequest({
+                "archive_path": archivePath,
+                "destination": extractDir,
+                "overwrite": True,
+                "include": ("*.txt",),
+            });
+
+            assertEq(3, result.extracted_count, "include filter: 3 txt files extracted");
+            assertEq(True, is_file(extractDir + "/src/util.txt"), "include: src/util.txt extracted");
+            assertEq(True, is_file(extractDir + "/docs/readme.txt"), "include: docs/readme.txt extracted");
+            assertEq(True, is_file(extractDir + "/root.txt"), "include: root.txt extracted");
+            assertEq(False, is_file(extractDir + "/src/main.qm"), "include: src/main.qm not extracted");
+            assertEq(False, is_file(extractDir + "/root.log"), "include: root.log not extracted");
+        }
+
+        # Test exclude filter: skip *.log files
+        {
+            string extractDir = testDir + "/dp_filter_exclude";
+            mkdir(extractDir);
+
+            hash<auto> result = extractProvider.doRequest({
+                "archive_path": archivePath,
+                "destination": extractDir,
+                "overwrite": True,
+                "exclude": ("*.log",),
+            });
+
+            assertEq(6, result.extracted_count, "exclude filter: 6 entries extracted (log excluded)");
+            assertEq(True, is_file(extractDir + "/src/main.qm"), "exclude: src/main.qm extracted");
+            assertEq(True, is_file(extractDir + "/root.txt"), "exclude: root.txt extracted");
+            assertEq(False, is_file(extractDir + "/root.log"), "exclude: root.log not extracted");
+        }
+
+        # Test combined include + exclude: include *.txt but exclude docs/*
+        {
+            string extractDir = testDir + "/dp_filter_combined";
+            mkdir(extractDir);
+
+            hash<auto> result = extractProvider.doRequest({
+                "archive_path": archivePath,
+                "destination": extractDir,
+                "overwrite": True,
+                "include": ("*.txt",),
+                "exclude": ("docs/*",),
+            });
+
+            assertEq(2, result.extracted_count,
+                "combined filter: 2 txt files extracted (docs excluded)");
+            assertEq(True, is_file(extractDir + "/src/util.txt"), "combined: src/util.txt extracted");
+            assertEq(True, is_file(extractDir + "/root.txt"), "combined: root.txt extracted");
+            assertEq(False, is_file(extractDir + "/docs/readme.txt"),
+                "combined: docs/readme.txt excluded");
+        }
+
+        # Test multiple include patterns
+        {
+            string extractDir = testDir + "/dp_filter_multi";
+            mkdir(extractDir);
+
+            hash<auto> result = extractProvider.doRequest({
+                "archive_path": archivePath,
+                "destination": extractDir,
+                "overwrite": True,
+                "include": ("*.qm", "*.md"),
+            });
+
+            assertEq(3, result.extracted_count, "multi include: 3 entries extracted");
+            assertEq(True, is_file(extractDir + "/src/main.qm"), "multi: src/main.qm extracted");
+            assertEq(True, is_file(extractDir + "/src/helper.qm"), "multi: src/helper.qm extracted");
+            assertEq(True, is_file(extractDir + "/docs/guide.md"), "multi: docs/guide.md extracted");
+            assertEq(False, is_file(extractDir + "/root.txt"), "multi: root.txt not extracted");
+        }
+
+        # Test filter that matches nothing
+        {
+            string extractDir = testDir + "/dp_filter_none";
+            mkdir(extractDir);
+
+            hash<auto> result = extractProvider.doRequest({
+                "archive_path": archivePath,
+                "destination": extractDir,
+                "overwrite": True,
+                "include": ("*.xyz",),
+            });
+
+            assertEq(0, result.extracted_count, "no match: 0 entries extracted");
+        }
+
+        # Test with compressed archive and filters
+        {
+            string gzPath = testDir + "/filter_test.tar.gz";
+            createProvider.doRequest({
+                "archive_path": gzPath,
+                "compression": "gzip",
+                "files": (
+                    {"name": "data.csv", "text": "csv data"},
+                    {"name": "data.json", "text": "json data"},
+                    {"name": "readme.md", "text": "readme"},
+                ),
+            });
+
+            string extractDir = testDir + "/dp_filter_compressed";
+            mkdir(extractDir);
+
+            hash<auto> result = extractProvider.doRequest({
+                "archive_path": gzPath,
+                "destination": extractDir,
+                "overwrite": True,
+                "include": ("*.csv", "*.json"),
+            });
+
+            assertEq(2, result.extracted_count, "compressed filter: 2 data files extracted");
+            assertEq(True, is_file(extractDir + "/data.csv"), "compressed: data.csv extracted");
+            assertEq(True, is_file(extractDir + "/data.json"), "compressed: data.json extracted");
+            assertEq(False, is_file(extractDir + "/readme.md"), "compressed: readme.md not extracted");
+        }
+
+        # Test request type has include/exclude fields
+        {
+            *AbstractDataProviderType reqType = extractProvider.getRequestType();
+            hash<string, AbstractDataField> fields = reqType.getFields();
+            assertEq(True, exists fields.include, "extract has include field");
+            assertEq(True, exists fields.exclude, "extract has exclude field");
+        }
+    }
+
     # Test read file action
     readFileActionTest() {
         AbstractDataProvider provider = DataProvider::getFactory("tar").create();
@@ -291,18 +444,21 @@ public class TarDataProviderTest inherits QUnit::Test {
         assertEq("gnu", TarDataProvider::TarFormat::Gnu, "TarFormat::Gnu equals 'gnu'");
         assertEq("v7", TarDataProvider::TarFormat::V7, "TarFormat::V7 equals 'v7'");
 
-        # Test AllowedCompressionValues constant
+        # Test AllowedCompressionValues constant (AllowedValueInfo hashes)
         assertEq(6, TarDataProvider::AllowedCompressionValues.size(), "AllowedCompressionValues has 6 values");
-        assertEq(True, TarDataProvider::AllowedCompressionValues.contains("none"), "AllowedCompressionValues contains 'none'");
-        assertEq(True, TarDataProvider::AllowedCompressionValues.contains("gzip"), "AllowedCompressionValues contains 'gzip'");
+        list<string> comprValues = extractAllowedValues(TarDataProvider::AllowedCompressionValues);
+        assertEq(True, comprValues.contains("none"), "AllowedCompressionValues contains 'none'");
+        assertEq(True, comprValues.contains("gzip"), "AllowedCompressionValues contains 'gzip'");
 
-        # Test AllowedFormatValues constant
+        # Test AllowedFormatValues constant (AllowedValueInfo hashes)
         assertEq(4, TarDataProvider::AllowedFormatValues.size(), "AllowedFormatValues has 4 values");
-        assertEq(True, TarDataProvider::AllowedFormatValues.contains("pax"), "AllowedFormatValues contains 'pax'");
+        list<string> fmtValues = extractAllowedValues(TarDataProvider::AllowedFormatValues);
+        assertEq(True, fmtValues.contains("pax"), "AllowedFormatValues contains 'pax'");
 
-        # Test AllowedEncodingValues constant
+        # Test AllowedEncodingValues constant (AllowedValueInfo hashes)
         assertEq(7, TarDataProvider::AllowedEncodingValues.size(), "AllowedEncodingValues has 7 values");
-        assertEq(True, TarDataProvider::AllowedEncodingValues.contains("UTF-8"), "AllowedEncodingValues contains 'UTF-8'");
+        list<string> encValues = extractAllowedValues(TarDataProvider::AllowedEncodingValues);
+        assertEq(True, encValues.contains("UTF-8"), "AllowedEncodingValues contains 'UTF-8'");
 
         # Test getCompressionMethod() works with enum values
         assertEq(TAR_CM_NONE, TarDataProvider::getCompressionMethod(TarDataProvider::TarCompression::None),

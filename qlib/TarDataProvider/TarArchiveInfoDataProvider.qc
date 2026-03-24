@@ -33,6 +33,9 @@ public class TarArchiveInfoDataProvider inherits AbstractDataProvider {
             "type": "TarArchiveInfoDataProvider",
             "supports_request": True,
         };
+
+        #! Response type for action catalog output_type
+        static TarArchiveInfoResponseDataType ResponseType();
     }
 
     private {

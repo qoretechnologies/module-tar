@@ -33,6 +33,9 @@ public class TarReadFileDataProvider inherits AbstractDataProvider {
             "type": "TarReadFileDataProvider",
             "supports_request": True,
         };
+
+        #! Response type for action catalog output_type
+        static TarReadFileResponseDataType ResponseType();
     }
 
     private {

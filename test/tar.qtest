@@ -53,6 +53,7 @@ public class TarTest inherits QUnit::Test {
         addTestCase("LZ4 compression tests", \lz4CompressionTest());
         addTestCase("Tar format tests", \tarFormatTest());
         addTestCase("Extraction tests", \extractionTest());
+        addTestCase("Extraction filter tests", \extractionFilterTest());
         addTestCase("Symlink tests", \symlinkTest());
         addTestCase("Hardlink tests", \hardlinkTest());
         addTestCase("Error handling tests", \errorHandlingTest());
@@ -513,6 +514,161 @@ public class TarTest inherits QUnit::Test {
             tar.close();
 
             assertEq(True, is_file(extractDir + "/dir1/file1.txt"), "file extracted with options");
+        }
+    }
+
+    # Test extraction with include/exclude filters
+    extractionFilterTest() {
+        # Create test archive with various file types
+        string tarPath = testDir + "/filter_test.tar";
+        {
+            TarFile tar(tarPath, "w");
+            tar.addDirectory("src/");
+            tar.add("src/main.qm", "module content");
+            tar.add("src/helper.qm", "helper content");
+            tar.add("src/util.txt", "util content");
+            tar.addDirectory("docs/");
+            tar.add("docs/readme.txt", "readme content");
+            tar.add("docs/guide.md", "guide content");
+            tar.add("root.txt", "root content");
+            tar.add("root.log", "log content");
+            tar.close();
+        }
+
+        # Test include filter: only *.txt files
+        {
+            string extractDir = testDir + "/filter_include";
+            mkdir(extractDir);
+
+            TarFile tar(tarPath, "r");
+            tar.extractAll(<TarExtractOptions>{
+                "destination": extractDir,
+                "include": ("*.txt",),
+            });
+            tar.close();
+
+            assertEq(True, is_file(extractDir + "/src/util.txt"), "include: src/util.txt extracted");
+            assertEq(True, is_file(extractDir + "/docs/readme.txt"), "include: docs/readme.txt extracted");
+            assertEq(True, is_file(extractDir + "/root.txt"), "include: root.txt extracted");
+            assertEq(False, is_file(extractDir + "/src/main.qm"), "include: src/main.qm not extracted");
+            assertEq(False, is_file(extractDir + "/docs/guide.md"), "include: docs/guide.md not extracted");
+            assertEq(False, is_file(extractDir + "/root.log"), "include: root.log not extracted");
+        }
+
+        # Test exclude filter: skip *.log files
+        {
+            string extractDir = testDir + "/filter_exclude";
+            mkdir(extractDir);
+
+            TarFile tar(tarPath, "r");
+            tar.extractAll(<TarExtractOptions>{
+                "destination": extractDir,
+                "exclude": ("*.log",),
+            });
+            tar.close();
+
+            assertEq(True, is_file(extractDir + "/src/main.qm"), "exclude: src/main.qm extracted");
+            assertEq(True, is_file(extractDir + "/docs/readme.txt"), "exclude: docs/readme.txt extracted");
+            assertEq(True, is_file(extractDir + "/root.txt"), "exclude: root.txt extracted");
+            assertEq(False, is_file(extractDir + "/root.log"), "exclude: root.log not extracted");
+        }
+
+        # Test combined include + exclude: include *.txt but exclude docs/*
+        {
+            string extractDir = testDir + "/filter_combined";
+            mkdir(extractDir);
+
+            TarFile tar(tarPath, "r");
+            tar.extractAll(<TarExtractOptions>{
+                "destination": extractDir,
+                "include": ("*.txt",),
+                "exclude": ("docs/*",),
+            });
+            tar.close();
+
+            assertEq(True, is_file(extractDir + "/src/util.txt"), "combined: src/util.txt extracted");
+            assertEq(True, is_file(extractDir + "/root.txt"), "combined: root.txt extracted");
+            assertEq(False, is_file(extractDir + "/docs/readme.txt"),
+                "combined: docs/readme.txt excluded");
+            assertEq(False, is_file(extractDir + "/src/main.qm"),
+                "combined: src/main.qm not included");
+        }
+
+        # Test include with directory pattern
+        {
+            string extractDir = testDir + "/filter_dir_pattern";
+            mkdir(extractDir);
+
+            TarFile tar(tarPath, "r");
+            tar.extractAll(<TarExtractOptions>{
+                "destination": extractDir,
+                "include": ("src/*",),
+            });
+            tar.close();
+
+            assertEq(True, is_file(extractDir + "/src/main.qm"), "dir pattern: src/main.qm extracted");
+            assertEq(True, is_file(extractDir + "/src/helper.qm"),
+                "dir pattern: src/helper.qm extracted");
+            assertEq(True, is_file(extractDir + "/src/util.txt"), "dir pattern: src/util.txt extracted");
+            assertEq(False, is_file(extractDir + "/docs/readme.txt"),
+                "dir pattern: docs/readme.txt not extracted");
+            assertEq(False, is_file(extractDir + "/root.txt"), "dir pattern: root.txt not extracted");
+        }
+
+        # Test multiple include patterns
+        {
+            string extractDir = testDir + "/filter_multi_include";
+            mkdir(extractDir);
+
+            TarFile tar(tarPath, "r");
+            tar.extractAll(<TarExtractOptions>{
+                "destination": extractDir,
+                "include": ("*.qm", "*.md"),
+            });
+            tar.close();
+
+            assertEq(True, is_file(extractDir + "/src/main.qm"),
+                "multi include: src/main.qm extracted");
+            assertEq(True, is_file(extractDir + "/src/helper.qm"),
+                "multi include: src/helper.qm extracted");
+            assertEq(True, is_file(extractDir + "/docs/guide.md"),
+                "multi include: docs/guide.md extracted");
+            assertEq(False, is_file(extractDir + "/root.txt"),
+                "multi include: root.txt not extracted");
+            assertEq(False, is_file(extractDir + "/root.log"),
+                "multi include: root.log not extracted");
+        }
+
+        # Test empty filter lists (should extract everything)
+        {
+            string extractDir = testDir + "/filter_empty";
+            mkdir(extractDir);
+
+            TarFile tar(tarPath, "r");
+            tar.extractAll(<TarExtractOptions>{
+                "destination": extractDir,
+            });
+            tar.close();
+
+            assertEq(True, is_file(extractDir + "/src/main.qm"), "no filter: src/main.qm extracted");
+            assertEq(True, is_file(extractDir + "/root.log"), "no filter: root.log extracted");
+            assertEq(True, is_file(extractDir + "/docs/guide.md"), "no filter: docs/guide.md extracted");
+        }
+
+        # Test filter that matches nothing
+        {
+            string extractDir = testDir + "/filter_none";
+            mkdir(extractDir);
+
+            TarFile tar(tarPath, "r");
+            tar.extractAll(<TarExtractOptions>{
+                "destination": extractDir,
+                "include": ("*.xyz",),
+            });
+            tar.close();
+
+            assertEq(False, is_file(extractDir + "/root.txt"), "no match: no files extracted");
+            assertEq(False, is_file(extractDir + "/src/main.qm"), "no match: no files extracted");
         }
     }
 

@@ -33,6 +33,9 @@ public class TarListArchiveDataProvider inherits DataProvider::AbstractDataProvi
             "type": "TarListArchiveDataProvider",
             "supports_request": True,
         };
+
+        #! Response type for action catalog output_type
+        static TarListResponseDataType ResponseType();
     }
 
     private {

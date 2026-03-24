@@ -29,10 +29,14 @@ public class TarExtractArchiveDataProvider inherits AbstractDataProvider {
     public {
         const ProviderInfo = <DataProviderInfo>{
             "name": "extract",
-            "desc": "Extract all contents from a TAR archive",
+            "desc": "Extract contents from a TAR archive with optional `include`/`exclude` glob-style "
+                "filename filters for whitelisting and/or blacklisting entries",
             "type": "TarExtractArchiveDataProvider",
             "supports_request": True,
         };
+
+        #! Response type for action catalog output_type
+        static TarExtractArchiveResponseDataType ResponseType();
     }
 
     private {
@@ -88,10 +92,25 @@ public class TarExtractArchiveDataProvider inherits AbstractDataProvider {
             "overwrite": req.overwrite ?? False,
             "create_directories": True,
         };
+        if (req.include) {
+            extract_opts.include = req.include;
+        }
+        if (req.exclude) {
+            extract_opts.exclude = req.exclude;
+        }
 
-        list<hash<TarEntryInfo>> entries = tar.entries();
-        tar.extractAll(extract_opts);
+        list<hash<TarEntryInfo>> all_entries = tar.entries();
+        list<string> extracted_names = tar.extractAll(extract_opts);
         tar.close();
+
+        # Use extracted names from C++ to filter the entries list
+        list<hash<TarEntryInfo>> entries;
+        if (req.include || req.exclude) {
+            hash<string, bool> name_set = map {$1: True}, extracted_names;
+            entries = (map $1, all_entries, name_set{$1.name});
+        } else {
+            entries = all_entries;
+        }
 
         @debug {
             printf("TarExtractArchive: extracted %d entries to %y\n", entries.size(), destination);
@@ -156,6 +175,26 @@ public class TarExtractArchiveRequestDataType inherits HashDataType {
                 "short_desc": "Overwrite existing files",
                 "desc": "If `true`, overwrites existing files",
                 "default_value": False,
+            },
+            "include": {
+                "type": new ListDataType("IncludePatternList", StringType, True),
+                "display_name": "Include Patterns",
+                "short_desc": "Glob patterns for files to include",
+                "desc": "A list of glob-style patterns; only entries matching at least one pattern will be "
+                    "extracted. If not provided, all entries are included by default.\n\n"
+                    "**Supported wildcards**: `*` matches any characters (including `/`), "
+                    "`?` matches any single character, `[abc]` matches one character from the set",
+                "example_value": ("*.txt", "docs/*"),
+            },
+            "exclude": {
+                "type": new ListDataType("ExcludePatternList", StringType, True),
+                "display_name": "Exclude Patterns",
+                "short_desc": "Glob patterns for files to exclude",
+                "desc": "A list of glob-style patterns; entries matching any pattern will be skipped. "
+                    "Exclude patterns are applied after `include` patterns.\n\n"
+                    "**Supported wildcards**: `*` matches any characters (including `/`), "
+                    "`?` matches any single character, `[abc]` matches one character from the set",
+                "example_value": ("*.log", "tmp/*"),
             },
         };
     }

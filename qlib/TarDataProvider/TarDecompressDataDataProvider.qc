@@ -33,6 +33,9 @@ public class TarDecompressDataDataProvider inherits AbstractDataProvider {
             "type": "TarDecompressDataDataProvider",
             "supports_request": True,
         };
+
+        #! Response type for action catalog output_type
+        static TarDecompressDataResponseDataType ResponseType();
     }
 
     private {

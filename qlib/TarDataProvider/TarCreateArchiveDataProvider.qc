@@ -33,6 +33,9 @@ public class TarCreateArchiveDataProvider inherits AbstractDataProvider {
             "type": "TarCreateArchiveDataProvider",
             "supports_request": True,
         };
+
+        #! Response type for action catalog output_type
+        static TarCreateArchiveResponseDataType ResponseType();
     }
 
     private {
@@ -174,9 +177,9 @@ public class TarCreateArchiveRequestDataType inherits HashDataType {
                 "type": StringOrNothingType,
                 "display_name": "Compression Method",
                 "short_desc": "Archive compression type",
-                "desc": "The compression method to use: none, gzip, bzip2, xz, zstd, or lz4",
+                "desc": "The compression method to use",
                 "example_value": "gzip",
-                "allowed_values": ("none", "gzip", "bzip2", "xz", "zstd", "lz4"),
+                "allowed_values": AllowedCompressionValues,
             },
             "compression_level": {
                 "type": IntOrNothingType,
@@ -190,9 +193,9 @@ public class TarCreateArchiveRequestDataType inherits HashDataType {
                 "type": StringOrNothingType,
                 "display_name": "Archive Format",
                 "short_desc": "TAR format variant",
-                "desc": "The tar format to use: ustar, pax, gnu, or v7",
+                "desc": "The tar format to use",
                 "example_value": "pax",
-                "allowed_values": ("ustar", "pax", "gnu", "v7"),
+                "allowed_values": AllowedFormatValues,
             },
             "files": {
                 "type": new ListDataType("FileEntryList", AutoHashType, True),
