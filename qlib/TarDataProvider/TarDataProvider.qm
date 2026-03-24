@@ -257,9 +257,16 @@ module TarDataProvider {
             "path": "/archive/encrypt",
             "action": "encrypt-archive",
             "display_name": "Encrypt Archive",
-            "short_desc": "Encrypt a tar archive",
-            "desc": "Encrypt a tar archive with AES-256 encryption",
+            "short_desc": "Encrypt a tar archive with AES-256-CBC",
+            "desc": "Encrypt a tar archive with AES-256-CBC. Output format is a `16`-byte "
+                "random IV followed by ciphertext",
             "action_code": DPAT_API,
+            "options": DataProviderActionCatalog::getActionOptionFromFields(
+                TarEncryptArchiveRequestDataType::Fields, {
+                    "preselected": True,
+                },
+            ),
+            "output_type": TarEncryptArchiveDataProvider::ResponseType,
         });
 
         DataProviderActionCatalog::registerAction(<DataProviderActionInfo>{
@@ -267,9 +274,16 @@ module TarDataProvider {
             "path": "/archive/decrypt",
             "action": "decrypt-archive",
             "display_name": "Decrypt Archive",
-            "short_desc": "Decrypt an encrypted tar archive",
-            "desc": "Decrypt an AES-256 encrypted tar archive",
+            "short_desc": "Decrypt an AES-256-CBC encrypted tar archive",
+            "desc": "Decrypt a tar archive encrypted with AES-256-CBC. Expects the IV + "
+                "ciphertext format produced by the **encrypt** action",
             "action_code": DPAT_API,
+            "options": DataProviderActionCatalog::getActionOptionFromFields(
+                TarDecryptArchiveRequestDataType::Fields, {
+                    "preselected": True,
+                },
+            ),
+            "output_type": TarDecryptArchiveDataProvider::ResponseType,
         });
 
         DataProviderActionCatalog::registerAction(<DataProviderActionInfo>{

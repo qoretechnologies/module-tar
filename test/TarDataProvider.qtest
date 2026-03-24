@@ -395,6 +395,133 @@ public class TarDataProviderTest inherits QUnit::Test {
 
         hash<DataProviderInfo> decInfo = decryptProvider.getInfo();
         assertEq(True, decInfo.supports_request, "decrypt supports request");
+
+        # Create test archive
+        AbstractDataProvider createProvider = provider.getChildProvider("archive").getChildProvider("create");
+        hash<auto> create_result = createProvider.doRequest({
+            "files": (
+                {"name": "secret.txt", "text": "Top Secret Data"},
+                {"name": "config.json", "text": "{\"key\": \"value\"}"},
+            ),
+        });
+        binary original_data = create_result.archive_data;
+        int original_size = original_data.size();
+
+        # 32-byte key for AES-256
+        binary key = <0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef>;
+
+        # Test encrypt
+        hash<auto> enc_result = encryptProvider.doRequest({
+            "archive_data": original_data,
+            "key": key,
+        });
+
+        assertEq(True, enc_result.encrypted_size > original_size,
+            "encrypted size > original (includes IV + padding)");
+        assertEq(original_size, enc_result.original_size,
+            "original_size in response matches");
+        assertEq(enc_result.encrypted_data.size(), enc_result.encrypted_size,
+            "encrypted_size matches actual data size");
+        # Encrypted data should differ from original
+        assertEq(True, enc_result.encrypted_data != original_data,
+            "encrypted data differs from original");
+
+        # Test round-trip: decrypt
+        hash<auto> dec_result = decryptProvider.doRequest({
+            "encrypted_data": enc_result.encrypted_data,
+            "key": key,
+        });
+
+        assertEq(original_data, dec_result.archive_data,
+            "round-trip produces identical archive data");
+        assertEq(original_size, dec_result.archive_size,
+            "decrypted size matches original");
+
+        # Verify the decrypted archive is valid
+        AbstractDataProvider listProvider =
+            provider.getChildProvider("archive").getChildProvider("list");
+        hash<auto> list_result = listProvider.doRequest({
+            "archive_data": dec_result.archive_data,
+        });
+        assertEq(2, list_result.count, "decrypted archive has 2 entries");
+
+        # Test wrong key produces error
+        binary wrong_key = <ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff>;
+        assertThrows("DECRYPT-ERROR", sub() {
+            decryptProvider.doRequest({
+                "encrypted_data": enc_result.encrypted_data,
+                "key": wrong_key,
+            });
+        }, NOTHING, "decrypt with wrong key fails");
+
+        # Test wrong key size
+        assertThrows("TAR-ERROR", sub() {
+            encryptProvider.doRequest({
+                "archive_data": original_data,
+                "key": <0123456789abcdef>,
+            });
+        }, NOTHING, "encrypt rejects short key");
+
+        assertThrows("TAR-ERROR", sub() {
+            decryptProvider.doRequest({
+                "encrypted_data": enc_result.encrypted_data,
+                "key": <0123456789abcdef>,
+            });
+        }, NOTHING, "decrypt rejects short key");
+
+        # Test encrypted data too short
+        assertThrows("TAR-ERROR", sub() {
+            decryptProvider.doRequest({
+                "encrypted_data": <0123456789abcdef>,
+                "key": key,
+            });
+        }, NOTHING, "decrypt rejects data shorter than IV + 1 block");
+
+        # Test encrypt from file path
+        {
+            string archive_path = testDir + "/encrypt_test.tar";
+            createProvider.doRequest({
+                "archive_path": archive_path,
+                "files": ({"name": "test.txt", "text": "test"},),
+            });
+
+            hash<auto> enc_from_file = encryptProvider.doRequest({
+                "archive_path": archive_path,
+                "key": key,
+            });
+            assertEq(True, enc_from_file.encrypted_size > 0,
+                "encrypt from file produces output");
+
+            # Round-trip
+            hash<auto> dec_from_file = decryptProvider.doRequest({
+                "encrypted_data": enc_from_file.encrypted_data,
+                "key": key,
+            });
+            assertEq(enc_from_file.original_size, dec_from_file.archive_size,
+                "file encrypt round-trip size matches");
+        }
+
+        # Test missing archive source
+        assertThrows("REQUIRED-FIELD-GROUP-ERROR", sub() {
+            encryptProvider.doRequest({"key": key});
+        }, NOTHING, "encrypt requires archive source");
+
+        assertThrows("REQUIRED-FIELD-GROUP-ERROR", sub() {
+            decryptProvider.doRequest({"key": key});
+        }, NOTHING, "decrypt requires encrypted source");
+
+        # Test request/response types
+        {
+            *AbstractDataProviderType encReqType = encryptProvider.getRequestType();
+            hash<string, AbstractDataField> encFields = encReqType.getFields();
+            assertEq(True, exists encFields.key, "encrypt has key field");
+            assertEq(True, exists encFields.archive_data, "encrypt has archive_data field");
+
+            *AbstractDataProviderType decReqType = decryptProvider.getRequestType();
+            hash<string, AbstractDataField> decFields = decReqType.getFields();
+            assertEq(True, exists decFields.key, "decrypt has key field");
+            assertEq(True, exists decFields.encrypted_data, "decrypt has encrypted_data field");
+        }
     }
 
     # Test split/join actions
