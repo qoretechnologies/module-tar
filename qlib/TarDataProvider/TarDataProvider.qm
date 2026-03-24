@@ -248,9 +248,16 @@ module TarDataProvider {
             "path": "/stream/extract",
             "action": "stream-extract",
             "display_name": "Stream Extract",
-            "short_desc": "Stream extract large file from archive",
-            "desc": "Extract a large file from an archive using streaming to avoid loading entire file into memory",
+            "short_desc": "Stream extract file from archive",
+            "desc": "Open a streaming input for reading a file from a tar archive without "
+                "loading the entire file into memory",
             "action_code": DPAT_API,
+            "options": DataProviderActionCatalog::getActionOptionFromFields(
+                TarStreamExtractRequestDataType::Fields, {
+                    "preselected": True,
+                },
+            ),
+            "output_type": TarStreamExtractDataProvider::ResponseType,
         });
 
         DataProviderActionCatalog::registerAction(<DataProviderActionInfo>{

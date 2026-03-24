@@ -59,6 +59,7 @@ public class TarDataProviderTest inherits QUnit::Test {
         addTestCase("Split/join action tests", \splitJoinActionTest());
         addTestCase("Delete entry action tests", \deleteEntryActionTest());
         addTestCase("Archive directory action tests", \archiveDirectoryActionTest());
+        addTestCase("Stream extract action tests", \streamExtractActionTest());
         addTestCase("Error handling tests", \errorHandlingTest());
         addTestCase("Enum functionality tests", \enumFunctionalityTest());
         addTestCase("Assert error condition tests", \assertErrorConditionTest());
@@ -951,6 +952,105 @@ public class TarDataProviderTest inherits QUnit::Test {
             assertEq(True, exists fields.directory_path, "has directory_path field");
             assertEq(True, exists fields.follow_symlinks, "has follow_symlinks field");
             assertEq(True, exists fields.base_name, "has base_name field");
+        }
+    }
+
+    # Test stream extract action
+    streamExtractActionTest() {
+        AbstractDataProvider provider = DataProvider::getFactory("tar").create();
+        AbstractDataProvider streamProvider =
+            provider.getChildProvider("stream").getChildProvider("extract");
+
+        assertEq("extract", streamProvider.getName(), "stream extract provider name");
+
+        # Create a test archive with known content
+        AbstractDataProvider createProvider = provider.getChildProvider("archive").getChildProvider("create");
+        string test_content = strmul("Hello Stream World! ", 100);
+        hash<auto> create_result = createProvider.doRequest({
+            "files": (
+                {"name": "large.txt", "text": test_content},
+                {"name": "small.txt", "text": "Small"},
+            ),
+        });
+        binary archive_data = create_result.archive_data;
+
+        # Test streaming read
+        {
+            hash<auto> result = streamProvider.doRequest({
+                "archive_data": archive_data,
+                "entry_name": "large.txt",
+            });
+
+            assertEq("large.txt", result.entry_name, "stream entry_name matches");
+            assertEq(test_content.size(), result.size, "stream size matches content length");
+            assertEq(True, exists result.stream, "stream object returned");
+            assertEq(True, exists result.tar_file, "tar_file reference returned");
+
+            # Read the stream in chunks and verify content
+            binary accumulated = binary();
+            while (True) {
+                *binary chunk = result.stream.read(256);
+                if (!chunk) {
+                    break;
+                }
+                accumulated += chunk;
+            }
+            assertEq(test_content.size(), accumulated.size(),
+                "streamed data size matches original");
+            assertEq(test_content, accumulated.toString(),
+                "streamed data content matches original");
+        }
+
+        # Test stream from file path
+        {
+            string archive_path = testDir + "/stream_test.tar";
+            createProvider.doRequest({
+                "archive_path": archive_path,
+                "files": ({"name": "test.txt", "text": "File Stream Test"},),
+            });
+
+            hash<auto> result = streamProvider.doRequest({
+                "archive_path": archive_path,
+                "entry_name": "test.txt",
+            });
+
+            assertEq("test.txt", result.entry_name, "file stream entry_name");
+            *binary data = result.stream.read(4096);
+            assertEq("File Stream Test", data.toString(),
+                "file stream content matches");
+        }
+
+        # Test non-existent entry
+        assertThrows("TAR-ERROR", sub() {
+            streamProvider.doRequest({
+                "archive_data": archive_data,
+                "entry_name": "nonexistent.txt",
+            });
+        }, NOTHING, "stream extract rejects non-existent entry");
+
+        # Test empty entry_name
+        assertThrows("ASSERTION-ERROR", sub() {
+            streamProvider.doRequest({
+                "archive_data": archive_data,
+                "entry_name": "",
+            });
+        }, NOTHING, "stream extract rejects empty entry_name");
+
+        # Test missing archive source
+        assertThrows("REQUIRED-FIELD-GROUP-ERROR", sub() {
+            streamProvider.doRequest({"entry_name": "test.txt"});
+        }, NOTHING, "stream extract requires archive source");
+
+        # Test request/response types
+        {
+            *AbstractDataProviderType reqType = streamProvider.getRequestType();
+            hash<string, AbstractDataField> fields = reqType.getFields();
+            assertEq(True, exists fields.entry_name, "has entry_name field");
+
+            *AbstractDataProviderType respType = streamProvider.getResponseType();
+            hash<string, AbstractDataField> respFields = respType.getFields();
+            assertEq(True, exists respFields.stream, "response has stream field");
+            assertEq(True, exists respFields.tar_file, "response has tar_file field");
         }
     }
 
