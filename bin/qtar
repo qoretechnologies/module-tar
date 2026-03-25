@@ -1054,9 +1054,9 @@ class QTarApp {
         # Pad command name to 7 chars (length of "extract"/"encrypt"/"decrypt")
         string padded = name + strmul(" ", 7 - name.length());
         if (alias) {
-            return sprintf("  %s  %s  %s", tc.yellow(alias), tc.bold(padded), desc);
+            return sprintf("  %s %s  %s", tc.yellow(alias), tc.bold(padded), desc);
         }
-        return sprintf("     %s  %s", tc.bold(padded), desc);
+        return sprintf("    %s  %s", tc.bold(padded), desc);
     }
 
     private usage() {
