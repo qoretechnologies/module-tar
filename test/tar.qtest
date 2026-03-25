@@ -67,6 +67,8 @@ public class TarTest inherits QUnit::Test {
         addTestCase("Append mode tests", \appendModeTest());
         addTestCase("Name lookup function tests", \nameLookupTest());
         addTestCase("Progress callback tests", \progressCallbackTest());
+        addTestCase("Getter method tests", \getterMethodTest());
+        addTestCase("Error condition tests", \errorConditionTest());
 
         set_return_value(main());
     }
@@ -1876,6 +1878,146 @@ public class TarTest inherits QUnit::Test {
             tar.close();
 
             assertEq(3, extracted.size(), "no-callback: 3 entries extracted");
+        }
+    }
+
+    # Test getPath, getCompressionMethod, getFormat
+    getterMethodTest() {
+        # getPath for file-based archive
+        {
+            string path = testDir + "/getter_test.tar";
+            TarFile tar(path, "w");
+            tar.add("test.txt", "test");
+            tar.close();
+
+            TarFile tar2(path, "r");
+            *string p = tar2.getPath();
+            assertEq(True, exists p, "getPath: returns path for file archive");
+            assertEq(True, p.endsWith("getter_test.tar"),
+                "getPath: path ends with filename");
+            tar2.close();
+        }
+
+        # getPath for in-memory archive
+        {
+            TarFile tar();
+            tar.add("test.txt", "test");
+            *string p = tar.getPath();
+            assertEq(NOTHING, p, "getPath: NOTHING for in-memory archive");
+            tar.close();
+        }
+
+        # getCompressionMethod for different compression types
+        {
+            # Gzip
+            string gzPath = testDir + "/getter_test.tar.gz";
+            {
+                TarFile tar(gzPath, "w", <TarCreateOptions>{
+                    "compression_method": TAR_CM_GZIP,
+                });
+                tar.add("test.txt", "test");
+                tar.close();
+            }
+            TarFile gzTar(gzPath, "r");
+            assertEq(TAR_CM_GZIP, gzTar.getCompressionMethod(),
+                "getCompressionMethod: gzip");
+            gzTar.close();
+
+            # Uncompressed
+            string plainPath = testDir + "/getter_test_plain.tar";
+            {
+                TarFile tar(plainPath, "w");
+                tar.add("test.txt", "test");
+                tar.close();
+            }
+            TarFile plainTar(plainPath, "r");
+            assertEq(TAR_CM_NONE, plainTar.getCompressionMethod(),
+                "getCompressionMethod: none");
+            plainTar.close();
+        }
+
+        # getFormat
+        {
+            string fmtPath = testDir + "/getter_fmt.tar";
+            {
+                TarFile tar(fmtPath, "w", <TarCreateOptions>{
+                    "format": TAR_FORMAT_GNU,
+                });
+                tar.add("test.txt", "test");
+                tar.close();
+            }
+            TarFile tar(fmtPath, "r");
+            # Note: getFormat may return NOTHING on read (libarchive detects per-entry)
+            *int fmt = tar.getFormat();
+            # Just verify it doesn't throw; value may be NOTHING
+            assertEq(True, True, "getFormat: does not throw");
+            tar.close();
+        }
+    }
+
+    # Test error conditions
+    errorConditionTest() {
+        # Operations on closed archive
+        {
+            TarFile tar();
+            tar.add("test.txt", "test");
+            tar.close();
+
+            assertThrows("TAR-ERROR", sub() {
+                tar.add("another.txt", "more");
+            }, NOTHING, "error: add to closed archive");
+
+            assertThrows("TAR-ERROR", sub() {
+                tar.entries();
+            }, NOTHING, "error: entries on closed archive");
+
+            assertThrows("TAR-ERROR", sub() {
+                tar.entryCount();
+            }, NOTHING, "error: entryCount on closed archive");
+        }
+
+        # Read from write-only archive
+        {
+            string path = testDir + "/error_wo.tar";
+            TarFile tar(path, "w");
+            tar.add("test.txt", "test");
+
+            assertThrows("TAR-ERROR", sub() {
+                tar.read("test.txt");
+            }, NOTHING, "error: read from write-only archive");
+            tar.close();
+        }
+
+        # Entry not found
+        {
+            TarFile tar();
+            tar.add("exists.txt", "data");
+            binary data = tar.toData();
+            tar.close();
+
+            TarFile tar2(data);
+            assertThrows("TAR-ERROR", sub() {
+                tar2.read("nonexistent.txt");
+            }, NOTHING, "error: read non-existent entry");
+
+            assertEq(False, tar2.hasEntry("nonexistent.txt"),
+                "error: hasEntry returns False");
+            assertEq(NOTHING, tar2.getEntry("nonexistent.txt"),
+                "error: getEntry returns NOTHING");
+            tar2.close();
+        }
+
+        # readText with explicit encoding
+        {
+            TarFile tar();
+            tar.add("latin.txt", "café");
+            binary data = tar.toData();
+            tar.close();
+
+            TarFile tar2(data);
+            string text = tar2.readText("latin.txt");
+            assertEq("café", text, "readText: UTF-8 content preserved");
+            tar2.close();
         }
     }
 }

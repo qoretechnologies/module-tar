@@ -50,6 +50,8 @@ public class TarDataProviderTest inherits QUnit::Test {
         addTestCase("Provider hierarchy tests", \providerHierarchyTest());
         addTestCase("Create archive action tests", \createArchiveActionTest());
         addTestCase("List archive action tests", \listArchiveActionTest());
+        addTestCase("Info archive action tests", \infoArchiveActionTest());
+        addTestCase("Add files action tests", \addFilesActionTest());
         addTestCase("Extract archive action tests", \extractArchiveActionTest());
         addTestCase("Extract archive filter tests", \extractArchiveFilterTest());
         addTestCase("Read file action tests", \readFileActionTest());
@@ -173,19 +175,136 @@ public class TarDataProviderTest inherits QUnit::Test {
 
         assertEq("create", createProvider.getName(), "create provider name");
 
-        hash<DataProviderInfo> info = createProvider.getInfo();
-        assertEq(True, info.supports_request, "create supports request");
+        # Test in-memory creation
+        {
+            hash<auto> result = createProvider.doRequest({
+                "files": (
+                    {"name": "hello.txt", "text": "Hello World"},
+                    {"name": "data.bin", "data": binary("binary data")},
+                ),
+            });
+            assertEq(2, result.entry_count, "create: 2 entries");
+            assertEq(True, exists result.archive_data, "create: returns binary");
+            assertEq("none", result.compression, "create: default compression");
+        }
+
+        # Test file output with compression
+        {
+            string path = testDir + "/create_test.tar.gz";
+            hash<auto> result = createProvider.doRequest({
+                "archive_path": path,
+                "compression": "gzip",
+                "files": ({"name": "test.txt", "text": "compressed"},),
+            });
+            assertEq(path, result.archive_path, "create: archive_path matches");
+            assertEq(1, result.entry_count, "create: 1 entry with compression");
+            assertEq("gzip", result.compression, "create: gzip compression");
+            assertEq(True, is_file(path), "create: file written");
+        }
+
+        # Test empty archive (require_entries=false)
+        {
+            hash<auto> result = createProvider.doRequest({});
+            assertEq(0, result.entry_count, "create: empty archive ok");
+        }
+
+        # Test require_entries enforcement
+        assertThrows("ASSERTION-ERROR", sub() {
+            createProvider.doRequest({"require_entries": True});
+        }, NOTHING, "create: require_entries rejects empty");
     }
 
     # Test list archive action
     listArchiveActionTest() {
         AbstractDataProvider provider = DataProvider::getFactory("tar").create();
+        AbstractDataProvider createProvider = provider.getChildProvider("archive").getChildProvider("create");
         AbstractDataProvider listProvider = provider.getChildProvider("archive").getChildProvider("list");
 
-        assertEq("list", listProvider.getName(), "list provider name");
+        # Create test archive
+        hash<auto> create_result = createProvider.doRequest({
+            "files": (
+                {"name": "a.txt", "text": "aaa"},
+                {"name": "dir/b.txt", "text": "bbb"},
+            ),
+        });
 
-        hash<DataProviderInfo> info = listProvider.getInfo();
-        assertEq(True, info.supports_request, "list supports request");
+        # List entries and verify
+        hash<auto> result = listProvider.doRequest({
+            "archive_data": create_result.archive_data,
+        });
+        assertEq(2, result.count, "list: 2 entries");
+        assertEq(True, exists result.entries, "list: entries list returned");
+        list<string> names = (map $1.name, result.entries);
+        assertEq(True, names.contains("a.txt"), "list: a.txt in entries");
+        assertEq(True, names.contains("dir/b.txt"), "list: dir/b.txt in entries");
+
+        # List from file
+        {
+            string path = testDir + "/list_test.tar";
+            createProvider.doRequest({
+                "archive_path": path,
+                "files": ({"name": "test.txt", "text": "test"},),
+            });
+            hash<auto> file_result = listProvider.doRequest({"archive_path": path});
+            assertEq(1, file_result.count, "list: from file path");
+        }
+    }
+
+    # Test archive info action
+    infoArchiveActionTest() {
+        AbstractDataProvider provider = DataProvider::getFactory("tar").create();
+        AbstractDataProvider createProvider = provider.getChildProvider("archive").getChildProvider("create");
+        AbstractDataProvider infoProvider = provider.getChildProvider("archive").getChildProvider("info");
+
+        hash<auto> create_result = createProvider.doRequest({
+            "files": (
+                {"name": "file.txt", "text": "hello"},
+                {"name": "data.bin", "data": binary("binary")},
+            ),
+            "directories": ("subdir/",),
+        });
+
+        hash<auto> result = infoProvider.doRequest({
+            "archive_data": create_result.archive_data,
+        });
+        assertEq(3, result.entry_count, "info: 3 total entries");
+        assertEq(2, result.file_count, "info: 2 files");
+        assertEq(1, result.directory_count, "info: 1 directory");
+        assertEq(True, result.total_uncompressed_size > 0,
+            "info: total_uncompressed_size > 0");
+    }
+
+    # Test add files action
+    addFilesActionTest() {
+        AbstractDataProvider provider = DataProvider::getFactory("tar").create();
+        AbstractDataProvider createProvider = provider.getChildProvider("archive").getChildProvider("create");
+        AbstractDataProvider addProvider = provider.getChildProvider("archive").getChildProvider("add");
+        AbstractDataProvider listProvider = provider.getChildProvider("archive").getChildProvider("list");
+
+        # Create initial archive on disk
+        string path = testDir + "/add_test.tar";
+        createProvider.doRequest({
+            "archive_path": path,
+            "files": ({"name": "original.txt", "text": "Original"},),
+        });
+
+        # Add files
+        hash<auto> result = addProvider.doRequest({
+            "archive_path": path,
+            "files": (
+                {"name": "added.txt", "text": "Added file"},
+                {"name": "added.bin", "data": binary("binary")},
+            ),
+        });
+        assertEq(2, result.added_count, "add: 2 files added");
+
+        # Verify combined contents
+        hash<auto> list_result = listProvider.doRequest({"archive_path": path});
+        assertEq(3, list_result.count, "add: archive now has 3 entries");
+        list<string> names = (map $1.name, list_result.entries);
+        assertEq(True, names.contains("original.txt"), "add: original preserved");
+        assertEq(True, names.contains("added.txt"), "add: added.txt present");
+        assertEq(True, names.contains("added.bin"), "add: added.bin present");
     }
 
     # Test extract archive action
@@ -354,34 +473,111 @@ public class TarDataProviderTest inherits QUnit::Test {
     # Test read file action
     readFileActionTest() {
         AbstractDataProvider provider = DataProvider::getFactory("tar").create();
+        AbstractDataProvider createProvider = provider.getChildProvider("archive").getChildProvider("create");
         AbstractDataProvider readProvider = provider.getChildProvider("file").getChildProvider("read");
 
-        assertEq("read", readProvider.getName(), "read provider name");
+        hash<auto> create_result = createProvider.doRequest({
+            "files": (
+                {"name": "hello.txt", "text": "Hello World"},
+                {"name": "data.bin", "data": <0102030405>},
+            ),
+        });
 
-        hash<DataProviderInfo> info = readProvider.getInfo();
-        assertEq(True, info.supports_request, "read supports request");
+        # Read as text
+        {
+            hash<auto> result = readProvider.doRequest({
+                "archive_data": create_result.archive_data,
+                "entry_name": "hello.txt",
+                "as_text": True,
+            });
+            assertEq("Hello World", result.content, "read: text content");
+            assertEq(11, result.size, "read: text size");
+            assertEq(True, exists result.entry_info, "read: entry_info returned");
+        }
+
+        # Read as binary
+        {
+            hash<auto> result = readProvider.doRequest({
+                "archive_data": create_result.archive_data,
+                "entry_name": "data.bin",
+            });
+            assertEq(<0102030405>, result.content, "read: binary content");
+            assertEq(5, result.size, "read: binary size");
+        }
+
+        # Read non-existent entry
+        assertThrows("TAR-ERROR", sub() {
+            readProvider.doRequest({
+                "archive_data": create_result.archive_data,
+                "entry_name": "nonexistent.txt",
+            });
+        }, NOTHING, "read: non-existent entry");
     }
 
     # Test compress data action
     compressDataActionTest() {
         AbstractDataProvider provider = DataProvider::getFactory("tar").create();
         AbstractDataProvider compressProvider = provider.getChildProvider("data").getChildProvider("compress");
+        AbstractDataProvider decompressProvider = provider.getChildProvider("data").getChildProvider("decompress");
 
-        assertEq("compress", compressProvider.getName(), "compress provider name");
+        # Compress with gzip
+        {
+            hash<auto> result = compressProvider.doRequest({
+                "compression": "gzip",
+                "files": (
+                    {"name": "a.txt", "text": "Alpha"},
+                    {"name": "b.txt", "text": "Beta"},
+                ),
+            });
+            assertEq(True, exists result.archive_data, "compress: returns data");
+            assertEq(True, result.archive_size > 0, "compress: has size");
+            assertEq(2, result.entry_count, "compress: 2 entries");
 
-        hash<DataProviderInfo> info = compressProvider.getInfo();
-        assertEq(True, info.supports_request, "compress supports request");
+            # Verify by decompressing
+            hash<auto> dec = decompressProvider.doRequest({
+                "archive_data": result.archive_data,
+            });
+            assertEq(2, dec.file_count, "compress round-trip: 2 files");
+        }
+
+        # Compress with no compression
+        {
+            hash<auto> result = compressProvider.doRequest({
+                "files": ({"name": "test.txt", "text": "test"},),
+            });
+            assertEq(1, result.entry_count, "compress none: 1 entry");
+        }
     }
 
     # Test decompress data action
     decompressDataActionTest() {
         AbstractDataProvider provider = DataProvider::getFactory("tar").create();
+        AbstractDataProvider createProvider = provider.getChildProvider("archive").getChildProvider("create");
         AbstractDataProvider decompressProvider = provider.getChildProvider("data").getChildProvider("decompress");
 
-        assertEq("decompress", decompressProvider.getName(), "decompress provider name");
+        # Create a compressed archive
+        hash<auto> create_result = createProvider.doRequest({
+            "compression": "gzip",
+            "files": (
+                {"name": "file1.txt", "text": "First"},
+                {"name": "file2.txt", "text": "Second"},
+            ),
+        });
 
-        hash<DataProviderInfo> info = decompressProvider.getInfo();
-        assertEq(True, info.supports_request, "decompress supports request");
+        # Decompress and verify
+        hash<auto> result = decompressProvider.doRequest({
+            "archive_data": create_result.archive_data,
+        });
+        assertEq(2, result.file_count, "decompress: 2 files");
+        assertEq(2, result.entry_count, "decompress: 2 entries");
+        assertEq(True, exists result.files, "decompress: files hash");
+        assertEq(True, exists result.files."file1.txt", "decompress: file1.txt in files");
+        assertEq(5, result.files."file1.txt".size, "decompress: file1 size=5");
+
+        # Test missing source
+        assertThrows("REQUIRED-FIELD-GROUP-ERROR", sub() {
+            decompressProvider.doRequest({});
+        }, NOTHING, "decompress: requires archive source");
     }
 
     # Test encrypt/decrypt actions

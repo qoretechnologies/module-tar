@@ -424,8 +424,8 @@ class QTarApp {
         tar.close();
 
         printf("%s %s\n", tc.key("Archive:"), tc.bold(path ?? archive_path));
-        printf("%s %s\n", tc.key("Format:"), get_format_name(fmt));
-        printf("%s %s\n", tc.key("Compression:"), get_compression_name(cm));
+        printf("%s %s\n", tc.key("Format:"), get_format_name(fmt ?? 0));
+        printf("%s %s\n", tc.key("Compression:"), get_compression_name(cm ?? 0));
         printf("%s %s\n", tc.key("Entries:"), tc.number(string(entries.size())));
         printf("%s %s\n", tc.key("Files:"), tc.number(string(file_count)));
         printf("%s %s\n", tc.key("Directories:"), tc.number(string(dir_count)));

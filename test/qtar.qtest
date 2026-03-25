@@ -1,0 +1,277 @@
+#!/usr/bin/env qore
+# -*- mode: qore; indent-tabs-mode: nil -*-
+
+/*
+    Qore qtar CLI test suite
+
+    Copyright (C) 2026 Qore Technologies, s.r.o.
+
+    Permission is hereby granted, free of charge, to any person obtaining a
+    copy of this software and associated documentation files (the "Software"),
+    to deal in the Software without restriction, including without limitation
+    the rights to use, copy, modify, merge, publish, distribute, sublicense,
+    and/or sell copies of the Software, and to permit persons to whom the
+    Software is furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in
+    all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+    DEALINGS IN THE SOFTWARE.
+*/
+
+%modern
+
+%requires QUnit
+%requires Util
+
+%exec-class QtarCliTest
+
+public class QtarCliTest inherits QUnit::Test {
+    private {
+        string testDir;
+        string qtar;
+        string modPath;
+    }
+
+    constructor() : Test("QtarCliTest", "1.0") {
+        testDir = tmp_location() + "/qtar_cli_test_" + string(getpid());
+        # Find qtar relative to this test file
+        string testFileDir = get_script_dir();
+        qtar = testFileDir + "/../bin/qtar";
+        modPath = testFileDir + "/../build:" + testFileDir + "/../qlib";
+
+        addTestCase("Help and version tests", \helpVersionTest());
+        addTestCase("Create and list tests", \createListTest());
+        addTestCase("Extract tests", \extractTest());
+        addTestCase("Add tests", \addTest());
+        addTestCase("Info tests", \infoTest());
+        addTestCase("Cat tests", \catTest());
+        addTestCase("Encrypt/decrypt tests", \encryptDecryptTest());
+        addTestCase("Verify tests", \verifyTest());
+        addTestCase("Diff tests", \diffTest());
+        addTestCase("Error handling tests", \cliErrorTest());
+
+        set_return_value(main());
+    }
+
+    globalSetUp() {
+        mkdir(testDir);
+        # Create test files
+        mkdir(testDir + "/src");
+        writeFile(testDir + "/src/main.txt", "main content");
+        writeFile(testDir + "/src/util.txt", "util content");
+        writeFile(testDir + "/readme.md", "readme");
+    }
+
+    globalTearDown() {
+        if (is_dir(testDir)) {
+            system("rm -rf " + testDir);
+        }
+    }
+
+    private writeFile(string path, string content) {
+        File f();
+        f.open(path, O_CREAT | O_WRONLY | O_TRUNC);
+        f.write(content);
+    }
+
+    private hash<auto> run(string args) {
+        string outFile = testDir + "/cmd_output.txt";
+        string cmd = sprintf("QORE_MODULE_DIR=%s qore %s %s > %s 2>&1",
+            modPath, qtar, args, outFile);
+        int rc = system(cmd);
+        string output = is_file(outFile) ? ReadOnlyFile::readTextFile(outFile) : "";
+        return {"output": output, "rc": rc};
+    }
+
+    # --- Tests ---
+
+    helpVersionTest() {
+        hash<auto> r = run("--help");
+        assertEq(0, r.rc, "help exits 0");
+        assertEq(True, r.output.find("Commands:") >= 0, "help shows Commands");
+
+        r = run("--version");
+        assertEq(0, r.rc, "version exits 0");
+        assertEq(True, r.output.find("qtar ") >= 0, "version shows qtar");
+
+        r = run("create -h");
+        assertEq(0, r.rc, "create -h exits 0");
+    }
+
+    createListTest() {
+        string archive = testDir + "/cl_test.tar";
+
+        # Create from directory using -C to get relative paths
+        hash<auto> r = run(sprintf("create %s -C %s src", archive, testDir));
+        assertEq(0, r.rc, "create exits 0");
+        assertEq(True, is_file(archive), "create: archive file exists");
+
+        # List
+        r = run(sprintf("list %s", archive));
+        assertEq(0, r.rc, "list exits 0");
+        assertEq(True, r.output.find("main.txt") >= 0, "list: shows main.txt");
+        assertEq(True, r.output.find("util.txt") >= 0, "list: shows util.txt");
+
+        # List long format
+        r = run(sprintf("list -l %s", archive));
+        assertEq(0, r.rc, "list -l exits 0");
+        assertEq(True, r.output.find("rw") >= 0, "list -l: shows permissions");
+
+        # Create with gzip (auto-detected from extension)
+        string gzArchive = testDir + "/cl_test.tar.gz";
+        r = run(sprintf("create %s -C %s src", gzArchive, testDir));
+        assertEq(0, r.rc, "create gz exits 0");
+        assertEq(True, is_file(gzArchive), "create gz: file exists");
+
+        # Verify gz archive is readable
+        r = run(sprintf("list %s", gzArchive));
+        assertEq(0, r.rc, "list gz exits 0");
+    }
+
+    extractTest() {
+        # Create archive first
+        string archive = testDir + "/ext_test.tar";
+        run(sprintf("create %s -C %s src", archive, testDir));
+
+        # Extract
+        string dest = testDir + "/extracted";
+        mkdir(dest);
+        hash<auto> r = run(sprintf("extract %s -C %s", archive, dest));
+        assertEq(0, r.rc, "extract exits 0");
+
+        # Verify files extracted
+        assertEq(True, is_dir(dest + "/src"), "extract: src/ dir exists");
+
+        # Extract with verbose
+        string dest2 = testDir + "/extracted2";
+        mkdir(dest2);
+        r = run(sprintf("extract -v %s -C %s", archive, dest2));
+        assertEq(0, r.rc, "extract -v exits 0");
+    }
+
+    addTest() {
+        string archive = testDir + "/add_test.tar";
+        # Create with one file using -C
+        run(sprintf("create %s -C %s readme.md", archive, testDir));
+
+        # Add another file
+        run(sprintf("add %s -C %s src/main.txt", archive, testDir));
+
+        # Verify both files present
+        hash<auto> r = run(sprintf("list %s", archive));
+        assertEq(0, r.rc, "add: list exits 0");
+        assertEq(True, r.output.find("readme.md") >= 0, "add: original file present");
+        assertEq(True, r.output.find("main.txt") >= 0, "add: added file present");
+    }
+
+    infoTest() {
+        string archive = testDir + "/info_test.tar";
+        run(sprintf("create %s -C %s src", archive, testDir));
+
+        hash<auto> r = run(sprintf("info %s", archive));
+        assertEq(0, r.rc, "info exits 0");
+        assertEq(True, r.output.find("Entries:") >= 0, "info: shows entries");
+        assertEq(True, r.output.find("Files:") >= 0, "info: shows files");
+        assertEq(True, r.output.find("Compression:") >= 0, "info: shows compression");
+    }
+
+    catTest() {
+        string archive = testDir + "/cat_test.tar";
+        run(sprintf("create %s -C %s src/main.txt", archive, testDir));
+
+        hash<auto> r = run(sprintf("cat %s src/main.txt", archive));
+        assertEq(0, r.rc, "cat exits 0");
+        assertEq("main content", r.output, "cat: content matches");
+    }
+
+    encryptDecryptTest() {
+        string archive = testDir + "/enc_test.tar";
+        run(sprintf("create %s -C %s src", archive, testDir));
+
+        string encrypted = testDir + "/enc_test.tar.enc";
+        string decrypted = testDir + "/dec_test.tar";
+        string hexKey = "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef";
+
+        # Encrypt
+        hash<auto> r = run(sprintf("encrypt %s %s -k %s", archive, encrypted, hexKey));
+        assertEq(0, r.rc, "encrypt exits 0");
+        assertEq(True, is_file(encrypted), "encrypt: output file exists");
+
+        # Decrypt
+        r = run(sprintf("decrypt %s %s -k %s", encrypted, decrypted, hexKey));
+        assertEq(0, r.rc, "decrypt exits 0");
+        assertEq(True, is_file(decrypted), "decrypt: output file exists");
+
+        # Verify decrypted archive contents
+        r = run(sprintf("list %s", decrypted));
+        assertEq(0, r.rc, "decrypt round-trip: list works");
+        assertEq(True, r.output.find("main.txt") >= 0,
+            "decrypt round-trip: main.txt present");
+
+        # Encrypt with --gen-key
+        string encrypted2 = testDir + "/enc_test2.tar.enc";
+        r = run(sprintf("encrypt %s %s --gen-key", archive, encrypted2));
+        assertEq(0, r.rc, "encrypt --gen-key exits 0");
+    }
+
+    verifyTest() {
+        string archive = testDir + "/verify_test.tar";
+        run(sprintf("create %s -C %s src", archive, testDir));
+
+        hash<auto> r = run(sprintf("verify %s", archive));
+        assertEq(0, r.rc, "verify exits 0");
+        assertEq(True, r.output.find("OK") >= 0, "verify: shows OK");
+        assertEq(True, r.output.find("Files verified:") >= 0, "verify: shows files count");
+    }
+
+    diffTest() {
+        # Create a clean diff source directory
+        string diffSrc = testDir + "/diff_src";
+        mkdir(diffSrc);
+        mkdir(diffSrc + "/sub");
+        writeFile(diffSrc + "/sub/file.txt", "content");
+        writeFile(diffSrc + "/root.txt", "root");
+
+        string archive = testDir + "/diff_test.tar";
+        run(sprintf("create %s -C %s sub root.txt", archive, diffSrc));
+
+        # Diff against the source (should match)
+        hash<auto> r = run(sprintf("diff %s %s", archive, diffSrc));
+        assertEq(0, r.rc, "diff matching exits 0");
+        assertEq(True, r.output.find("matched") >= 0, "diff: shows matched");
+
+        # Modify a file and diff again (should show modified)
+        writeFile(diffSrc + "/sub/file.txt", "changed content");
+        r = run(sprintf("diff %s %s", archive, diffSrc));
+        assertEq(1, r.rc, "diff with changes exits 1");
+        assertEq(True, r.output.find("modified") >= 0, "diff: shows modified");
+    }
+
+    cliErrorTest() {
+        # Unknown command
+        hash<auto> r = run("bogus");
+        assertEq(1, r.rc, "unknown command exits 1");
+
+        # Cat non-existent entry
+        string archive = testDir + "/error_test.tar";
+        run(sprintf("create %s -C %s readme.md", archive, testDir));
+
+        r = run(sprintf("cat %s nonexistent.txt", archive));
+        assertEq(1, r.rc, "cat nonexistent exits 1");
+
+        # Encrypt without key
+        r = run(sprintf("encrypt %s /tmp/out.enc", archive));
+        assertEq(1, r.rc, "encrypt without key exits 1");
+
+        # Create with no files
+        r = run("create");
+        assertEq(1, r.rc, "create with no args exits 1");
+    }
+}
