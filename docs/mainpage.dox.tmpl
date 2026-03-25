@@ -9,11 +9,16 @@
     - Creating, reading, and modifying TAR archives
     - Multiple compression methods: gzip, bzip2, xz, zstd, lz4
     - Multiple TAR formats: USTAR, PAX, GNU, V7
+    - Include/exclude glob filters and path stripping for extraction
+    - Progress callbacks for long-running operations
     - Streaming API for large file operations
+    - Stream-based constructors for piping archives through I/O streams
     - Support for symbolic links, hard links, and special files
     - In-memory archive operations
-    - Data provider module for integration with Qore's data provider framework
-    - Archive encryption and multi-volume archive support
+    - Archive encryption (AES-256-CBC) and multi-volume split/join
+    - Archive integrity verification
+    - Data provider module with 17 registered actions
+    - \c qtar command-line tool
 
     The module is built on top of libarchive, providing robust and efficient archive handling.
 
@@ -73,6 +78,50 @@ tar2.extractTo("readme.txt", "/path/to/extracted/readme.txt");
 tar2.close();
     @endcode
 
+    @subsection tarfilters Extraction Filters and Path Stripping
+
+    @code{.py}
+TarFile tar("archive.tar.gz", "r");
+
+# Extract only .txt files, excluding anything in tmp/
+list<string> extracted = tar.extractAll(<TarExtractOptions>{
+    "destination": "/output",
+    "include": ("*.txt",),
+    "exclude": ("tmp/*",),
+});
+tar.close();
+printf("Extracted %d files\n", extracted.size());
+
+# Strip leading path components (e.g., "project/src/main.c" -> "src/main.c")
+TarFile tar2("project.tar", "r");
+tar2.extractAll(<TarExtractOptions>{
+    "destination": "/output",
+    "strip_count": 1,
+});
+tar2.close();
+    @endcode
+
+    Glob wildcards supported by include/exclude filters:
+    - \c * matches any characters (including \c /)
+    - \c ? matches any single character
+    - \c [abc] matches one character from the set
+
+    @subsection tarprogress Progress Callbacks
+
+    @code{.py}
+TarFile tar("large-archive.tar.gz", "r");
+list<string> extracted = tar.extractAll(
+    <TarExtractOptions>{"destination": "/output"},
+    sub (string name, int current, int total) {
+        printf("[%d/%d] %s\n", current, total, name);
+    },
+);
+tar.close();
+    @endcode
+
+    The callback receives \c (string entry_name, int current, int total) after each
+    entry is extracted. If the callback throws an exception, extraction is aborted cleanly.
+
     @subsection tarmemory In-Memory Archives
 
     @code{.py}
@@ -88,7 +137,7 @@ string content = readTar.readText("data.json");
 readTar.close();
 
 # Create compressed in-memory archive
-TarFile compressedTar(NOTHING, <TarCreateOptions>{"compression_method": TAR_CM_GZIP});
+TarFile compressedTar(<TarCreateOptions>{"compression_method": TAR_CM_GZIP});
 compressedTar.add("file.txt", "Compressed content");
 binary compressedData = compressedTar.toData();
     @endcode
@@ -133,6 +182,29 @@ while (*binary chunk = is.read(4096)) {
 readTar.close();
     @endcode
 
+    @subsection tarstreamctors Stream-Based Constructors
+
+    TarFile can be constructed from Qore InputStream and OutputStream objects for
+    piping archive data through streams:
+
+    @code{.py}
+# Write archive to an OutputStream
+FileOutputStream fos("archive.tar.gz");
+TarFile tar(fos, <TarCreateOptions>{"compression_method": TAR_CM_GZIP});
+tar.add("file.txt", "content");
+tar.close();
+
+# Read archive from an InputStream
+FileInputStream fis("archive.tar.gz");
+TarFile tar2(fis);
+list<hash<TarEntryInfo>> entries = tar2.entries();
+tar2.close();
+    @endcode
+
+    @note Operations that re-read the archive (e.g., calling entries() then read()) will
+    buffer the stream into memory on first use, since streams are not seekable. For large
+    archives where memory is a concern, use the file-path constructor instead.
+
     @section tarcompression Compression Methods
 
     The module supports multiple compression methods:
@@ -168,6 +240,15 @@ readTar.close();
     - Unicode filenames
     - Extended attributes
     - Nanosecond timestamps
+
+    @section tarutilityfunctions Utility Functions
+
+    @code{.py}
+# Get human-readable names for TAR constants
+string cm_name = get_compression_name(TAR_CM_GZIP);     # "gzip"
+string fmt_name = get_format_name(TAR_FORMAT_PAX);       # "pax"
+string unknown = get_compression_name(99);               # "unknown"
+    @endcode
 
     @section tarentryinfo Entry Information
 
@@ -221,21 +302,120 @@ AbstractDataProvider dp = DataProvider::getFactoryObjectFromStringEx("tar{}/arch
 
     |!Path|!Action|!Description
     |/archive/create|create-archive|Create a new tar archive
-    |/archive/extract|extract-archive|Extract all files from an archive
+    |/archive/extract|extract-archive|Extract files with optional include/exclude filters
     |/archive/list|list-archive|List archive contents with metadata
     |/archive/info|get-archive-info|Get archive metadata and statistics
     |/archive/add|add-files|Add files to an existing archive
+    |/archive/verify|verify-archive|Verify archive integrity without extracting
+    |/archive/encrypt|encrypt-archive|Encrypt archive with AES-256-CBC
+    |/archive/decrypt|decrypt-archive|Decrypt an AES-256-CBC encrypted archive
+    |/archive/split|split-archive|Split archive into fixed-size chunks
+    |/archive/join|join-archive|Join chunks back into single archive
     |/file/extract|extract-file|Extract a single file from archive
     |/file/read|read-file|Read file content without extracting to disk
     |/data/compress|compress-data|Compress data to tar format (in-memory)
     |/data/decompress|decompress-data|Decompress tar data (in-memory)
-    |/directory/archive|archive-directory|Archive a directory tree
+    |/directory/archive|archive-directory|Archive a directory tree recursively
     |/stream/extract|stream-extract|Stream extract large files
     |/entry/delete|delete-entry|Delete entry from archive
-    |/archive/encrypt|encrypt-archive|Encrypt a tar archive
-    |/archive/decrypt|decrypt-archive|Decrypt an encrypted tar archive
-    |/archive/split|split-archive|Split archive into multiple chunks
-    |/archive/join|join-archive|Join multiple chunks into single archive
+
+    @subsection tardpexamples Data Provider Examples
+
+    @code{.py}
+%requires TarDataProvider
+%requires DataProvider
+
+auto provider = DataProvider::getFactory("tar").create();
+
+# Create an archive with files
+auto createProvider = provider.getChildProvider("archive").getChildProvider("create");
+hash<auto> result = createProvider.doRequest({
+    "archive_path": "/tmp/backup.tar.gz",
+    "compression": "gzip",
+    "files": (
+        {"name": "readme.txt", "text": "Hello World"},
+        {"name": "data.bin", "data": binary("binary content")},
+    ),
+});
+
+# Extract with filters
+auto extractProvider = provider.getChildProvider("archive").getChildProvider("extract");
+hash<auto> ext_result = extractProvider.doRequest({
+    "archive_path": "/tmp/backup.tar.gz",
+    "destination": "/tmp/output",
+    "include": ("*.txt",),
+    "overwrite": True,
+});
+printf("Extracted %d entries\n", ext_result.extracted_count);
+
+# Encrypt an archive
+auto encryptProvider = provider.getChildProvider("archive").getChildProvider("encrypt");
+hash<auto> enc_result = encryptProvider.doRequest({
+    "archive_path": "/tmp/backup.tar.gz",
+    "key": get_random_bytes(32),
+});
+# enc_result.encrypted_data contains [IV + ciphertext]
+
+# Split into 1MB chunks
+auto splitProvider = provider.getChildProvider("archive").getChildProvider("split");
+hash<auto> split_result = splitProvider.doRequest({
+    "archive_path": "/tmp/backup.tar.gz",
+    "chunk_size": 1048576,
+});
+printf("Split into %d chunks\n", split_result.chunk_count);
+    @endcode
+
+    @section tarqtar qtar Command-Line Tool
+
+    The module includes \c qtar, a command-line tool for TAR archive operations:
+
+    @verbatim
+qtar - Qore TAR archive tool
+
+Commands:
+  c  create   Create a new archive
+  x  extract  Extract archive contents
+  t  list     List archive contents
+  a  add      Add files to an existing archive
+  i  info     Show archive metadata
+  e  encrypt  Encrypt an archive (AES-256-CBC)
+  d  decrypt  Decrypt an encrypted archive
+     cat      Read a single entry to stdout
+     verify   Verify archive integrity
+     diff     Compare archive vs filesystem
+    @endverbatim
+
+    @subsection tarqtarexamples qtar Examples
+
+    @code{.sh}
+# Create a gzip-compressed archive (compression auto-detected from extension)
+qtar create backup.tar.gz /path/to/project
+
+# Extract with glob filters
+qtar extract backup.tar.gz -C /tmp/output --include='*.txt' --exclude='tmp/*'
+
+# Extract with path stripping
+qtar extract project.tar.gz -C /output --strip=1
+
+# List contents in long format
+qtar list -l archive.tar
+
+# Read a single file to stdout
+qtar cat archive.tar.gz path/to/file.txt > output.txt
+
+# Show archive metadata
+qtar info archive.tar.gz
+
+# Encrypt/decrypt
+qtar encrypt archive.tar archive.tar.enc --gen-key
+qtar decrypt archive.tar.enc archive.tar -k <hex-key>
+
+# Verify archive integrity
+qtar verify backup.tar.gz
+
+# Compare archive against filesystem
+qtar diff backup.tar.gz /path/to/project
+    @endcode
 
     @section tarerrors Error Handling
 
@@ -251,50 +431,53 @@ try {
 }
     @endcode
 
-    @section taradvanced Advanced Features
-
-    @subsection tarencrypt Archive Encryption
-
-    The module provides helper functions for encrypting entire archives:
+    Path traversal attacks are detected and rejected with \c "TAR-SECURITY-ERROR":
 
     @code{.py}
-# Create archive
-TarFile tar();
-tar.add("secret.txt", "Confidential data");
-binary archiveData = tar.toData();
-
-# Encrypt the archive
-binary encrypted = TarFile::encryptArchive(archiveData, "password123");
-
-# Decrypt the archive
-binary decrypted = TarFile::decryptArchive(encrypted, "password123");
-
-# Read decrypted archive
-TarFile readTar(decrypted);
-string content = readTar.readText("secret.txt");
-    @endcode
-
-    @subsection tarmultivolume Multi-Volume Archives
-
-    For large archives, you can split them into multiple chunks:
-
-    @code{.py}
-# Create archive
-TarFile tar();
-tar.add("largefile.bin", largeData);
-binary archiveData = tar.toData();
-
-# Split into 10MB chunks
-list<binary> chunks = TarFile::splitArchive(archiveData, 10 * 1024 * 1024);
-
-# Later, join the chunks back
-binary joined = TarFile::joinArchive(chunks);
-
-# Read joined archive
-TarFile readTar(joined);
+# Archives containing paths like "../../../etc/passwd" are rejected
+try {
+    tar.extractAll(<TarExtractOptions>{"destination": "/safe/dir"});
+} catch (hash<ExceptionInfo> ex) {
+    if (ex.err == "TAR-SECURITY-ERROR") {
+        printf("Blocked path traversal: %s\n", ex.desc);
+    }
+}
     @endcode
 
     @section tarreleasenotes Release Notes
+
+    @subsection tar_1_1 tar Module Version 1.1
+
+    <b>New Features:</b>
+    - Include/exclude glob-style filters for @ref Qore::Tar::TarFile::extractAll() "extractAll()"
+      (\c include, \c exclude fields in @ref Qore::Tar::TarExtractOptions "TarExtractOptions")
+    - Path component stripping during extraction (\c strip_count in
+      @ref Qore::Tar::TarExtractOptions "TarExtractOptions")
+    - Progress callbacks for @ref Qore::Tar::TarFile::extractAll() "extractAll()" with
+      \c code parameter overload
+    - Stream-based constructors: @ref Qore::Tar::TarFile::constructor(Qore::InputStream) "TarFile(InputStream)"
+      and @ref Qore::Tar::TarFile::constructor(Qore::OutputStream, *hash<Qore::Tar::TarCreateOptions>) "TarFile(OutputStream)"
+    - @ref Qore::Tar::get_compression_name() "get_compression_name()" and
+      @ref Qore::Tar::get_format_name() "get_format_name()" utility functions
+    - @ref Qore::Tar::TarFile::extractAll() "extractAll()" returns list of extracted entry names
+    - \c qtar command-line tool with create, extract, list, add, info, cat, encrypt, decrypt,
+      verify, and diff commands
+
+    <b>Data Provider Improvements:</b>
+    - All action registrations include \c options and \c output_type for full UI support
+    - \c AllowedValueInfo with \c display_name for all enumerated values
+    - New providers: TarVerifyArchiveDataProvider, TarArchiveDirectoryDataProvider,
+      TarStreamExtractDataProvider, TarDeleteEntryDataProvider,
+      TarEncryptArchiveDataProvider, TarDecryptArchiveDataProvider,
+      TarSplitArchiveDataProvider, TarJoinArchiveDataProvider
+
+    <b>Bug Fixes:</b>
+    - Fixed use-after-free in extractAll() where entry_name pointer was used after
+      archive_entry_set_pathname() invalidated the libarchive internal buffer
+    - Removed non-functional fields from TarAddOptions (compression_method,
+      compression_level, format were declared but never parsed)
+    - Removed non-functional strip_components bool from TarExtractOptions
+      (replaced by working strip_count int)
 
     @subsection tar_1_0 tar Module Version 1.0
     - Initial release
@@ -303,8 +486,7 @@ TarFile readTar(joined);
     - Streaming API for large files
     - In-memory archive operations
     - Symlink and hardlink support
-    - Archive encryption and multi-volume support
-    - Data provider module with 16 registered actions
+    - Data provider module with registered actions
 
     @section tarlicense License
 
