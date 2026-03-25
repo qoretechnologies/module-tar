@@ -721,7 +721,58 @@ public class TarDataProviderTest inherits QUnit::Test {
             hash<string, AbstractDataField> decFields = decReqType.getFields();
             assertEq(True, exists decFields.key, "decrypt has key field");
             assertEq(True, exists decFields.encrypted_data, "decrypt has encrypted_data field");
+            assertEq(True, exists encFields.password, "encrypt has password field");
+            assertEq(True, exists decFields.password, "decrypt has password field");
         }
+
+        # Test password-based encryption round-trip
+        {
+            hash<auto> pw_enc = encryptProvider.doRequest({
+                "archive_data": original_data,
+                "password": "test-password-123",
+            });
+            assertEq(True, pw_enc.encrypted_size > original_size,
+                "password encrypt: output larger than input");
+            # Verify magic bytes
+            assertEq(<54454E43>, pw_enc.encrypted_data.substr(0, 4),
+                "password encrypt: TENC magic present");
+
+            hash<auto> pw_dec = decryptProvider.doRequest({
+                "encrypted_data": pw_enc.encrypted_data,
+                "password": "test-password-123",
+            });
+            assertEq(original_data, pw_dec.archive_data,
+                "password round-trip: data matches");
+
+            # Verify decrypted archive is valid
+            hash<auto> pw_list = listProvider.doRequest({
+                "archive_data": pw_dec.archive_data,
+            });
+            assertEq(2, pw_list.count, "password round-trip: 2 entries");
+        }
+
+        # Test wrong password
+        {
+            hash<auto> pw_enc = encryptProvider.doRequest({
+                "archive_data": original_data,
+                "password": "correct-password",
+            });
+            assertThrows("DECRYPT-ERROR", sub() {
+                decryptProvider.doRequest({
+                    "encrypted_data": pw_enc.encrypted_data,
+                    "password": "wrong-password",
+                });
+            }, NOTHING, "password: wrong password fails");
+        }
+
+        # Test key vs password mismatch
+        assertThrows("TAR-ERROR", sub() {
+            encryptProvider.doRequest({
+                "archive_data": original_data,
+                "key": key,
+                "password": "both-provided",
+            });
+        }, NOTHING, "encrypt: key + password rejects both");
     }
 
     # Test split/join actions

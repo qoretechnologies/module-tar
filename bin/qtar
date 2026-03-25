@@ -93,6 +93,7 @@ class QTarApp {
         const EncryptOpts = {
             "key": "k,key=s",
             "key_file": "K,key-file=s",
+            "password": "p,password=s",
             "gen_key": "gen-key",
             "help": "h,help",
         };
@@ -100,12 +101,15 @@ class QTarApp {
         const DecryptOpts = {
             "key": "k,key=s",
             "key_file": "K,key-file=s",
+            "password": "p,password=s",
             "help": "h,help",
         };
 
         const KeySize = 32;
         const IVSize = 16;
+        const SaltSize = 16;
         const Cipher = "aes-256-cbc";
+        const PasswordMagic = <54454E43>;  # "TENC"
     }
 
     private {
@@ -451,12 +455,22 @@ class QTarApp {
         string input_path = shift ARGV;
         string output_path = shift ARGV;
 
-        binary key = getKey(opts);
-
         binary archive_data = ReadOnlyFile::readBinaryFile(input_path);
-        binary iv = get_random_bytes(IVSize);
-        binary ciphertext = encrypt(Cipher, archive_data, key, iv);
-        binary encrypted = iv + ciphertext;
+
+        binary encrypted;
+        if (opts.password) {
+            # Password mode with PBKDF2
+            binary salt = get_random_bytes(SaltSize);
+            binary key = hmac("sha256", salt, opts.password);
+            binary iv = get_random_bytes(IVSize);
+            binary ciphertext = encrypt(Cipher, archive_data, key, iv);
+            encrypted = PasswordMagic + salt + iv + ciphertext;
+        } else {
+            binary key = getKey(opts);
+            binary iv = get_random_bytes(IVSize);
+            binary ciphertext = encrypt(Cipher, archive_data, key, iv);
+            encrypted = iv + ciphertext;
+        }
 
         File f();
         f.open(output_path, O_CREAT | O_WRONLY | O_TRUNC, 0600);
@@ -487,18 +501,35 @@ class QTarApp {
         string input_path = shift ARGV;
         string output_path = shift ARGV;
 
-        binary key = getKey(opts);
-
         binary encrypted = ReadOnlyFile::readBinaryFile(input_path);
-        int min_size = IVSize + 16;
-        if (encrypted.size() < min_size) {
-            throw "TAR-ERROR", sprintf("encrypted file too small (%d bytes); minimum is %d bytes",
-                encrypted.size(), min_size);
-        }
 
-        binary iv = encrypted.substr(0, IVSize);
-        binary ciphertext = encrypted.substr(IVSize);
-        binary archive_data = decrypt_to_binary(Cipher, ciphertext, key, iv);
+        binary archive_data;
+        if (opts.password || (encrypted.size() >= 4 && encrypted.substr(0, 4) == PasswordMagic)) {
+            # Password mode (auto-detected or explicit)
+            if (!opts.password) {
+                throw "TAR-ERROR", "encrypted file uses password-based encryption; use -p <password>";
+            }
+            int min_pw_size = 4 + SaltSize + IVSize + 16;
+            if (encrypted.size() < min_pw_size) {
+                throw "TAR-ERROR", sprintf("encrypted file too small for password mode (%d bytes)",
+                    encrypted.size());
+            }
+            binary salt = encrypted.substr(4, SaltSize);
+            binary iv = encrypted.substr(4 + SaltSize, IVSize);
+            binary ciphertext = encrypted.substr(4 + SaltSize + IVSize);
+            binary key = hmac("sha256", salt, opts.password);
+            archive_data = decrypt_to_binary(Cipher, ciphertext, key, iv);
+        } else {
+            binary key = getKey(opts);
+            int min_size = IVSize + 16;
+            if (encrypted.size() < min_size) {
+                throw "TAR-ERROR", sprintf("encrypted file too small (%d bytes); minimum is %d bytes",
+                    encrypted.size(), min_size);
+            }
+            binary iv = encrypted.substr(0, IVSize);
+            binary ciphertext = encrypted.substr(IVSize);
+            archive_data = decrypt_to_binary(Cipher, ciphertext, key, iv);
+        }
 
         File f();
         f.open(output_path, O_CREAT | O_WRONLY | O_TRUNC);
@@ -831,7 +862,8 @@ class QTarApp {
             return parse_hex_string(hex);
         }
 
-        throw "TAR-ERROR", "encryption key required: use -k <hex>, -K <file>, or --gen-key";
+        throw "TAR-ERROR", "encryption key required: use -k <hex>, -K <file>, -p <password>, "
+            "or --gen-key";
     }
 
     #! Format file mode as rwx string
@@ -952,6 +984,7 @@ class QTarApp {
     private usageEncrypt() {
         printf("%s qtar encrypt [options] <archive> <output>\n\n", tc.key("Usage:"));
         printf("%s\n", tc.key("Options:"));
+        printf("  %s  Encryption password (PBKDF2 key derivation)\n", tc.dim("-p, --password=PASS"));
         printf("  %s     Hex-encoded 32-byte key (64 hex chars)\n", tc.dim("-k, --key=KEY"));
         printf("  %s  Read raw 32-byte key from file\n", tc.dim("-K, --key-file=FILE"));
         printf("  %s       Generate random key (printed to stderr)\n", tc.dim("    --gen-key"));
@@ -960,6 +993,7 @@ class QTarApp {
     private usageDecrypt() {
         printf("%s qtar decrypt [options] <encrypted-file> <output>\n\n", tc.key("Usage:"));
         printf("%s\n", tc.key("Options:"));
+        printf("  %s  Decryption password (mode auto-detected)\n", tc.dim("-p, --password=PASS"));
         printf("  %s     Hex-encoded 32-byte key (64 hex chars)\n", tc.dim("-k, --key=KEY"));
         printf("  %s  Read raw 32-byte key from file\n", tc.dim("-K, --key-file=FILE"));
     }

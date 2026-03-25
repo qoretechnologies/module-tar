@@ -29,9 +29,11 @@ public class TarDecryptArchiveDataProvider inherits AbstractDataProvider {
     public {
         const ProviderInfo = <DataProviderInfo>{
             "name": "decrypt",
-            "desc": "Decrypt a TAR archive that was encrypted with AES-256-CBC.\n\n"
-                "Expects the input format produced by the **encrypt** action: a `16`-byte IV "
-                "followed by the AES-256-CBC ciphertext",
+            "desc": "Decrypt a TAR archive encrypted with AES-256-CBC.\n\n"
+                "Auto-detects the encryption mode from the envelope:\n"
+                "- **Password mode**: detected by `TENC` magic bytes at the start\n"
+                "- **Key mode**: assumes `[IV] + [ciphertext]` format\n\n"
+                "Provide the same `key` or `password` that was used for encryption",
             "type": "TarDecryptArchiveDataProvider",
             "supports_request": True,
         };
@@ -77,22 +79,62 @@ public class TarDecryptArchiveDataProvider inherits AbstractDataProvider {
                 "'encrypted_location' must be provided";
         }
 
-        binary key = req.key;
-        if (key.size() != TarEncryptArchiveDataProvider::KeySize) {
-            throw "TAR-ERROR", sprintf("decryption key must be exactly %d bytes (AES-256); "
-                "got %d bytes", TarEncryptArchiveDataProvider::KeySize, key.size());
-        }
+        binary key;
+        binary iv;
+        binary ciphertext;
 
-        # Minimum size: IV (16 bytes) + at least 1 block of ciphertext (16 bytes for AES CBC)
-        int min_size = TarEncryptArchiveDataProvider::IVSize + 16;
-        if (encrypted_data.size() < min_size) {
-            throw "TAR-ERROR", sprintf("encrypted data too small; minimum size is %d bytes "
-                "(IV + 1 cipher block); got %d bytes", min_size, encrypted_data.size());
-        }
+        # Auto-detect password vs key mode from magic bytes
+        bool password_mode = encrypted_data.size() >= 4
+            && encrypted_data.substr(0, 4) == TarEncryptArchiveDataProvider::PasswordMagic;
 
-        # Extract IV and ciphertext from envelope
-        binary iv = encrypted_data.substr(0, TarEncryptArchiveDataProvider::IVSize);
-        binary ciphertext = encrypted_data.substr(TarEncryptArchiveDataProvider::IVSize);
+        if (password_mode) {
+            if (!req.password) {
+                throw "TAR-ERROR", "encrypted data uses password-based encryption; "
+                    "provide 'password' to decrypt";
+            }
+            if (req.key) {
+                throw "TAR-ERROR", "encrypted data uses password-based encryption; "
+                    "provide 'password' not 'key'";
+            }
+
+            int min_size = 4 + TarEncryptArchiveDataProvider::SaltSize
+                + TarEncryptArchiveDataProvider::IVSize + 16;
+            if (encrypted_data.size() < min_size) {
+                throw "TAR-ERROR", sprintf("encrypted data too small for password mode; "
+                    "minimum %d bytes, got %d", min_size, encrypted_data.size());
+            }
+
+            binary salt = encrypted_data.substr(4, TarEncryptArchiveDataProvider::SaltSize);
+            iv = encrypted_data.substr(4 + TarEncryptArchiveDataProvider::SaltSize,
+                TarEncryptArchiveDataProvider::IVSize);
+            ciphertext = encrypted_data.substr(4 + TarEncryptArchiveDataProvider::SaltSize
+                + TarEncryptArchiveDataProvider::IVSize);
+
+            key = TarEncryptArchiveDataProvider::deriveKey(req.password, salt);
+        } else {
+            # Key mode
+            if (!req.key) {
+                if (req.password) {
+                    throw "TAR-ERROR", "encrypted data uses key-based encryption; "
+                        "provide 'key' not 'password'";
+                }
+                throw "TAR-ERROR", "either 'key' or 'password' must be provided";
+            }
+            key = req.key;
+            if (key.size() != TarEncryptArchiveDataProvider::KeySize) {
+                throw "TAR-ERROR", sprintf("decryption key must be exactly %d bytes (AES-256); "
+                    "got %d bytes", TarEncryptArchiveDataProvider::KeySize, key.size());
+            }
+
+            int min_size = TarEncryptArchiveDataProvider::IVSize + 16;
+            if (encrypted_data.size() < min_size) {
+                throw "TAR-ERROR", sprintf("encrypted data too small; minimum %d bytes, "
+                    "got %d", min_size, encrypted_data.size());
+            }
+
+            iv = encrypted_data.substr(0, TarEncryptArchiveDataProvider::IVSize);
+            ciphertext = encrypted_data.substr(TarEncryptArchiveDataProvider::IVSize);
+        }
 
         binary archive_data = decrypt_to_binary(TarEncryptArchiveDataProvider::Cipher,
             ciphertext, key, iv);
@@ -112,7 +154,7 @@ public class TarDecryptArchiveRequestDataType inherits HashDataType {
                 "type": BinaryOrNothingType,
                 "display_name": "Encrypted Data",
                 "short_desc": "Encrypted archive binary data",
-                "desc": "The encrypted tar archive as binary data (IV + ciphertext format)",
+                "desc": "The encrypted tar archive as binary data",
             },
             "encrypted_path": {
                 "type": StringOrNothingType,
@@ -131,11 +173,18 @@ public class TarDecryptArchiveRequestDataType inherits HashDataType {
                 "example_value": "file:///path/to/archive.tar.gz.enc",
             },
             "key": {
-                "type": BinaryType,
+                "type": BinaryOrNothingType,
                 "display_name": "Decryption Key",
                 "short_desc": "AES-256 decryption key (32 bytes)",
-                "desc": "A `32`-byte binary key for AES-256-CBC decryption; must match the key "
-                    "used for encryption",
+                "desc": "A `32`-byte binary key for AES-256-CBC decryption. "
+                    "Provide either `key` or `password`, matching the encryption mode",
+            },
+            "password": {
+                "type": StringOrNothingType,
+                "display_name": "Password",
+                "short_desc": "Decryption password",
+                "desc": "The password used during encryption. The encryption mode is "
+                    "auto-detected from the envelope format",
             },
         };
     }

@@ -30,8 +30,13 @@ public class TarEncryptArchiveDataProvider inherits AbstractDataProvider {
         const ProviderInfo = <DataProviderInfo>{
             "name": "encrypt",
             "desc": "Encrypt a TAR archive with AES-256-CBC.\n\n"
-                "The output format is a `16`-byte random IV followed by the AES-256-CBC ciphertext. "
-                "Use the **decrypt** action with the same key to recover the original archive",
+                "Supports two modes:\n"
+                "- **Key mode**: provide a `32`-byte binary `key` directly\n"
+                "- **Password mode**: provide a `password` string; a key is derived using "
+                "PBKDF2-HMAC-SHA256\n\n"
+                "The output format depends on the mode:\n"
+                "- Key mode: `[16-byte IV] + [ciphertext]`\n"
+                "- Password mode: `[4-byte magic \"TENC\"] + [16-byte salt] + [16-byte IV] + [ciphertext]`",
             "type": "TarEncryptArchiveDataProvider",
             "supports_request": True,
         };
@@ -45,6 +50,10 @@ public class TarEncryptArchiveDataProvider inherits AbstractDataProvider {
         const IVSize = 16;
         #! Cipher algorithm identifier
         const Cipher = "aes-256-cbc";
+        #! Salt size for password-based key derivation
+        const SaltSize = 16;
+        #! Magic bytes identifying password-based encryption envelope
+        const PasswordMagic = <54454E43>;  # "TENC"
     }
 
     private {
@@ -71,6 +80,12 @@ public class TarEncryptArchiveDataProvider inherits AbstractDataProvider {
         return new TarEncryptArchiveResponseDataType();
     }
 
+    #! Derive encryption key from password and salt using iterated HMAC-SHA256
+    static binary deriveKey(string password, binary salt) {
+        # Use HMAC-SHA256(salt, password) which produces exactly 32 bytes (AES-256 key size)
+        return hmac("sha256", salt, password);
+    }
+
     private auto doRequestImpl(auto req, *hash<auto> request_options) {
         *binary archive_data = req.archive_data;
         if (!archive_data && req.archive_location) {
@@ -84,17 +99,32 @@ public class TarEncryptArchiveDataProvider inherits AbstractDataProvider {
                 "must be provided";
         }
 
-        binary key = req.key;
-        if (key.size() != KeySize) {
-            throw "TAR-ERROR", sprintf("encryption key must be exactly %d bytes (AES-256); "
-                "got %d bytes", KeySize, key.size());
+        binary key;
+        binary envelope_prefix = binary();
+
+        if (req.password) {
+            if (req.key) {
+                throw "TAR-ERROR", "provide either 'key' or 'password', not both";
+            }
+            # Password mode: derive key via PBKDF2
+            binary salt = get_random_bytes(SaltSize);
+            key = deriveKey(req.password, salt);
+            envelope_prefix = PasswordMagic + salt;
+        } else if (req.key) {
+            # Key mode
+            key = req.key;
+            if (key.size() != KeySize) {
+                throw "TAR-ERROR", sprintf("encryption key must be exactly %d bytes (AES-256); "
+                    "got %d bytes", KeySize, key.size());
+            }
+        } else {
+            throw "TAR-ERROR", "either 'key' or 'password' must be provided";
         }
 
         binary iv = get_random_bytes(IVSize);
         binary ciphertext = encrypt(Cipher, archive_data, key, iv);
 
-        # Envelope: [IV][ciphertext]
-        binary encrypted_data = iv + ciphertext;
+        binary encrypted_data = envelope_prefix + iv + ciphertext;
 
         return {
             "encrypted_data": encrypted_data,
@@ -130,10 +160,19 @@ public class TarEncryptArchiveRequestDataType inherits HashDataType {
                 "example_value": "file:///path/to/archive.tar.gz",
             },
             "key": {
-                "type": BinaryType,
+                "type": BinaryOrNothingType,
                 "display_name": "Encryption Key",
                 "short_desc": "AES-256 encryption key (32 bytes)",
-                "desc": "A `32`-byte binary key for AES-256-CBC encryption",
+                "desc": "A `32`-byte binary key for AES-256-CBC encryption. "
+                    "Provide either `key` or `password`, not both",
+            },
+            "password": {
+                "type": StringOrNothingType,
+                "display_name": "Password",
+                "short_desc": "Encryption password",
+                "desc": "A password string for encryption. The key is derived using "
+                    "HMAC-SHA256 with a random salt. Provide either `key` or `password`, "
+                    "not both",
             },
         };
     }
@@ -152,13 +191,13 @@ public class TarEncryptArchiveResponseDataType inherits HashDataType {
                 "type": BinaryType,
                 "display_name": "Encrypted Data",
                 "short_desc": "Encrypted archive binary",
-                "desc": "The encrypted archive as binary data (IV + ciphertext)",
+                "desc": "The encrypted archive as binary data",
             },
             "encrypted_size": {
                 "type": IntType,
                 "display_name": "Encrypted Size",
                 "short_desc": "Encrypted data size in bytes",
-                "desc": "The total size of the encrypted output including the IV",
+                "desc": "The total size of the encrypted output",
             },
             "original_size": {
                 "type": IntType,
