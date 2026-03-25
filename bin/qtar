@@ -702,7 +702,13 @@ class QTarApp {
     private scanDiskOnly(string fs_path, string prefix, hash<string, bool> archive_names,
             reference<int> count) {
         Dir d();
-        d.chdir(fs_path);
+        try {
+            d.chdir(fs_path);
+        } catch (hash<ExceptionInfo> ex) {
+            stderr.printf("  %s cannot read directory %s: %s\n",
+                tc.error("error:"), fs_path, ex.desc);
+            return;
+        }
 
         foreach string name in (d.listFiles()) {
             string rel = prefix ? prefix + "/" + name : name;

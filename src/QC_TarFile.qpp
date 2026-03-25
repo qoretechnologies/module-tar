@@ -370,6 +370,10 @@ TarFile::constructor(*hash<TarCreateOptions> opts) {
     @note The input stream must remain valid for the lifetime of the TarFile object.
     Compression is auto-detected from the stream data.
 
+    @warning Operations that require re-reading the archive (e.g. calling entries() followed by
+    read()) will buffer the entire stream into memory on first use, since streams are not seekable.
+    For truly large archives where memory is a concern, use the file-path constructor instead.
+
     @since %tar 1.1
 */
 TarFile::constructor(Qore::InputStream[InputStream] input) {
@@ -404,8 +408,8 @@ TarFile::constructor(Qore::OutputStream[OutputStream] output, *hash<TarCreateOpt
         }
     }
 
-    ReferenceHolder<QoreTarFile> holder(new QoreTarFile(*output, cm >= 0 ? cm : 0,
-        fmt >= 0 ? fmt : 1, xsink), xsink);
+    ReferenceHolder<QoreTarFile> holder(new QoreTarFile(*output,
+        cm >= 0 ? cm : TAR_CM_NONE, fmt >= 0 ? fmt : TAR_FORMAT_PAX, xsink), xsink);
     if (*xsink) {
         return;
     }
