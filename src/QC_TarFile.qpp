@@ -585,6 +585,44 @@ list<string> TarFile::extractAll(*hash<TarExtractOptions> opts) [dom=FILESYSTEM]
     return tf->extractAll(dest, opts, xsink);
 }
 
+//! Extracts all entries to a destination directory with a progress callback
+/** @param opts optional @ref TarExtractOptions for extraction settings
+    @param progress a callback closure called after each entry is extracted with
+    arguments \c (string entry_name, int current, int total) where \c current is
+    the 1-based index and \c total is the total number of entries (-1 if unknown).
+    If the callback throws an exception, extraction is aborted.
+
+    @return a list of entry names that were extracted
+
+    @throw TAR-ERROR error extracting archive
+
+    @par Example:
+    @code{.py}
+TarFile tar("archive.tar.gz", "r");
+tar.extractAll(opts, sub (string name, int cur, int total) {
+    printf("[%d/%d] %s\n", cur, total, name);
+});
+    @endcode
+
+    @since %tar 1.1
+*/
+list<string> TarFile::extractAll(*hash<TarExtractOptions> opts, code progress) [dom=FILESYSTEM] {
+    const char* dest = ".";
+    if (opts) {
+        QoreValue v = opts->getKeyValue("destination");
+        if (v.getType() == NT_STRING) {
+            dest = v.get<const QoreStringNode>()->c_str();
+        }
+    }
+    // Count entries first for total (cheap header-only pass)
+    int64 total = tf->count(xsink);
+    if (*xsink) {
+        return QoreValue();
+    }
+    return tf->extractAll(dest, opts, xsink,
+        const_cast<ResolvedCallReferenceNode*>(progress), total);
+}
+
 //! Extracts a single entry to a destination directory
 /** @param name the name of the entry to extract
     @param opts optional @ref TarExtractOptions for extraction settings

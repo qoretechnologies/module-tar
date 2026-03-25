@@ -97,7 +97,10 @@ public:
     DLLLOCAL void addHardlink(const char* name, const char* target, const QoreHashNode* opts, ExceptionSink* xsink);
 
     //! Extract all entries to directory, returns list of extracted entry names
-    DLLLOCAL QoreListNode* extractAll(const char* destPath, const QoreHashNode* opts, ExceptionSink* xsink);
+    DLLLOCAL QoreListNode* extractAll(const char* destPath, const QoreHashNode* opts,
+                                       ExceptionSink* xsink,
+                                       ResolvedCallReferenceNode* progress_callback = nullptr,
+                                       int64 total_entries = -1);
 
     //! Extract single entry
     DLLLOCAL void extractEntry(const char* name, const char* destPath, ExceptionSink* xsink);

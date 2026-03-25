@@ -265,14 +265,15 @@ class QTarApp {
         }
 
         TarFile tar(archive_path, "r");
-        list<string> extracted = tar.extractAll(extract_opts);
-        tar.close();
-
+        list<string> extracted;
         if (opts.verbose) {
-            foreach string name in (extracted) {
-                printf("%s\n", name);
-            }
+            extracted = tar.extractAll(extract_opts, sub (string name, int current, int total) {
+                stderr.printf("[%d/%d] %s\n", current, total, name);
+            });
+        } else {
+            extracted = tar.extractAll(extract_opts);
         }
+        tar.close();
 
         stderr.printf("%s extracted %s from %s to %s\n",
             tc.success("ok:"),

@@ -1059,7 +1059,10 @@ void QoreTarFile::addHardlink(const char* name, const char* target, const QoreHa
 }
 
 // Extract all entries, returns list of extracted entry names
-QoreListNode* QoreTarFile::extractAll(const char* destPath, const QoreHashNode* opts, ExceptionSink* xsink) {
+QoreListNode* QoreTarFile::extractAll(const char* destPath, const QoreHashNode* opts,
+                                       ExceptionSink* xsink,
+                                       ResolvedCallReferenceNode* progress_callback,
+                                       int64 total_entries) {
     if (!checkOpen(xsink, false)) {
         return nullptr;
     }
@@ -1215,6 +1218,19 @@ QoreListNode* QoreTarFile::extractAll(const char* destPath, const QoreHashNode* 
 
         // Track successfully extracted entry name (use effective name after stripping)
         extracted_names->push(new QoreStringNode(effective_name), xsink);
+
+        // Invoke progress callback if provided
+        if (progress_callback) {
+            int64 current = extracted_names->size();
+            ReferenceHolder<QoreListNode> args(new QoreListNode(autoTypeInfo), xsink);
+            args->push(new QoreStringNode(effective_name), xsink);
+            args->push(current, xsink);
+            args->push(total_entries, xsink);
+            progress_callback->execValue(*args, xsink);
+            if (*xsink) {
+                break;
+            }
+        }
     }
 
     archive_write_close(disk);

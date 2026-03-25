@@ -66,6 +66,7 @@ public class TarTest inherits QUnit::Test {
         addTestCase("Path traversal protection tests", \pathTraversalTest());
         addTestCase("Append mode tests", \appendModeTest());
         addTestCase("Name lookup function tests", \nameLookupTest());
+        addTestCase("Progress callback tests", \progressCallbackTest());
 
         set_return_value(main());
     }
@@ -1796,5 +1797,85 @@ public class TarTest inherits QUnit::Test {
         assertEq("gnu", get_format_name(TAR_FORMAT_GNU), "FORMAT_GNU -> gnu");
         assertEq("v7", get_format_name(TAR_FORMAT_V7), "FORMAT_V7 -> v7");
         assertEq("unknown", get_format_name(99), "unknown format -> unknown");
+    }
+
+    # Test progress callback for extractAll
+    progressCallbackTest() {
+        # Create test archive
+        string tarPath = testDir + "/progress_test.tar";
+        {
+            TarFile tar(tarPath, "w");
+            tar.add("file1.txt", "Content 1");
+            tar.add("file2.txt", "Content 2");
+            tar.add("file3.txt", "Content 3");
+            tar.close();
+        }
+
+        # Test callback is invoked with correct arguments
+        {
+            string extractDir = testDir + "/progress_extract";
+            mkdir(extractDir);
+
+            list<hash<auto>> calls = ();
+            TarFile tar(tarPath, "r");
+            list<string> extracted = tar.extractAll(
+                <TarExtractOptions>{"destination": extractDir},
+                sub (string name, int current, int total) {
+                    calls += {"name": name, "current": current, "total": total};
+                },
+            );
+            tar.close();
+
+            assertEq(3, calls.size(), "callback called 3 times");
+            assertEq(3, extracted.size(), "3 entries extracted");
+
+            # Verify first call
+            assertEq("file1.txt", calls[0].name, "first callback: name");
+            assertEq(1, calls[0].current, "first callback: current=1");
+            assertEq(3, calls[0].total, "first callback: total=3");
+
+            # Verify last call
+            assertEq("file3.txt", calls[2].name, "last callback: name");
+            assertEq(3, calls[2].current, "last callback: current=3");
+            assertEq(3, calls[2].total, "last callback: total=3");
+        }
+
+        # Test callback exception aborts extraction
+        {
+            string extractDir = testDir + "/progress_abort";
+            mkdir(extractDir);
+
+            TarFile tar(tarPath, "r");
+            assertThrows("ABORT", sub () {
+                tar.extractAll(
+                    <TarExtractOptions>{"destination": extractDir},
+                    sub (string name, int current, int total) {
+                        if (current == 2) {
+                            throw "ABORT", "user cancelled";
+                        }
+                    },
+                );
+            }, NOTHING, "callback exception aborts extraction");
+            tar.close();
+
+            # First file extracted, third was not
+            assertEq(True, is_file(extractDir + "/file1.txt"),
+                "abort: file1 extracted before abort");
+            assertEq(False, is_file(extractDir + "/file3.txt"),
+                "abort: file3 not extracted after abort");
+        }
+
+        # Test no-callback overload still works
+        {
+            string extractDir = testDir + "/progress_none";
+            mkdir(extractDir);
+
+            TarFile tar(tarPath, "r");
+            list<string> extracted = tar.extractAll(
+                <TarExtractOptions>{"destination": extractDir});
+            tar.close();
+
+            assertEq(3, extracted.size(), "no-callback: 3 entries extracted");
+        }
     }
 }
