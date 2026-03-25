@@ -203,22 +203,40 @@ class QTarApp {
         int count = 0;
 
         *string base_dir = opts.directory;
+        bool verbose = opts.verbose ?? False;
+
+        # Pre-scan for total count if verbose (enables [N/Total] progress)
+        int total = -1;
+        if (verbose) {
+            total = 0;
+            foreach string path in (ARGV) {
+                string full_path = base_dir ? base_dir + "/" + path : path;
+                if (is_dir(full_path)) {
+                    total += countEntries(full_path);
+                } else if (is_file(full_path) || is_link(full_path)) {
+                    ++total;
+                }
+            }
+        }
+
+        int progress = 0;
 
         foreach string path in (ARGV) {
             string full_path = base_dir ? base_dir + "/" + path : path;
             if (is_dir(full_path)) {
                 count += walkDirectory(tar, full_path, path, opts.dereference ?? False,
-                    opts.verbose ?? False);
+                    verbose, NOTHING, \progress, total);
             } else if (is_file(full_path) || is_link(full_path)) {
                 if (is_link(full_path) && !(opts.dereference ?? False)) {
                     tar.addSymlink(path, readlink(full_path));
                 } else {
                     tar.addFile(path, full_path);
                 }
-                if (opts.verbose) {
-                    printf("%s\n", path);
-                }
                 ++count;
+                if (verbose) {
+                    ++progress;
+                    stderr.printf("[%d/%d] %s\n", progress, total, path);
+                }
             } else {
                 throw "TAR-ERROR", sprintf("path does not exist: %s", full_path);
             }
@@ -625,6 +643,14 @@ class QTarApp {
         }
     }
 
+    #! Check if a path looks like a tar archive (by extension)
+    private bool isArchivePath(string path) {
+        string lower = path.lwr();
+        return lower.endsWith(".tar") || lower.endsWith(".tar.gz") || lower.endsWith(".tgz")
+            || lower.endsWith(".tar.bz2") || lower.endsWith(".tbz2") || lower.endsWith(".tar.xz")
+            || lower.endsWith(".txz") || lower.endsWith(".tar.zst") || lower.endsWith(".tar.lz4");
+    }
+
     # --- Diff command ---
     private cmdDiff() {
         if (!ARGV || ARGV[0] == "-h" || ARGV[0] == "--help") {
@@ -633,12 +659,19 @@ class QTarApp {
         }
 
         if (ARGV.size() < 1) {
-            stderr.printf("%s diff requires <archive> [<directory>]\n", tc.error("error:"));
+            stderr.printf("%s diff requires <archive> <directory|archive>\n", tc.error("error:"));
             exit(1);
         }
 
         string archive_path = shift ARGV;
-        string directory = ARGV ? shift ARGV : ".";
+        string second_arg = ARGV ? shift ARGV : ".";
+
+        # Detect archive-to-archive diff vs archive-to-filesystem diff
+        if (is_file(second_arg) && isArchivePath(second_arg)) {
+            cmdDiffArchives(archive_path, second_arg);
+            return;
+        }
+        string directory = second_arg;
 
         TarFile tar(archive_path, "r");
         list<hash<TarEntryInfo>> entries = tar.entries();
@@ -761,11 +794,115 @@ class QTarApp {
         }
     }
 
+    # --- Archive-to-archive diff ---
+    private cmdDiffArchives(string path1, string path2) {
+        TarFile tar1(path1, "r");
+        TarFile tar2(path2, "r");
+
+        list<hash<TarEntryInfo>> entries1 = tar1.entries();
+        list<hash<TarEntryInfo>> entries2 = tar2.entries();
+
+        # Build lookup hashes
+        hash<string, hash<TarEntryInfo>> map1 = map {$1.name: $1}, entries1;
+        hash<string, hash<TarEntryInfo>> map2 = map {$1.name: $1}, entries2;
+
+        # Merged key set
+        hash<string, bool> all_names;
+        foreach hash<TarEntryInfo> e in (entries1) { all_names{e.name} = True; }
+        foreach hash<TarEntryInfo> e in (entries2) { all_names{e.name} = True; }
+
+        int matched = 0;
+        int modified = 0;
+        int only1 = 0;
+        int only2 = 0;
+
+        foreach string name in (keys all_names) {
+            *hash<TarEntryInfo> e1 = map1{name};
+            *hash<TarEntryInfo> e2 = map2{name};
+
+            if (!e1) {
+                printf("  %s %s\n", tc.cyan("B"), name);
+                ++only2;
+            } else if (!e2) {
+                printf("  %s %s\n", tc.yellow("A"), name);
+                ++only1;
+            } else if (e1.is_directory && e2.is_directory) {
+                ++matched;
+            } else if (e1.size != e2.size) {
+                printf("  %s %s (size: %d vs %d)\n",
+                    tc.red("M"), name, e1.size, e2.size);
+                ++modified;
+            } else if (!e1.is_directory && !e1.is_symlink) {
+                # Same size — compare content
+                binary c1 = tar1.read(name);
+                binary c2 = tar2.read(name);
+                if (c1 == c2) {
+                    ++matched;
+                } else {
+                    printf("  %s %s (content differs)\n", tc.red("M"), name);
+                    ++modified;
+                }
+            } else {
+                ++matched;
+            }
+        }
+
+        tar1.close();
+        tar2.close();
+
+        # Summary
+        printf("\n");
+        printf("  %s: %s\n", tc.dim("archive A"), tc.bold(path1));
+        printf("  %s: %s\n", tc.dim("archive B"), tc.bold(path2));
+        if (matched > 0) {
+            printf("  %s matched\n", tc.success(string(matched)));
+        }
+        if (modified > 0) {
+            printf("  %s modified\n", tc.error(string(modified)));
+        }
+        if (only1 > 0) {
+            printf("  %s only in A\n", tc.warning(string(only1)));
+        }
+        if (only2 > 0) {
+            printf("  %s only in B\n", tc.info(string(only2)));
+        }
+
+        if (modified > 0 || only1 > 0 || only2 > 0) {
+            exit(1);
+        }
+    }
+
     # --- Helpers ---
+
+    #! Count entries in a directory tree (for progress total)
+    private int countEntries(string fs_path, *hash<string, bool> visited) {
+        string canonical = realpath(fs_path);
+        if (visited{canonical}) {
+            return 0;
+        }
+        visited{canonical} = True;
+
+        int count = 1;  # The directory itself
+        Dir d();
+        d.chdir(fs_path);
+        count += d.listFiles().size();
+
+        foreach string name in (d.listDirs()) {
+            string full_path = fs_path + "/" + name;
+            if (is_link(full_path)) {
+                ++count;
+            } else {
+                count += countEntries(full_path, visited);
+            }
+        }
+
+        return count;
+    }
 
     #! Walk a directory recursively, adding entries to the tar archive
     private int walkDirectory(TarFile tar, string fs_path, string archive_prefix,
-            bool dereference, bool verbose, *hash<string, bool> visited) {
+            bool dereference, bool verbose, *hash<string, bool> visited,
+            *reference<int> progress_count, int total = -1) {
         # Symlink loop detection via canonical path tracking
         string canonical = realpath(fs_path);
         if (visited{canonical}) {
@@ -774,10 +911,15 @@ class QTarApp {
         visited{canonical} = True;
 
         tar.addDirectory(archive_prefix.endsWith("/") ? archive_prefix : archive_prefix + "/");
+        int local_count = 1;
         if (verbose) {
-            printf("%s\n", archive_prefix + "/");
+            if (total >= 0) {
+                ++progress_count;
+                stderr.printf("[%d/%d] %s\n", progress_count, total, archive_prefix + "/");
+            } else {
+                stderr.printf("%s\n", archive_prefix + "/");
+            }
         }
-        int count = 1;
 
         Dir d();
         d.chdir(fs_path);
@@ -791,10 +933,15 @@ class QTarApp {
             } else {
                 tar.addFile(archive_name, full_path);
             }
+            ++local_count;
             if (verbose) {
-                printf("%s\n", archive_name);
+                if (total >= 0) {
+                    ++progress_count;
+                    stderr.printf("[%d/%d] %s\n", progress_count, total, archive_name);
+                } else {
+                    stderr.printf("%s\n", archive_name);
+                }
             }
-            ++count;
         }
 
         foreach string name in (d.listDirs()) {
@@ -803,17 +950,22 @@ class QTarApp {
 
             if (is_link(full_path) && !dereference) {
                 tar.addSymlink(archive_name, readlink(full_path));
+                ++local_count;
                 if (verbose) {
-                    printf("%s\n", archive_name);
+                    if (total >= 0) {
+                        ++progress_count;
+                        stderr.printf("[%d/%d] %s\n", progress_count, total, archive_name);
+                    } else {
+                        stderr.printf("%s\n", archive_name);
+                    }
                 }
-                ++count;
             } else {
-                count += walkDirectory(tar, full_path, archive_name, dereference, verbose,
-                    visited);
+                local_count += walkDirectory(tar, full_path, archive_name, dereference,
+                    verbose, visited, \progress_count, total);
             }
         }
 
-        return count;
+        return local_count;
     }
 
     #! Get compression method from command-line flags or filename extension
@@ -1009,11 +1161,17 @@ class QTarApp {
     }
 
     private usageDiff() {
-        printf("%s qtar diff <archive> [<directory>]\n\n", tc.key("Usage:"));
-        printf("Compares archive contents against a filesystem directory (default: .).\n\n");
-        printf("%s\n", tc.key("Legend:"));
+        printf("%s qtar diff <archive> <directory|archive>\n\n", tc.key("Usage:"));
+        printf("Compares archive contents against a filesystem directory or another archive.\n");
+        printf("Archive-to-archive mode is auto-detected when the second argument has a\n");
+        printf("tar extension (.tar, .tar.gz, .tgz, etc.).\n\n");
+        printf("%s\n", tc.key("Legend (archive vs directory):"));
         printf("  %s  Modified (content or metadata differs)\n", tc.red("M"));
         printf("  %s  Archive only (not on disk)\n", tc.yellow("A"));
         printf("  %s  Disk only (not in archive)\n", tc.cyan("D"));
+        printf("\n%s\n", tc.key("Legend (archive vs archive):"));
+        printf("  %s  Modified (size or content differs)\n", tc.red("M"));
+        printf("  %s  Only in first archive\n", tc.yellow("A"));
+        printf("  %s  Only in second archive\n", tc.cyan("B"));
     }
 }
