@@ -575,14 +575,15 @@ nothing TarFile::addHardlink(string name, string target, *hash<TarAddOptions> op
     @throw TAR-ERROR error extracting archive
 */
 list<string> TarFile::extractAll(*hash<TarExtractOptions> opts) [dom=FILESYSTEM] {
-    const char* dest = ".";
+    std::string dest = ".";
     if (opts) {
         QoreValue v = opts->getKeyValue("destination");
         if (v.getType() == NT_STRING) {
-            dest = v.get<const QoreStringNode>()->c_str();
+            QoreStringValueHelper str(v);
+            dest.assign(str->c_str(), str->size());
         }
     }
-    return tf->extractAll(dest, opts, xsink);
+    return tf->extractAll(dest.c_str(), opts, xsink);
 }
 
 //! Extracts all entries to a destination directory with a progress callback
@@ -607,11 +608,12 @@ tar.extractAll(opts, sub (string name, int cur, int total) {
     @since %tar 1.1
 */
 list<string> TarFile::extractAll(*hash<TarExtractOptions> opts, code progress) [dom=FILESYSTEM] {
-    const char* dest = ".";
+    std::string dest = ".";
     if (opts) {
         QoreValue v = opts->getKeyValue("destination");
         if (v.getType() == NT_STRING) {
-            dest = v.get<const QoreStringNode>()->c_str();
+            QoreStringValueHelper str(v);
+            dest.assign(str->c_str(), str->size());
         }
     }
     // Count entries first for total (cheap header-only pass)
@@ -619,7 +621,7 @@ list<string> TarFile::extractAll(*hash<TarExtractOptions> opts, code progress) [
     if (*xsink) {
         return QoreValue();
     }
-    return tf->extractAll(dest, opts, xsink,
+    return tf->extractAll(dest.c_str(), opts, xsink,
         const_cast<ResolvedCallReferenceNode*>(progress), total);
 }
 
@@ -630,14 +632,15 @@ list<string> TarFile::extractAll(*hash<TarExtractOptions> opts, code progress) [
     @throw TAR-ERROR error extracting entry or entry not found
 */
 nothing TarFile::extract(string name, *hash<TarExtractOptions> opts) [dom=FILESYSTEM] {
-    const char* dest = ".";
+    std::string dest = ".";
     if (opts) {
         QoreValue v = opts->getKeyValue("destination");
         if (v.getType() == NT_STRING) {
-            dest = v.get<const QoreStringNode>()->c_str();
+            QoreStringValueHelper str(v);
+            dest.assign(str->c_str(), str->size());
         }
     }
-    tf->extractEntry(name->c_str(), dest, xsink);
+    tf->extractEntry(name->c_str(), dest.c_str(), xsink);
 }
 
 //! Extracts a single entry to a specific file path

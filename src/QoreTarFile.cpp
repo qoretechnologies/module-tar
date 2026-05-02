@@ -1332,12 +1332,14 @@ void QoreTarFile::parseAddOptions(const QoreHashNode* opts, int& mode, int& uid,
 
     v = opts->getKeyValue("uname");
     if (v.getType() == NT_STRING) {
-        uname = v.get<const QoreStringNode>()->c_str();
+        QoreStringValueHelper str(v);
+        uname.assign(str->c_str(), str->size());
     }
 
     v = opts->getKeyValue("gname");
     if (v.getType() == NT_STRING) {
-        gname = v.get<const QoreStringNode>()->c_str();
+        QoreStringValueHelper str(v);
+        gname.assign(str->c_str(), str->size());
     }
 
     v = opts->getKeyValue("modified");
@@ -1369,7 +1371,8 @@ void QoreTarFile::parseExtractOptions(const QoreHashNode* opts, std::string& des
 
     QoreValue v = opts->getKeyValue("destination");
     if (v.getType() == NT_STRING) {
-        destination = v.get<const QoreStringNode>()->c_str();
+        QoreStringValueHelper str(v);
+        destination.assign(str->c_str(), str->size());
     }
 
     v = opts->getKeyValue("preserve_permissions");
@@ -1408,7 +1411,8 @@ void QoreTarFile::parseExtractOptions(const QoreHashNode* opts, std::string& des
         for (size_t i = 0, e = l->size(); i < e; ++i) {
             QoreValue elem = l->retrieveEntry(i);
             if (elem.getType() == NT_STRING) {
-                include_patterns.push_back(elem.get<const QoreStringNode>()->c_str());
+                QoreStringValueHelper str(elem);
+                include_patterns.emplace_back(str->c_str(), str->size());
             }
         }
     }
@@ -1419,7 +1423,8 @@ void QoreTarFile::parseExtractOptions(const QoreHashNode* opts, std::string& des
         for (size_t i = 0, e = l->size(); i < e; ++i) {
             QoreValue elem = l->retrieveEntry(i);
             if (elem.getType() == NT_STRING) {
-                exclude_patterns.push_back(elem.get<const QoreStringNode>()->c_str());
+                QoreStringValueHelper str(elem);
+                exclude_patterns.emplace_back(str->c_str(), str->size());
             }
         }
     }
