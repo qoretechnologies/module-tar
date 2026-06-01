@@ -136,8 +136,25 @@ public class TarDecryptArchiveDataProvider inherits AbstractDataProvider {
             ciphertext = encrypted_data.substr(TarEncryptArchiveDataProvider::IVSize);
         }
 
-        binary archive_data = decrypt_to_binary(TarEncryptArchiveDataProvider::Cipher,
-            ciphertext, key, iv);
+        binary archive_data;
+        try {
+            archive_data = decrypt_to_binary(TarEncryptArchiveDataProvider::Cipher,
+                ciphertext, key, iv);
+        } catch (hash<ExceptionInfo> ex) {
+            throw "DECRYPT-ERROR", sprintf("failed to decrypt archive: %s: %s",
+                ex.err, ex.desc);
+        }
+
+        # AES-CBC is not authenticated; a wrong key can produce valid padding.
+        # The decrypted payload must still be a valid tar archive.
+        try {
+            TarFile tar(archive_data);
+            tar.entries();
+            tar.close();
+        } catch (hash<ExceptionInfo> ex) {
+            throw "DECRYPT-ERROR", sprintf("decrypted data is not a valid tar archive; "
+                "the key or password is likely incorrect: %s: %s", ex.err, ex.desc);
+        }
 
         return {
             "archive_data": archive_data,
