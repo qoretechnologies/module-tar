@@ -82,7 +82,9 @@ public class TarStreamExtractDataProvider inherits AbstractDataProvider {
         }
 
         string entry_name = req.entry_name;
-        @assert(entry_name.val());
+        if (!entry_name.val()) {
+            throw "ASSERTION-ERROR", "entry_name is required and cannot be empty";
+        }
 
         *hash<TarEntryInfo> info = tar.getEntry(entry_name);
         if (!info) {

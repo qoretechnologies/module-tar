@@ -286,11 +286,11 @@ TarFile::constructor(string path, string mode = "r") [dom=FILESYSTEM] {
 //! Creates a TarFile object for reading, writing, or appending to an archive with options
 /** @param path the path to the TAR archive file
     @param mode the open mode: \c "r" for read, \c "w" for write (create/overwrite), \c "a" for append
-    @param opts optional @ref TarCreateOptions for compression and format settings
+    @param options optional @ref TarCreateOptions for compression and format settings
 
     @throw TAR-ERROR error opening the archive
 */
-TarFile::constructor(string path, string mode, *hash<TarCreateOptions> opts) [dom=FILESYSTEM] {
+TarFile::constructor(string path, string mode, *hash<TarCreateOptions> options) [dom=FILESYSTEM] {
     TarMode tm = TAR_MODE_READ;
     if (mode->empty() || mode->c_str()[0] == 'r') {
         tm = TAR_MODE_READ;
@@ -305,12 +305,12 @@ TarFile::constructor(string path, string mode, *hash<TarCreateOptions> opts) [do
 
     int cm = -1;
     int fmt = -1;
-    if (opts) {
-        QoreValue v = opts->getKeyValue("compression_method");
+    if (options) {
+        QoreValue v = options->getKeyValue("compression_method");
         if (!v.isNothing()) {
             cm = (int)v.getAsBigInt();
         }
-        v = opts->getKeyValue("format");
+        v = options->getKeyValue("format");
         if (!v.isNothing()) {
             fmt = (int)v.getAsBigInt();
         }
@@ -328,7 +328,7 @@ TarFile::constructor(string path, string mode, *hash<TarCreateOptions> opts) [do
 
     @throw TAR-ERROR error parsing the archive data
 */
-TarFile::constructor(binary data) {
+TarFile::constructor(binary data) [flags=NAMED_ARGS] {
     ReferenceHolder<QoreTarFile> holder(new QoreTarFile(data, xsink), xsink);
     if (*xsink) {
         return;
@@ -339,17 +339,17 @@ TarFile::constructor(binary data) {
 //! Creates a new empty in-memory TAR archive
 /** Use toData() to get the archive as binary data after adding entries.
 
-    @param opts optional @ref TarCreateOptions for compression and format settings
+    @param options optional @ref TarCreateOptions for compression and format settings
 */
-TarFile::constructor(*hash<TarCreateOptions> opts) {
+TarFile::constructor(*hash<TarCreateOptions> options) [flags=NAMED_ARGS] {
     int cm = -1;
     int fmt = -1;
-    if (opts) {
-        QoreValue v = opts->getKeyValue("compression_method");
+    if (options) {
+        QoreValue v = options->getKeyValue("compression_method");
         if (!v.isNothing()) {
             cm = (int)v.getAsBigInt();
         }
-        v = opts->getKeyValue("format");
+        v = options->getKeyValue("format");
         if (!v.isNothing()) {
             fmt = (int)v.getAsBigInt();
         }
@@ -376,7 +376,7 @@ TarFile::constructor(*hash<TarCreateOptions> opts) {
 
     @since %tar 1.1
 */
-TarFile::constructor(Qore::InputStream[InputStream] input) {
+TarFile::constructor(Qore::InputStream[InputStream] input) [flags=NAMED_ARGS] {
     ReferenceHolder<QoreTarFile> holder(new QoreTarFile(*input, xsink), xsink);
     if (*xsink) {
         return;
@@ -386,7 +386,7 @@ TarFile::constructor(Qore::InputStream[InputStream] input) {
 
 //! Creates a TarFile object for writing to an OutputStream
 /** @param output the output stream to write archive data to
-    @param opts optional @ref TarCreateOptions for compression and format settings
+    @param options optional @ref TarCreateOptions for compression and format settings
 
     @throw TAR-ERROR error opening the archive for writing
 
@@ -394,15 +394,16 @@ TarFile::constructor(Qore::InputStream[InputStream] input) {
 
     @since %tar 1.1
 */
-TarFile::constructor(Qore::OutputStream[OutputStream] output, *hash<TarCreateOptions> opts) {
+TarFile::constructor(Qore::OutputStream[OutputStream] output, *hash<TarCreateOptions> options)
+        [flags=NAMED_ARGS] {
     int cm = -1;
     int fmt = -1;
-    if (opts) {
-        QoreValue v = opts->getKeyValue("compression_method");
+    if (options) {
+        QoreValue v = options->getKeyValue("compression_method");
         if (!v.isNothing()) {
             cm = (int)v.getAsBigInt();
         }
-        v = opts->getKeyValue("format");
+        v = options->getKeyValue("format");
         if (!v.isNothing()) {
             fmt = (int)v.getAsBigInt();
         }
@@ -465,7 +466,7 @@ int TarFile::entryCount() {
 
     @throw TAR-ERROR error reading archive
 */
-bool TarFile::hasEntry(string name) {
+bool TarFile::hasEntry(string name) [flags=NAMED_ARGS] {
     return tf->hasEntry(name->c_str(), xsink);
 }
 
@@ -476,7 +477,7 @@ bool TarFile::hasEntry(string name) {
 
     @throw TAR-ERROR error reading entry or entry not found
 */
-binary TarFile::read(string name) {
+binary TarFile::read(string name) [flags=NAMED_ARGS] {
     return tf->read(name->c_str(), xsink);
 }
 
@@ -488,7 +489,7 @@ binary TarFile::read(string name) {
 
     @throw TAR-ERROR error reading entry or entry not found
 */
-string TarFile::readText(string name, *string encoding) {
+string TarFile::readText(string name, *string encoding) [flags=NAMED_ARGS] {
     return tf->readText(name->c_str(), encoding ? encoding->c_str() : nullptr, xsink);
 }
 
@@ -497,97 +498,99 @@ string TarFile::readText(string name, *string encoding) {
 
     @return a @ref TarEntryInfo hash describing the entry, or NOTHING if not found
 */
-*hash<TarEntryInfo> TarFile::getEntry(string name) {
+*hash<TarEntryInfo> TarFile::getEntry(string name) [flags=NAMED_ARGS] {
     return tf->getEntry(name->c_str(), xsink);
 }
 
 //! Adds binary data as an entry to the archive
 /** @param name the name for the entry in the archive
     @param data the binary data to add
-    @param opts optional @ref TarAddOptions for metadata settings
+    @param options optional @ref TarAddOptions for metadata settings
 
     @throw TAR-ERROR error adding entry or archive not open for writing
 */
-nothing TarFile::add(string name, binary data, *hash<TarAddOptions> opts) {
-    tf->add(name->c_str(), data, opts, xsink);
+nothing TarFile::add(string name, binary data, *hash<TarAddOptions> options) [flags=NAMED_ARGS] {
+    tf->add(name->c_str(), data, options, xsink);
 }
 
 //! Adds text as an entry to the archive
 /** @param name the name for the entry in the archive
     @param text the text content to add
     @param encoding the character encoding to use (default: UTF-8)
-    @param opts optional @ref TarAddOptions for metadata settings
+    @param options optional @ref TarAddOptions for metadata settings
 
     @throw TAR-ERROR error adding entry or archive not open for writing
 */
-nothing TarFile::add(string name, string text, *string encoding, *hash<TarAddOptions> opts) {
-    tf->addText(name->c_str(), text, encoding ? encoding->c_str() : nullptr, opts, xsink);
+nothing TarFile::add(string name, string text, *string encoding, *hash<TarAddOptions> options)
+        [flags=NAMED_ARGS] {
+    tf->addText(name->c_str(), text, encoding ? encoding->c_str() : nullptr, options, xsink);
 }
 
 //! Adds a file from the filesystem to the archive
 /** @param archive_name the name for the entry in the archive
     @param source_path the path to the source file on disk
-    @param opts optional @ref TarAddOptions for metadata settings
+    @param options optional @ref TarAddOptions for metadata settings
 
     @throw TAR-ERROR error adding file or archive not open for writing
 */
-nothing TarFile::addFile(string archive_name, string source_path, *hash<TarAddOptions> opts) [dom=FILESYSTEM] {
-    tf->addFile(archive_name->c_str(), source_path->c_str(), opts, xsink);
+nothing TarFile::addFile(string archive_name, string source_path, *hash<TarAddOptions> options)
+        [dom=FILESYSTEM;flags=NAMED_ARGS] {
+    tf->addFile(archive_name->c_str(), source_path->c_str(), options, xsink);
 }
 
 //! Adds a directory entry to the archive
 /** @param name the name for the directory in the archive
-    @param opts optional @ref TarAddOptions for metadata settings
+    @param options optional @ref TarAddOptions for metadata settings
 
     @throw TAR-ERROR error adding directory or archive not open for writing
 */
-nothing TarFile::addDirectory(string name, *hash<TarAddOptions> opts) {
-    tf->addDirectory(name->c_str(), opts, xsink);
+nothing TarFile::addDirectory(string name, *hash<TarAddOptions> options) [flags=NAMED_ARGS] {
+    tf->addDirectory(name->c_str(), options, xsink);
 }
 
 //! Adds a symbolic link entry to the archive
 /** @param name the name for the symlink in the archive
     @param target the target path for the symlink
-    @param opts optional @ref TarAddOptions for metadata settings
+    @param options optional @ref TarAddOptions for metadata settings
 
     @throw TAR-ERROR error adding symlink or archive not open for writing
 */
-nothing TarFile::addSymlink(string name, string target, *hash<TarAddOptions> opts) {
-    tf->addSymlink(name->c_str(), target->c_str(), opts, xsink);
+nothing TarFile::addSymlink(string name, string target, *hash<TarAddOptions> options) [flags=NAMED_ARGS] {
+    tf->addSymlink(name->c_str(), target->c_str(), options, xsink);
 }
 
 //! Adds a hard link entry to the archive
 /** @param name the name for the hardlink in the archive
     @param target the target entry in the archive
-    @param opts optional @ref TarAddOptions for metadata settings
+    @param options optional @ref TarAddOptions for metadata settings
 
     @throw TAR-ERROR error adding hardlink or archive not open for writing
 */
-nothing TarFile::addHardlink(string name, string target, *hash<TarAddOptions> opts) {
-    tf->addHardlink(name->c_str(), target->c_str(), opts, xsink);
+nothing TarFile::addHardlink(string name, string target, *hash<TarAddOptions> options) [flags=NAMED_ARGS] {
+    tf->addHardlink(name->c_str(), target->c_str(), options, xsink);
 }
 
 //! Extracts all entries to a destination directory
-/** @param opts optional @ref TarExtractOptions for extraction settings
+/** @param options optional @ref TarExtractOptions for extraction settings
 
     @return a list of entry names that were extracted (useful when include/exclude filters are active)
 
     @throw TAR-ERROR error extracting archive
 */
-list<string> TarFile::extractAll(*hash<TarExtractOptions> opts) [dom=FILESYSTEM] {
+list<string> TarFile::extractAll(*hash<TarExtractOptions> options) [dom=FILESYSTEM] {
     std::string dest = ".";
-    if (opts) {
-        QoreValue v = opts->getKeyValue("destination");
+    if (options) {
+        QoreValue v = options->getKeyValue("destination");
         if (v.getType() == NT_STRING) {
             QoreStringValueHelper str(v);
             dest.assign(str->c_str(), str->size());
         }
     }
-    return tf->extractAll(dest.c_str(), opts, xsink);
+    return tf->extractAll(dest.c_str(), options, xsink);
 }
 
 //! Extracts all entries to a destination directory with a progress callback
-/** @param opts optional @ref TarExtractOptions for extraction settings
+/** @param options optional @ref TarExtractOptions for extraction settings
     @param progress a callback closure called after each entry is extracted with
     arguments \c (string entry_name, int current, int total) where \c current is
     the 1-based index and \c total is the total number of entries (-1 if unknown).
@@ -607,10 +610,10 @@ tar.extractAll(opts, sub (string name, int cur, int total) {
 
     @since %tar 1.1
 */
-list<string> TarFile::extractAll(*hash<TarExtractOptions> opts, code progress) [dom=FILESYSTEM] {
+list<string> TarFile::extractAll(*hash<TarExtractOptions> options, code progress) [dom=FILESYSTEM] {
     std::string dest = ".";
-    if (opts) {
-        QoreValue v = opts->getKeyValue("destination");
+    if (options) {
+        QoreValue v = options->getKeyValue("destination");
         if (v.getType() == NT_STRING) {
             QoreStringValueHelper str(v);
             dest.assign(str->c_str(), str->size());
@@ -621,20 +624,20 @@ list<string> TarFile::extractAll(*hash<TarExtractOptions> opts, code progress) [
     if (*xsink) {
         return QoreValue();
     }
-    return tf->extractAll(dest.c_str(), opts, xsink,
+    return tf->extractAll(dest.c_str(), options, xsink,
         const_cast<ResolvedCallReferenceNode*>(progress), total);
 }
 
 //! Extracts a single entry to a destination directory
 /** @param name the name of the entry to extract
-    @param opts optional @ref TarExtractOptions for extraction settings
+    @param options optional @ref TarExtractOptions for extraction settings
 
     @throw TAR-ERROR error extracting entry or entry not found
 */
-nothing TarFile::extract(string name, *hash<TarExtractOptions> opts) [dom=FILESYSTEM] {
+nothing TarFile::extract(string name, *hash<TarExtractOptions> options) [dom=FILESYSTEM] {
     std::string dest = ".";
-    if (opts) {
-        QoreValue v = opts->getKeyValue("destination");
+    if (options) {
+        QoreValue v = options->getKeyValue("destination");
         if (v.getType() == NT_STRING) {
             QoreStringValueHelper str(v);
             dest.assign(str->c_str(), str->size());
@@ -649,7 +652,7 @@ nothing TarFile::extract(string name, *hash<TarExtractOptions> opts) [dom=FILESY
 
     @throw TAR-ERROR error extracting entry or entry not found
 */
-nothing TarFile::extractTo(string name, string destination) [dom=FILESYSTEM] {
+nothing TarFile::extractTo(string name, string destination) [dom=FILESYSTEM;flags=NAMED_ARGS] {
     tf->extractTo(name->c_str(), destination->c_str(), xsink);
 }
 
@@ -689,20 +692,20 @@ nothing TarFile::extractTo(string name, string destination) [dom=FILESYSTEM] {
 
     @throw TAR-ERROR error opening stream or entry not found
 */
-TarInputStream TarFile::getInputStream(string name) {
+TarInputStream TarFile::getInputStream(string name) [flags=NAMED_ARGS] {
     return tf->openInputStream(name->c_str(), xsink);
 }
 
 //! Opens an output stream for writing an entry
 /** @param name the name for the entry in the archive
-    @param opts optional @ref TarAddOptions for metadata settings
+    @param options optional @ref TarAddOptions for metadata settings
 
     @return a TarOutputStream for writing the entry data
 
     @throw TAR-ERROR error opening stream or archive not open for writing
 */
-TarOutputStream TarFile::getOutputStream(string name, *hash<TarAddOptions> opts) {
-    return tf->openOutputStream(name->c_str(), opts, xsink);
+TarOutputStream TarFile::getOutputStream(string name, *hash<TarAddOptions> options) [flags=NAMED_ARGS] {
+    return tf->openOutputStream(name->c_str(), options, xsink);
 }
 
 /** @defgroup tar_utility_functions Tar Utility Functions
@@ -722,7 +725,7 @@ TarOutputStream TarFile::getOutputStream(string name, *hash<TarAddOptions> opts)
 
     @since %tar 1.1
 */
-string get_compression_name(int method) [flags=CONSTANT] {
+string get_compression_name(int method) [flags=CONSTANT,NAMED_ARGS] {
     switch (method) {
         case 0: return new QoreStringNode("none");
         case 1: return new QoreStringNode("gzip");
@@ -746,7 +749,7 @@ string get_compression_name(int method) [flags=CONSTANT] {
 
     @since %tar 1.1
 */
-string get_format_name(int format) [flags=CONSTANT] {
+string get_format_name(int format) [flags=CONSTANT,NAMED_ARGS] {
     switch (format) {
         case 0: return new QoreStringNode("ustar");
         case 1: return new QoreStringNode("pax");

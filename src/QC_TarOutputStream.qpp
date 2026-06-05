@@ -51,7 +51,7 @@ string TarOutputStream::getName() {
     @throw STREAM-CLOSED-ERROR stream is closed
     @throw TAR-WRITE-ERROR error writing data
 */
-nothing TarOutputStream::write(binary data) {
+nothing TarOutputStream::write(binary data) [flags=NAMED_ARGS] {
     tos->write(data->getPtr(), data->size(), xsink);
 }
 

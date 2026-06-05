@@ -46,6 +46,7 @@ public class TarTest inherits QUnit::Test {
         addTestCase("Archive creation tests", \archiveCreationTest());
         addTestCase("Archive reading tests", \archiveReadingTest());
         addTestCase("In-memory archive tests", \inMemoryArchiveTest());
+        addTestCase("Named argument tests", \namedArgumentTest());
         addTestCase("Gzip compression tests", \gzipCompressionTest());
         addTestCase("Bzip2 compression tests", \bzip2CompressionTest());
         addTestCase("XZ compression tests", \xzCompressionTest());
@@ -255,6 +256,94 @@ public class TarTest inherits QUnit::Test {
             assertEq("This is compressed content", content, "compressed content matches");
             readTar.close();
         }
+    }
+
+    # Test named arguments on safe fixed-parameter APIs
+    namedArgumentTest() {
+        binary archiveData;
+        {
+            TarFile tar(options: <TarCreateOptions>{"format": TAR_FORMAT_PAX});
+            tar.add(name: "data.bin", data: <010203>, options: <TarAddOptions>{"mode": 0644});
+            tar.add(name: "readme.txt", text: "named content", encoding: "UTF-8",
+                options: <TarAddOptions>{"mode": 0644});
+            tar.addDirectory(name: "docs/", options: <TarAddOptions>{"mode": 0755});
+            tar.addSymlink(name: "latest.txt", target: "readme.txt", options: <TarAddOptions>{"mode": 0777});
+            tar.addHardlink(name: "readme-copy.txt", target: "readme.txt", options: <TarAddOptions>{"mode": 0644});
+
+            TarOutputStream os = tar.getOutputStream(name: "streamed.txt",
+                options: <TarAddOptions>{"mode": 0644});
+            os.write(data: binary("streamed named content"));
+            os.close();
+
+            archiveData = tar.toData();
+        }
+
+        {
+            TarFile tar(data: archiveData);
+            assertEq(True, tar.hasEntry(name: "data.bin"), "named: binary entry exists");
+            assertEq(<010203>, tar.read(name: "data.bin"), "named: binary read");
+            assertEq("named content", tar.readText(name: "readme.txt", encoding: "UTF-8"),
+                "named: text read");
+
+            hash<TarEntryInfo> entry = tar.getEntry(name: "readme.txt");
+            assertEq("readme.txt", entry.name, "named: getEntry");
+            assertEq(0644, entry.mode & 0777, "named: add options");
+
+            assertEq(True, tar.hasEntry(name: "streamed.txt"), "named: stream entry exists");
+
+            TarInputStream is = tar.getInputStream(name: "streamed.txt");
+            *binary chunk = is.read(limit: 1024);
+            assertEq(binary("streamed named content"), chunk, "named: stream read");
+
+            assertEq("named content", tar.readText(name: "readme.txt", encoding: "UTF-8"),
+                "named: binary constructor read");
+            tar.close();
+        }
+
+        {
+            string sourcePath = testDir + "/named-source.txt";
+            {
+                File f();
+                f.open(sourcePath, O_CREAT | O_WRONLY | O_TRUNC);
+                f.write("source via named addFile");
+                f.close();
+            }
+
+            TarFile tar(options: <TarCreateOptions>{"format": TAR_FORMAT_PAX});
+            tar.addFile(archive_name: "src/named-source.txt", source_path: sourcePath,
+                options: <TarAddOptions>{"mode": 0640});
+            binary data = tar.toData();
+
+            TarFile readTar(data: data);
+            assertEq("source via named addFile", readTar.readText(name: "src/named-source.txt",
+                encoding: "UTF-8"), "named: addFile content");
+
+            string singlePath = testDir + "/named-single.txt";
+            readTar.extractTo(name: "src/named-source.txt", destination: singlePath);
+            assertEq("source via named addFile", ReadOnlyFile::readTextFile(singlePath),
+                "named: extractTo");
+            readTar.close();
+        }
+
+        {
+            string streamPath = testDir + "/named-stream-ctor.tar";
+            {
+                FileOutputStream fos(streamPath);
+                TarFile tar(output: fos, options: <TarCreateOptions>{"format": TAR_FORMAT_PAX});
+                tar.add(name: "ctor.txt", text: "stream constructor", encoding: "UTF-8",
+                    options: <TarAddOptions>{"mode": 0644});
+                tar.close();
+            }
+
+            FileInputStream fis(streamPath);
+            TarFile tar(input: fis);
+            assertEq("stream constructor", tar.readText(name: "ctor.txt", encoding: "UTF-8"),
+                "named: stream constructors");
+            tar.close();
+        }
+
+        assertEq("gzip", get_compression_name(method: TAR_CM_GZIP), "named: compression name");
+        assertEq("pax", get_format_name(format: TAR_FORMAT_PAX), "named: format name");
     }
 
     # Test gzip compression
