@@ -1,0 +1,1413 @@
+{
+  "schema_version": 1,
+  "locales": {
+    "ja": {
+      "messages": {
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.desc": {
+          "source": "Compress binary data or files into an in-memory tar archive",
+          "message": "バイナリデータまたはファイルをメモリ上のtarアーカイブに圧縮します"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.display_name": {
+          "source": "Compress Data",
+          "message": "データを圧縮"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOm5vbmU.display_name": {
+          "source": "None",
+          "message": "なし"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOmJ6aXAy.display_name": {
+          "source": "Bzip2",
+          "message": "Bzip2"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOmd6aXA.display_name": {
+          "source": "Gzip",
+          "message": "Gzip"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOmx6NA.display_name": {
+          "source": "LZ4",
+          "message": "LZ4"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOnh6.display_name": {
+          "source": "XZ/LZMA",
+          "message": "XZ/LZMA"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOnpzdGQ.display_name": {
+          "source": "Zstandard",
+          "message": "Zstandard"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Y29tcHJlc3Npb24.desc": {
+          "source": "Compression method: none, gzip, bzip2, xz, zstd, or lz4",
+          "message": "圧縮方式: none、gzip、bzip2、xz、zstd、またはlz4"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Y29tcHJlc3Npb24.display_name": {
+          "source": "Compression",
+          "message": "圧縮"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Y29tcHJlc3Npb24.short_desc": {
+          "source": "Compression method",
+          "message": "圧縮方式"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Zm9ybWF0.allowed-value.c3RyaW5nOmdudQ.display_name": {
+          "source": "GNU Tar",
+          "message": "GNU Tar"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Zm9ybWF0.allowed-value.c3RyaW5nOnBheA.display_name": {
+          "source": "POSIX Pax",
+          "message": "POSIX Pax"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Zm9ybWF0.allowed-value.c3RyaW5nOnVzdGFy.display_name": {
+          "source": "POSIX Ustar",
+          "message": "POSIX Ustar"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Zm9ybWF0.allowed-value.c3RyaW5nOnY3.display_name": {
+          "source": "V7",
+          "message": "V7"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Zm9ybWF0.desc": {
+          "source": "The tar format: ustar, pax, gnu, or v7",
+          "message": "TARフォーマット: ustar、pax、gnu、またはv7"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Zm9ybWF0.display_name": {
+          "source": "Format",
+          "message": "フォーマット"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Zm9ybWF0.short_desc": {
+          "source": "TAR format",
+          "message": "TARフォーマット"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.ZmlsZXM.desc": {
+          "source": "List of entries. Each entry should have 'name' and either 'data' (binary) or 'text' (string)",
+          "message": "エントリのリスト。各エントリには 'name' と、'data'（バイナリ）または 'text'（文字列）のいずれかを含める必要があります"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.ZmlsZXM.display_name": {
+          "source": "Files",
+          "message": "ファイル"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.ZmlsZXM.short_desc": {
+          "source": "Files to compress",
+          "message": "圧縮するファイル"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.short_desc": {
+          "source": "Compress data to tar format",
+          "message": "データをtarフォーマットに圧縮"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.desc": {
+          "source": "Create a new tar archive from files, directories, or binary data with optional compression and format settings",
+          "message": "オプションの圧縮およびフォーマット設定を使用して、ファイル、ディレクトリ、またはバイナリデータから新しいtarアーカイブを作成します"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.display_name": {
+          "source": "Create Archive",
+          "message": "アーカイブを作成"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOm5vbmU.display_name": {
+          "source": "None",
+          "message": "なし"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOmJ6aXAy.display_name": {
+          "source": "Bzip2",
+          "message": "Bzip2"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOmd6aXA.display_name": {
+          "source": "Gzip",
+          "message": "Gzip"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOmx6NA.display_name": {
+          "source": "LZ4",
+          "message": "LZ4"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOnh6.display_name": {
+          "source": "XZ/LZMA",
+          "message": "XZ/LZMA"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOnpzdGQ.display_name": {
+          "source": "Zstandard",
+          "message": "Zstandard"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Y29tcHJlc3Npb24.desc": {
+          "source": "The compression method to use",
+          "message": "使用する圧縮方法"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Y29tcHJlc3Npb24.display_name": {
+          "source": "Compression Method",
+          "message": "圧縮方法"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Y29tcHJlc3Npb24.short_desc": {
+          "source": "Archive compression type",
+          "message": "アーカイブ圧縮タイプ"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Y29tcHJlc3Npb25fbGV2ZWw.desc": {
+          "source": "Compression level from 1 (fastest, least compression) to 9 (slowest, best compression). Use -1 or omit for the default level. Typical defaults: gzip=6, bzip2=9, xz=6, zstd=3, lz4=1",
+          "message": "1（最速、最小圧縮）から 9（最遅、最大圧縮）までの圧縮レベル。デフォルトレベルを使用する場合は -1 を使用するか省略します。典型的なデフォルト値: gzip=6, bzip2=9, xz=6, zstd=3, lz4=1"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Y29tcHJlc3Npb25fbGV2ZWw.display_name": {
+          "source": "Compression Level",
+          "message": "圧縮レベル"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Y29tcHJlc3Npb25fbGV2ZWw.short_desc": {
+          "source": "Compression strength (1-9)",
+          "message": "圧縮強度 (1-9)"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.YXJjaGl2ZV9wYXRo.desc": {
+          "source": "The path where the tar archive will be created. If not specified, returns binary data.",
+          "message": "tar アーカイブが作成されるパス。指定しない場合、バイナリ データを返します。"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.YXJjaGl2ZV9wYXRo.display_name": {
+          "source": "Archive Path",
+          "message": "アーカイブ パス"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.YXJjaGl2ZV9wYXRo.short_desc": {
+          "source": "Output archive file path",
+          "message": "出力アーカイブ ファイル パス"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.ZGlyZWN0b3JpZXM.desc": {
+          "source": "List of directory entries to add (without content)",
+          "message": "追加するディレクトリ エントリのリスト（コンテンツなし）"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.ZGlyZWN0b3JpZXM.display_name": {
+          "source": "Directories",
+          "message": "ディレクトリ"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.ZGlyZWN0b3JpZXM.short_desc": {
+          "source": "Empty directories to create",
+          "message": "作成する空のディレクトリ"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Zm9ybWF0.allowed-value.c3RyaW5nOmdudQ.display_name": {
+          "source": "GNU Tar",
+          "message": "GNU Tar"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Zm9ybWF0.allowed-value.c3RyaW5nOnBheA.display_name": {
+          "source": "POSIX Pax",
+          "message": "POSIX Pax"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Zm9ybWF0.allowed-value.c3RyaW5nOnVzdGFy.display_name": {
+          "source": "POSIX Ustar",
+          "message": "POSIX Ustar"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Zm9ybWF0.allowed-value.c3RyaW5nOnY3.display_name": {
+          "source": "V7",
+          "message": "V7"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Zm9ybWF0.desc": {
+          "source": "The tar format to use",
+          "message": "使用する tar フォーマット"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Zm9ybWF0.display_name": {
+          "source": "Archive Format",
+          "message": "アーカイブ フォーマット"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Zm9ybWF0.short_desc": {
+          "source": "TAR format variant",
+          "message": "TAR フォーマット バリアント"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.ZmlsZXM.desc": {
+          "source": "List of file entries. Each entry should have 'name' and one of: 'data' (binary), 'text' (string), or 'source_path' (file path)",
+          "message": "ファイル エントリのリスト。各エントリには 'name' と、'data'（バイナリ）、'text'（文字列）、または 'source_path'（ファイル パス）のいずれかが含まれる必要があります"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.ZmlsZXM.display_name": {
+          "source": "Files",
+          "message": "ファイル"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.ZmlsZXM.short_desc": {
+          "source": "Files to add to archive",
+          "message": "アーカイブに追加するファイル"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.b3V0cHV0X2xvY2F0aW9u.desc": {
+          "source": "A FileLocationHandler location URL where the archive will be written (alternative to archive_path)",
+          "message": "アーカイブが書き込まれる FileLocationHandler ロケーション URL（archive_path の代替）"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.b3V0cHV0X2xvY2F0aW9u.display_name": {
+          "source": "Output Location",
+          "message": "出力ロケーション"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.b3V0cHV0X2xvY2F0aW9u.short_desc": {
+          "source": "Output location URL",
+          "message": "出力ロケーション URL"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.cmVxdWlyZV9lbnRyaWVz.desc": {
+          "source": "If `true`, raises an error if the archive would be created with no entries. Default is `false`, allowing empty archives",
+          "message": "`true` の場合、エントリなしでアーカイブが作成されるとエラーが発生します。デフォルトは `false` で、空のアーカイブを許可します"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.cmVxdWlyZV9lbnRyaWVz.display_name": {
+          "source": "Require Entries",
+          "message": "エントリを必須にする"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.cmVxdWlyZV9lbnRyaWVz.short_desc": {
+          "source": "Require at least one entry",
+          "message": "少なくとも 1 つのエントリが必要"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.short_desc": {
+          "source": "Create a new tar archive",
+          "message": "新しい tar アーカイブを作成"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.desc": {
+          "source": "Add new files or update existing files in a tar archive",
+          "message": "tar アーカイブに新しいファイルを追加するか、既存のファイルを更新"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.display_name": {
+          "source": "Add Files to Archive",
+          "message": "アーカイブにファイルを追加"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOm5vbmU.display_name": {
+          "source": "None",
+          "message": "なし"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOmJ6aXAy.display_name": {
+          "source": "Bzip2",
+          "message": "Bzip2"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOmd6aXA.display_name": {
+          "source": "Gzip",
+          "message": "Gzip"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOmx6NA.display_name": {
+          "source": "LZ4",
+          "message": "LZ4"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOnh6.display_name": {
+          "source": "XZ/LZMA",
+          "message": "XZ/LZMA"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOnpzdGQ.display_name": {
+          "source": "Zstandard",
+          "message": "Zstandard"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Y29tcHJlc3Npb24.desc": {
+          "source": "Compression method: none, gzip, bzip2, xz, zstd, or lz4. Note: Adding files to a compressed archive may require decompressing and recompressing the entire archive",
+          "message": "圧縮方法: none、gzip、bzip2、xz、zstd、または lz4。注: 圧縮されたアーカイブにファイルを追加すると、アーカイブ全体を解凍および再圧縮する必要がある場合があります"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Y29tcHJlc3Npb24.display_name": {
+          "source": "Compression",
+          "message": "圧縮"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Y29tcHJlc3Npb24.short_desc": {
+          "source": "Compression for the archive",
+          "message": "アーカイブの圧縮"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.YXJjaGl2ZV9wYXRo.desc": {
+          "source": "The filesystem path to the tar archive to modify",
+          "message": "変更する tar アーカイブへのファイルシステム パス"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.YXJjaGl2ZV9wYXRo.display_name": {
+          "source": "Archive Path",
+          "message": "アーカイブ パス"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.YXJjaGl2ZV9wYXRo.short_desc": {
+          "source": "Path to the tar archive",
+          "message": "tar アーカイブへのパス"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Zm9ybWF0.allowed-value.c3RyaW5nOmdudQ.display_name": {
+          "source": "GNU Tar",
+          "message": "GNU Tar"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Zm9ybWF0.allowed-value.c3RyaW5nOnBheA.display_name": {
+          "source": "POSIX Pax",
+          "message": "POSIX Pax"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Zm9ybWF0.allowed-value.c3RyaW5nOnVzdGFy.display_name": {
+          "source": "POSIX Ustar",
+          "message": "POSIX Ustar"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Zm9ybWF0.allowed-value.c3RyaW5nOnY3.display_name": {
+          "source": "V7",
+          "message": "V7"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Zm9ybWF0.desc": {
+          "source": "The tar format: ustar, pax, gnu, or v7",
+          "message": "TARフォーマット: ustar、pax、gnu、またはv7"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Zm9ybWF0.display_name": {
+          "source": "Format",
+          "message": "フォーマット"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Zm9ybWF0.short_desc": {
+          "source": "TAR format",
+          "message": "TARフォーマット"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.ZmlsZXM.desc": {
+          "source": "List of file entries to add. Each entry should have 'name' and one of: 'data', 'text', or 'source_path'",
+          "message": "追加するファイル エントリのリスト。各エントリには 'name' と、'data'、'text'、または 'source_path' のいずれかが含まれる必要があります"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.ZmlsZXM.display_name": {
+          "source": "Files",
+          "message": "ファイル"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.ZmlsZXM.short_desc": {
+          "source": "Files to add",
+          "message": "追加するファイル"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.short_desc": {
+          "source": "Add files to an existing archive",
+          "message": "既存のアーカイブにファイルを追加"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.desc": {
+          "source": "Recursively archive a directory tree into a tar archive, preserving file permissions and optionally following symlinks",
+          "message": "ディレクトリ ツリーを再帰的に tar アーカイブにアーカイブし、ファイルのアクセス許可を保持し、オプションでシンボリック リンクをたどります"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.display_name": {
+          "source": "Archive Directory",
+          "message": "アーカイブディレクトリ"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOm5vbmU.display_name": {
+          "source": "None",
+          "message": "なし"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOmJ6aXAy.display_name": {
+          "source": "Bzip2",
+          "message": "Bzip2"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOmd6aXA.display_name": {
+          "source": "Gzip",
+          "message": "Gzip"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOmx6NA.display_name": {
+          "source": "LZ4",
+          "message": "LZ4"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOnh6.display_name": {
+          "source": "XZ/LZMA",
+          "message": "XZ/LZMA"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOnpzdGQ.display_name": {
+          "source": "Zstandard",
+          "message": "Zstandard"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Y29tcHJlc3Npb24.desc": {
+          "source": "The compression method to use for the output archive",
+          "message": "出力アーカイブに使用する圧縮方法"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Y29tcHJlc3Npb24.display_name": {
+          "source": "Compression",
+          "message": "圧縮"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Y29tcHJlc3Npb24.short_desc": {
+          "source": "Compression method",
+          "message": "圧縮方式"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.YXJjaGl2ZV9wYXRo.desc": {
+          "source": "The path where the tar archive will be created. If not specified, returns binary data",
+          "message": "tar アーカイブが作成されるパス。指定しない場合、バイナリ データを返します"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.YXJjaGl2ZV9wYXRo.display_name": {
+          "source": "Archive Path",
+          "message": "アーカイブ パス"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.YXJjaGl2ZV9wYXRo.short_desc": {
+          "source": "Output archive file path",
+          "message": "出力アーカイブ ファイル パス"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.YmFzZV9uYW1l.desc": {
+          "source": "The name used for the root directory entry in the archive. If not specified, uses the basename of `directory_path`",
+          "message": "アーカイブ内のルート ディレクトリ エントリに使用される名前。指定しない場合は `directory_path` のベース名を使用します"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.YmFzZV9uYW1l.display_name": {
+          "source": "Base Name",
+          "message": "ベース名"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.YmFzZV9uYW1l.short_desc": {
+          "source": "Root directory name in archive",
+          "message": "アーカイブ内のルート ディレクトリ名"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.ZGlyZWN0b3J5X3BhdGg.desc": {
+          "source": "The filesystem path to the directory to archive recursively",
+          "message": "再帰的にアーカイブするディレクトリへのファイルシステム パス"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.ZGlyZWN0b3J5X3BhdGg.display_name": {
+          "source": "Directory Path",
+          "message": "ディレクトリ パス"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.ZGlyZWN0b3J5X3BhdGg.short_desc": {
+          "source": "Path to directory to archive",
+          "message": "アーカイブするディレクトリへのパス"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Zm9sbG93X3N5bWxpbmtz.desc": {
+          "source": "If `True`, follows symbolic links and archives the target file contents. If `False` (default), archives symlinks as symlink entries",
+          "message": "`True` の場合、シンボリック リンクをたどり、ターゲット ファイルの内容をアーカイブします。`False`（デフォルト）の場合、シンボリック リンクをシンボリック リンク エントリとしてアーカイブします"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Zm9sbG93X3N5bWxpbmtz.display_name": {
+          "source": "Follow Symlinks",
+          "message": "シンボリック リンクをたどる"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Zm9sbG93X3N5bWxpbmtz.short_desc": {
+          "source": "Follow symbolic links",
+          "message": "シンボリック リンクをたどる"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Zm9ybWF0.allowed-value.c3RyaW5nOmdudQ.display_name": {
+          "source": "GNU Tar",
+          "message": "GNU Tar"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Zm9ybWF0.allowed-value.c3RyaW5nOnBheA.display_name": {
+          "source": "POSIX Pax",
+          "message": "POSIX Pax"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Zm9ybWF0.allowed-value.c3RyaW5nOnVzdGFy.display_name": {
+          "source": "POSIX Ustar",
+          "message": "POSIX Ustar"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Zm9ybWF0.allowed-value.c3RyaW5nOnY3.display_name": {
+          "source": "V7",
+          "message": "V7"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Zm9ybWF0.desc": {
+          "source": "The tar format to use for the output archive",
+          "message": "出力アーカイブに使用する tar フォーマット"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Zm9ybWF0.display_name": {
+          "source": "Format",
+          "message": "フォーマット"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Zm9ybWF0.short_desc": {
+          "source": "TAR format",
+          "message": "TARフォーマット"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.b3V0cHV0X2xvY2F0aW9u.desc": {
+          "source": "A FileLocationHandler location URL where the archive will be written (alternative to `archive_path`)",
+          "message": "アーカイブが書き込まれる FileLocationHandler ロケーション URL（`archive_path` の代替）"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.b3V0cHV0X2xvY2F0aW9u.display_name": {
+          "source": "Output Location",
+          "message": "出力ロケーション"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.b3V0cHV0X2xvY2F0aW9u.short_desc": {
+          "source": "Output location URL",
+          "message": "出力ロケーション URL"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.short_desc": {
+          "source": "Archive a directory tree",
+          "message": "ディレクトリ ツリーをアーカイブ"
+        },
+        "app.VGFy.action.Z2V0LWFyY2hpdmUtaW5mbw.desc": {
+          "source": "Get metadata and statistics about a tar archive including entry counts, compression method, and total size",
+          "message": "エントリ数、圧縮方法、合計サイズなどの tar アーカイブに関するメタデータと統計情報を取得"
+        },
+        "app.VGFy.action.Z2V0LWFyY2hpdmUtaW5mbw.display_name": {
+          "source": "Get Archive Info",
+          "message": "アーカイブ情報を取得"
+        },
+        "app.VGFy.action.Z2V0LWFyY2hpdmUtaW5mbw.option.YXJjaGl2ZV9kYXRh.desc": {
+          "source": "The tar archive as binary data (alternative to archive_path)",
+          "message": "バイナリ データとしての tar アーカイブ（archive_path の代替）"
+        },
+        "app.VGFy.action.Z2V0LWFyY2hpdmUtaW5mbw.option.YXJjaGl2ZV9kYXRh.display_name": {
+          "source": "Archive Data",
+          "message": "アーカイブ データ"
+        },
+        "app.VGFy.action.Z2V0LWFyY2hpdmUtaW5mbw.option.YXJjaGl2ZV9kYXRh.short_desc": {
+          "source": "Binary archive data",
+          "message": "バイナリ アーカイブ データ"
+        },
+        "app.VGFy.action.Z2V0LWFyY2hpdmUtaW5mbw.option.YXJjaGl2ZV9sb2NhdGlvbg.desc": {
+          "source": "A FileLocationHandler location URL for the tar archive (alternative to archive_path or archive_data)",
+          "message": "tar アーカイブの FileLocationHandler ロケーション URL（archive_path または archive_data の代替）"
+        },
+        "app.VGFy.action.Z2V0LWFyY2hpdmUtaW5mbw.option.YXJjaGl2ZV9sb2NhdGlvbg.display_name": {
+          "source": "Archive Location",
+          "message": "アーカイブ ロケーション"
+        },
+        "app.VGFy.action.Z2V0LWFyY2hpdmUtaW5mbw.option.YXJjaGl2ZV9sb2NhdGlvbg.short_desc": {
+          "source": "Archive location URL",
+          "message": "アーカイブ ロケーション URL"
+        },
+        "app.VGFy.action.Z2V0LWFyY2hpdmUtaW5mbw.option.YXJjaGl2ZV9wYXRo.desc": {
+          "source": "The filesystem path to the tar archive",
+          "message": "tar アーカイブへのファイルシステム パス"
+        },
+        "app.VGFy.action.Z2V0LWFyY2hpdmUtaW5mbw.option.YXJjaGl2ZV9wYXRo.display_name": {
+          "source": "Archive Path",
+          "message": "アーカイブ パス"
+        },
+        "app.VGFy.action.Z2V0LWFyY2hpdmUtaW5mbw.option.YXJjaGl2ZV9wYXRo.short_desc": {
+          "source": "Path to the tar archive",
+          "message": "tar アーカイブへのパス"
+        },
+        "app.VGFy.action.Z2V0LWFyY2hpdmUtaW5mbw.short_desc": {
+          "source": "Get tar archive metadata",
+          "message": "tar アーカイブのメタデータを取得"
+        },
+        "app.VGFy.action.ZGVjb21wcmVzcy1kYXRh.desc": {
+          "source": "Decompress a tar archive and return file contents as in-memory data",
+          "message": "tar アーカイブを解凍し、ファイルの内容をメモリ内データとして返す"
+        },
+        "app.VGFy.action.ZGVjb21wcmVzcy1kYXRh.display_name": {
+          "source": "Decompress Data",
+          "message": "データを解凍"
+        },
+        "app.VGFy.action.ZGVjb21wcmVzcy1kYXRh.option.YXJjaGl2ZV9kYXRh.desc": {
+          "source": "The tar archive as binary data to decompress",
+          "message": "解凍するバイナリ データとしての tar アーカイブ"
+        },
+        "app.VGFy.action.ZGVjb21wcmVzcy1kYXRh.option.YXJjaGl2ZV9kYXRh.display_name": {
+          "source": "Archive Data",
+          "message": "アーカイブ データ"
+        },
+        "app.VGFy.action.ZGVjb21wcmVzcy1kYXRh.option.YXJjaGl2ZV9kYXRh.short_desc": {
+          "source": "TAR archive binary data",
+          "message": "TAR アーカイブのバイナリ データ"
+        },
+        "app.VGFy.action.ZGVjb21wcmVzcy1kYXRh.option.YXJjaGl2ZV9sb2NhdGlvbg.desc": {
+          "source": "A FileLocationHandler location URL for the tar archive (alternative to archive_data or archive_path)",
+          "message": "tar アーカイブの FileLocationHandler ロケーション URL（archive_data または archive_path の代替）"
+        },
+        "app.VGFy.action.ZGVjb21wcmVzcy1kYXRh.option.YXJjaGl2ZV9sb2NhdGlvbg.display_name": {
+          "source": "Archive Location",
+          "message": "アーカイブ ロケーション"
+        },
+        "app.VGFy.action.ZGVjb21wcmVzcy1kYXRh.option.YXJjaGl2ZV9sb2NhdGlvbg.short_desc": {
+          "source": "Archive location URL",
+          "message": "アーカイブ ロケーション URL"
+        },
+        "app.VGFy.action.ZGVjb21wcmVzcy1kYXRh.option.YXJjaGl2ZV9wYXRo.desc": {
+          "source": "The filesystem path to the tar archive (alternative to archive_data)",
+          "message": "tar アーカイブへのファイルシステム パス（archive_data の代替）"
+        },
+        "app.VGFy.action.ZGVjb21wcmVzcy1kYXRh.option.YXJjaGl2ZV9wYXRo.display_name": {
+          "source": "Archive Path",
+          "message": "アーカイブ パス"
+        },
+        "app.VGFy.action.ZGVjb21wcmVzcy1kYXRh.option.YXJjaGl2ZV9wYXRo.short_desc": {
+          "source": "Path to the tar archive",
+          "message": "tar アーカイブへのパス"
+        },
+        "app.VGFy.action.ZGVjb21wcmVzcy1kYXRh.short_desc": {
+          "source": "Decompress tar data",
+          "message": "tar データを解凍"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.desc": {
+          "source": "Decrypt a tar archive encrypted with AES-256-CBC. Expects the IV + ciphertext format produced by the **encrypt** action",
+          "message": "AES-256-CBCで暗号化されたtarアーカイブを復号します。**encrypt**アクションで生成されたIV + 暗号文形式を想定しています"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.display_name": {
+          "source": "Decrypt Archive",
+          "message": "アーカイブを復号"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.ZW5jcnlwdGVkX2RhdGE.desc": {
+          "source": "The encrypted tar archive as binary data",
+          "message": "バイナリデータとしての暗号化済みtarアーカイブ"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.ZW5jcnlwdGVkX2RhdGE.display_name": {
+          "source": "Encrypted Data",
+          "message": "暗号化データ"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.ZW5jcnlwdGVkX2RhdGE.short_desc": {
+          "source": "Encrypted archive binary data",
+          "message": "暗号化アーカイブのバイナリデータ"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.ZW5jcnlwdGVkX2xvY2F0aW9u.desc": {
+          "source": "A FileLocationHandler location URL for the encrypted archive (alternative to `encrypted_data` or `encrypted_path`)",
+          "message": "暗号化アーカイブのFileLocationHandlerロケーションURL（`encrypted_data`または`encrypted_path`の代わり）"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.ZW5jcnlwdGVkX2xvY2F0aW9u.display_name": {
+          "source": "Encrypted Location",
+          "message": "暗号化ロケーション"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.ZW5jcnlwdGVkX2xvY2F0aW9u.short_desc": {
+          "source": "Encrypted archive location URL",
+          "message": "暗号化アーカイブのロケーションURL"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.ZW5jcnlwdGVkX3BhdGg.desc": {
+          "source": "The filesystem path to the encrypted archive (alternative to `encrypted_data`)",
+          "message": "暗号化アーカイブへのファイルシステムパス（`encrypted_data`の代わり）"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.ZW5jcnlwdGVkX3BhdGg.display_name": {
+          "source": "Encrypted File Path",
+          "message": "暗号化ファイルパス"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.ZW5jcnlwdGVkX3BhdGg.short_desc": {
+          "source": "Path to encrypted archive file",
+          "message": "暗号化アーカイブファイルへのパス"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.a2V5.desc": {
+          "source": "A `32`-byte binary key for AES-256-CBC decryption. Provide either `key` or `password`, matching the encryption mode",
+          "message": "AES-256-CBC復号用の`32`バイトのバイナリキー。暗号化モードに合わせて`key`または`password`のいずれかを指定してください"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.a2V5.display_name": {
+          "source": "Decryption Key",
+          "message": "復号キー"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.a2V5.short_desc": {
+          "source": "AES-256 decryption key (32 bytes)",
+          "message": "AES-256復号キー (32バイト)"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.cGFzc3dvcmQ.desc": {
+          "source": "The password used during encryption. The encryption mode is auto-detected from the envelope format",
+          "message": "暗号化時に使用されたパスワード。暗号化モードはエンベロープ形式から自動検出されます"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.cGFzc3dvcmQ.display_name": {
+          "source": "Password",
+          "message": "パスワード"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.cGFzc3dvcmQ.short_desc": {
+          "source": "Decryption password",
+          "message": "復号パスワード"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.short_desc": {
+          "source": "Decrypt an AES-256-CBC encrypted tar archive",
+          "message": "AES-256-CBCで暗号化されたtarアーカイブを復号"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.desc": {
+          "source": "Delete a file or directory entry from a tar archive by recreating the archive without the specified entry",
+          "message": "指定されたエントリを含めずにアーカイブを再作成することにより、tarアーカイブからファイルまたはディレクトリのエントリを削除します"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.display_name": {
+          "source": "Delete Entry",
+          "message": "エントリを削除"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOm5vbmU.display_name": {
+          "source": "None",
+          "message": "なし"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOmJ6aXAy.display_name": {
+          "source": "Bzip2",
+          "message": "Bzip2"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOmd6aXA.display_name": {
+          "source": "Gzip",
+          "message": "Gzip"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOmx6NA.display_name": {
+          "source": "LZ4",
+          "message": "LZ4"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOnh6.display_name": {
+          "source": "XZ/LZMA",
+          "message": "XZ/LZMA"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOnpzdGQ.display_name": {
+          "source": "Zstandard",
+          "message": "Zstandard"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Y29tcHJlc3Npb24.desc": {
+          "source": "Compression method for the output archive. If not specified, the output is uncompressed",
+          "message": "出力アーカイブの圧縮方法。指定しない場合、出力は無圧縮になります"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Y29tcHJlc3Npb24.display_name": {
+          "source": "Output Compression",
+          "message": "出力圧縮"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Y29tcHJlc3Npb24.short_desc": {
+          "source": "Compression for output archive",
+          "message": "出力アーカイブの圧縮"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.YXJjaGl2ZV9kYXRh.desc": {
+          "source": "The tar archive as binary data",
+          "message": "バイナリデータとしてのtarアーカイブ"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.YXJjaGl2ZV9kYXRh.display_name": {
+          "source": "Archive Data",
+          "message": "アーカイブ データ"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.YXJjaGl2ZV9kYXRh.short_desc": {
+          "source": "TAR archive binary data",
+          "message": "TAR アーカイブのバイナリ データ"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.YXJjaGl2ZV9sb2NhdGlvbg.desc": {
+          "source": "A FileLocationHandler location URL for the tar archive (alternative to `archive_data` or `archive_path`)",
+          "message": "tarアーカイブのFileLocationHandlerロケーションURL（`archive_data`または`archive_path`の代わり）"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.YXJjaGl2ZV9sb2NhdGlvbg.display_name": {
+          "source": "Archive Location",
+          "message": "アーカイブ ロケーション"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.YXJjaGl2ZV9sb2NhdGlvbg.short_desc": {
+          "source": "Archive location URL",
+          "message": "アーカイブ ロケーション URL"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.YXJjaGl2ZV9wYXRo.desc": {
+          "source": "The filesystem path to the tar archive (alternative to `archive_data`)",
+          "message": "tarアーカイブへのファイルシステムパス（`archive_data`の代わり）"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.YXJjaGl2ZV9wYXRo.display_name": {
+          "source": "Archive Path",
+          "message": "アーカイブ パス"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.YXJjaGl2ZV9wYXRo.short_desc": {
+          "source": "Path to the tar archive",
+          "message": "tar アーカイブへのパス"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.ZW50cnlfbmFtZQ.desc": {
+          "source": "The full path name of the entry to delete from the archive",
+          "message": "アーカイブから削除するエントリの完全パス名"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.ZW50cnlfbmFtZQ.display_name": {
+          "source": "Entry Name",
+          "message": "エントリ名"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.ZW50cnlfbmFtZQ.short_desc": {
+          "source": "Name of entry to delete",
+          "message": "削除するエントリの名前"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Zm9ybWF0.allowed-value.c3RyaW5nOmdudQ.display_name": {
+          "source": "GNU Tar",
+          "message": "GNU Tar"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Zm9ybWF0.allowed-value.c3RyaW5nOnBheA.display_name": {
+          "source": "POSIX Pax",
+          "message": "POSIX Pax"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Zm9ybWF0.allowed-value.c3RyaW5nOnVzdGFy.display_name": {
+          "source": "POSIX Ustar",
+          "message": "POSIX Ustar"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Zm9ybWF0.allowed-value.c3RyaW5nOnY3.display_name": {
+          "source": "V7",
+          "message": "V7"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Zm9ybWF0.desc": {
+          "source": "The tar format for the output archive",
+          "message": "出力アーカイブのtarフォーマット"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Zm9ybWF0.display_name": {
+          "source": "Output Format",
+          "message": "出力フォーマット"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Zm9ybWF0.short_desc": {
+          "source": "TAR format for output archive",
+          "message": "出力アーカイブのTARフォーマット"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.short_desc": {
+          "source": "Delete entry from archive",
+          "message": "アーカイブからエントリを削除"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.desc": {
+          "source": "Encrypt a tar archive with AES-256-CBC. Output format is a `16`-byte random IV followed by ciphertext",
+          "message": "AES-256-CBCでtarアーカイブを暗号化します。出力形式は`16`バイトのランダムIVとそれに続く暗号文です"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.display_name": {
+          "source": "Encrypt Archive",
+          "message": "アーカイブを暗号化"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.YXJjaGl2ZV9kYXRh.desc": {
+          "source": "The tar archive as binary data to encrypt",
+          "message": "暗号化するバイナリデータとしてのtarアーカイブ"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.YXJjaGl2ZV9kYXRh.display_name": {
+          "source": "Archive Data",
+          "message": "アーカイブ データ"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.YXJjaGl2ZV9kYXRh.short_desc": {
+          "source": "TAR archive binary data",
+          "message": "TAR アーカイブのバイナリ データ"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.YXJjaGl2ZV9sb2NhdGlvbg.desc": {
+          "source": "A FileLocationHandler location URL for the tar archive (alternative to `archive_data` or `archive_path`)",
+          "message": "tarアーカイブのFileLocationHandlerロケーションURL（`archive_data`または`archive_path`の代わり）"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.YXJjaGl2ZV9sb2NhdGlvbg.display_name": {
+          "source": "Archive Location",
+          "message": "アーカイブ ロケーション"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.YXJjaGl2ZV9sb2NhdGlvbg.short_desc": {
+          "source": "Archive location URL",
+          "message": "アーカイブ ロケーション URL"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.YXJjaGl2ZV9wYXRo.desc": {
+          "source": "The filesystem path to the tar archive (alternative to `archive_data`)",
+          "message": "tarアーカイブへのファイルシステムパス（`archive_data`の代わり）"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.YXJjaGl2ZV9wYXRo.display_name": {
+          "source": "Archive Path",
+          "message": "アーカイブ パス"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.YXJjaGl2ZV9wYXRo.short_desc": {
+          "source": "Path to the tar archive",
+          "message": "tar アーカイブへのパス"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.a2V5.desc": {
+          "source": "A `32`-byte binary key for AES-256-CBC encryption. Provide either `key` or `password`, not both",
+          "message": "AES-256-CBC暗号化用の`32`バイトのバイナリキー。`key`または`password`のいずれか一方のみを指定してください"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.a2V5.display_name": {
+          "source": "Encryption Key",
+          "message": "暗号化キー"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.a2V5.short_desc": {
+          "source": "AES-256 encryption key (32 bytes)",
+          "message": "AES-256暗号化キー (32バイト)"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.cGFzc3dvcmQ.desc": {
+          "source": "A password string for encryption. The key is derived using HMAC-SHA256 with a random salt. Provide either `key` or `password`, not both",
+          "message": "暗号化用のパスワード文字列。キーはランダムソルトを使用したHMAC-SHA256で派生されます。`key`または`password`のいずれか一方のみを指定してください"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.cGFzc3dvcmQ.display_name": {
+          "source": "Password",
+          "message": "パスワード"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.cGFzc3dvcmQ.short_desc": {
+          "source": "Encryption password",
+          "message": "暗号化パスワード"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.short_desc": {
+          "source": "Encrypt a tar archive with AES-256-CBC",
+          "message": "AES-256-CBCでtarアーカイブを暗号化"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.desc": {
+          "source": "Extract contents of a tar archive to a destination directory with optional `include`/`exclude` glob-style filename filters",
+          "message": "tarアーカイブのコンテンツを、オプションの`include`/`exclude` glob形式ファイル名フィルターを使用して展開先ディレクトリに展開します"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.display_name": {
+          "source": "Extract Archive",
+          "message": "アーカイブを展開"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.YXJjaGl2ZV9kYXRh.desc": {
+          "source": "The tar archive as binary data (alternative to archive_path)",
+          "message": "バイナリ データとしての tar アーカイブ（archive_path の代替）"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.YXJjaGl2ZV9kYXRh.display_name": {
+          "source": "Archive Data",
+          "message": "アーカイブ データ"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.YXJjaGl2ZV9kYXRh.short_desc": {
+          "source": "Binary archive data",
+          "message": "バイナリ アーカイブ データ"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.YXJjaGl2ZV9sb2NhdGlvbg.desc": {
+          "source": "A FileLocationHandler location URL for the tar archive (alternative to archive_path or archive_data)",
+          "message": "tar アーカイブの FileLocationHandler ロケーション URL（archive_path または archive_data の代替）"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.YXJjaGl2ZV9sb2NhdGlvbg.display_name": {
+          "source": "Archive Location",
+          "message": "アーカイブ ロケーション"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.YXJjaGl2ZV9sb2NhdGlvbg.short_desc": {
+          "source": "Archive location URL",
+          "message": "アーカイブ ロケーション URL"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.YXJjaGl2ZV9wYXRo.desc": {
+          "source": "The filesystem path to the tar archive to extract",
+          "message": "展開するtarアーカイブへのファイルシステムパス"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.YXJjaGl2ZV9wYXRo.display_name": {
+          "source": "Archive Path",
+          "message": "アーカイブ パス"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.YXJjaGl2ZV9wYXRo.short_desc": {
+          "source": "Path to the tar archive",
+          "message": "tar アーカイブへのパス"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.ZGVzdGluYXRpb24.desc": {
+          "source": "The directory where files will be extracted (default: current directory)",
+          "message": "ファイルが展開されるディレクトリ（デフォルト: カレントディレクトリ）"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.ZGVzdGluYXRpb24.display_name": {
+          "source": "Destination",
+          "message": "宛先"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.ZGVzdGluYXRpb24.short_desc": {
+          "source": "Extraction destination directory",
+          "message": "展開先ディレクトリ"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.ZXhjbHVkZQ.desc": {
+          "source": "A list of glob-style patterns; entries matching any pattern will be skipped. Exclude patterns are applied after `include` patterns.\n\n**Supported wildcards**: `*` matches any characters (including `/`), `?` matches any single character, `[abc]` matches one character from the set",
+          "message": "glob形式のパターンリスト。パターンに一致するエントリはスキップされます。除外パターンは`include`パターンの後に適用されます。\n\n**サポートされているワイルドカード**: `*`は任意の文字（`/`を含む）に一致、`?`は任意の単一文字に一致、`[abc]`はセット内の1文字に一致します"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.ZXhjbHVkZQ.display_name": {
+          "source": "Exclude Patterns",
+          "message": "除外パターン"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.ZXhjbHVkZQ.short_desc": {
+          "source": "Glob patterns for files to exclude",
+          "message": "除外するファイルのGlobパターン"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.aW5jbHVkZQ.desc": {
+          "source": "A list of glob-style patterns; only entries matching at least one pattern will be extracted. If not provided, all entries are included by default.\n\n**Supported wildcards**: `*` matches any characters (including `/`), `?` matches any single character, `[abc]` matches one character from the set",
+          "message": "glob形式のパターンリスト。少なくとも1つのパターンに一致するエントリのみが展開されます。指定しない場合、デフォルトですべてのエントリが含まれます。\n\n**サポートされているワイルドカード**: `*`は任意の文字（`/`を含む）に一致、`?`は任意の単一文字に一致、`[abc]`はセット内の1文字に一致します"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.aW5jbHVkZQ.display_name": {
+          "source": "Include Patterns",
+          "message": "包含パターン"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.aW5jbHVkZQ.short_desc": {
+          "source": "Glob patterns for files to include",
+          "message": "包含するファイルのGlobパターン"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.b3ZlcndyaXRl.desc": {
+          "source": "If `true`, overwrites existing files",
+          "message": "`true`の場合、既存のファイルを上書きします"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.b3ZlcndyaXRl.display_name": {
+          "source": "Overwrite",
+          "message": "上書き"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.b3ZlcndyaXRl.short_desc": {
+          "source": "Overwrite existing files",
+          "message": "既存のファイルを上書き"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.c3RyaXBfY291bnQ.desc": {
+          "source": "Number of leading path components to strip from entry names during extraction. For example, with `strip_count` = `1`, the entry `project/src/main.c` becomes `src/main.c`. Entries with fewer components than `strip_count` are skipped",
+          "message": "展開時にエントリ名から除去する先頭のパスコンポーネントの数。たとえば、`strip_count` = `1` の場合、エントリ `project/src/main.c` は `src/main.c` になります。`strip_count` よりコンポーネント数が少ないエントリはスキップされます"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.c3RyaXBfY291bnQ.display_name": {
+          "source": "Strip Components",
+          "message": "コンポーネントを除去"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.c3RyaXBfY291bnQ.short_desc": {
+          "source": "Strip N leading path components",
+          "message": "先頭のN個のパスコンポーネントを除去"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.cHJlc2VydmVfcGVybWlzc2lvbnM.desc": {
+          "source": "If `true`, restores original file permissions",
+          "message": "`true`の場合、元のファイルパーミッションを復元します"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.cHJlc2VydmVfcGVybWlzc2lvbnM.display_name": {
+          "source": "Preserve Permissions",
+          "message": "パーミッションを保持"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.cHJlc2VydmVfcGVybWlzc2lvbnM.short_desc": {
+          "source": "Restore file permissions",
+          "message": "ファイルパーミッションを復元"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.cHJlc2VydmVfdGltZXM.desc": {
+          "source": "If `true`, restores original modification times",
+          "message": "`true`の場合、元の更新日時を復元します"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.cHJlc2VydmVfdGltZXM.display_name": {
+          "source": "Preserve Times",
+          "message": "タイムスタンプを保持"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.cHJlc2VydmVfdGltZXM.short_desc": {
+          "source": "Restore modification times",
+          "message": "更新日時を復元"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.short_desc": {
+          "source": "Extract a tar archive with optional filters",
+          "message": "オプションのフィルターを使用してtarアーカイブを展開"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.desc": {
+          "source": "Extract a single file from a tar archive to a destination path on disk",
+          "message": "tarアーカイブから単一ファイルをディスク上の宛先パスに展開します"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.display_name": {
+          "source": "Extract Single File",
+          "message": "単一ファイルを展開"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.YXJjaGl2ZV9kYXRh.desc": {
+          "source": "The tar archive as binary data",
+          "message": "バイナリデータとしてのtarアーカイブ"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.YXJjaGl2ZV9kYXRh.display_name": {
+          "source": "Archive Data",
+          "message": "アーカイブ データ"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.YXJjaGl2ZV9kYXRh.short_desc": {
+          "source": "Binary archive data",
+          "message": "バイナリ アーカイブ データ"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.YXJjaGl2ZV9sb2NhdGlvbg.desc": {
+          "source": "A FileLocationHandler location URL for the tar archive (alternative to archive_path or archive_data)",
+          "message": "tar アーカイブの FileLocationHandler ロケーション URL（archive_path または archive_data の代替）"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.YXJjaGl2ZV9sb2NhdGlvbg.display_name": {
+          "source": "Archive Location",
+          "message": "アーカイブ ロケーション"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.YXJjaGl2ZV9sb2NhdGlvbg.short_desc": {
+          "source": "Archive location URL",
+          "message": "アーカイブ ロケーション URL"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.YXJjaGl2ZV9wYXRo.desc": {
+          "source": "The filesystem path to the tar archive",
+          "message": "tar アーカイブへのファイルシステム パス"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.YXJjaGl2ZV9wYXRo.display_name": {
+          "source": "Archive Path",
+          "message": "アーカイブ パス"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.YXJjaGl2ZV9wYXRo.short_desc": {
+          "source": "Path to the tar archive",
+          "message": "tar アーカイブへのパス"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.ZGVzdGluYXRpb24.desc": {
+          "source": "Where to extract the file (default: current directory)",
+          "message": "ファイルを展開する場所（デフォルト: カレントディレクトリ）"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.ZGVzdGluYXRpb24.display_name": {
+          "source": "Destination",
+          "message": "宛先"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.ZGVzdGluYXRpb24.short_desc": {
+          "source": "Destination path",
+          "message": "展開先パス"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.ZW50cnlfbmFtZQ.desc": {
+          "source": "The name/path of the entry to extract",
+          "message": "展開するエントリの名前/パス"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.ZW50cnlfbmFtZQ.display_name": {
+          "source": "Entry Name",
+          "message": "エントリ名"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.ZW50cnlfbmFtZQ.short_desc": {
+          "source": "File to extract",
+          "message": "展開するファイル"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.short_desc": {
+          "source": "Extract one file from archive",
+          "message": "アーカイブからファイルを1つ展開"
+        },
+        "app.VGFy.action.am9pbi1hcmNoaXZl.desc": {
+          "source": "Join binary archive chunks back into a single tar archive",
+          "message": "バイナリアーカイブチャンクを結合して1つのtarアーカイブに戻します"
+        },
+        "app.VGFy.action.am9pbi1hcmNoaXZl.display_name": {
+          "source": "Join Archive Chunks",
+          "message": "アーカイブチャンクの結合"
+        },
+        "app.VGFy.action.am9pbi1hcmNoaXZl.option.Y2h1bmtz.desc": {
+          "source": "A list of binary chunks to concatenate back into a single tar archive. Chunks must be in the correct order as produced by the split operation",
+          "message": "単一のtarアーカイブに再結合するバイナリチャンクのリスト。チャンクは分割操作によって生成された正しい順序である必要があります"
+        },
+        "app.VGFy.action.am9pbi1hcmNoaXZl.option.Y2h1bmtz.display_name": {
+          "source": "Chunks",
+          "message": "チャンク"
+        },
+        "app.VGFy.action.am9pbi1hcmNoaXZl.option.Y2h1bmtz.short_desc": {
+          "source": "Binary chunks to join",
+          "message": "結合するバイナリチャンク"
+        },
+        "app.VGFy.action.am9pbi1hcmNoaXZl.short_desc": {
+          "source": "Join archive chunks into single archive",
+          "message": "アーカイブチャンクを1つのアーカイブに結合"
+        },
+        "app.VGFy.action.bGlzdC1hcmNoaXZl.desc": {
+          "source": "Get a list of all entries in a tar archive with metadata",
+          "message": "メタデータ付きでtarアーカイブ内のすべてのエントリのリストを取得します"
+        },
+        "app.VGFy.action.bGlzdC1hcmNoaXZl.display_name": {
+          "source": "List Archive Contents",
+          "message": "アーカイブコンテンツの一覧表示"
+        },
+        "app.VGFy.action.bGlzdC1hcmNoaXZl.option.YXJjaGl2ZV9kYXRh.desc": {
+          "source": "The tar archive as binary data (alternative to archive_path)",
+          "message": "バイナリ データとしての tar アーカイブ（archive_path の代替）"
+        },
+        "app.VGFy.action.bGlzdC1hcmNoaXZl.option.YXJjaGl2ZV9kYXRh.display_name": {
+          "source": "Archive Data",
+          "message": "アーカイブ データ"
+        },
+        "app.VGFy.action.bGlzdC1hcmNoaXZl.option.YXJjaGl2ZV9kYXRh.short_desc": {
+          "source": "Binary archive data",
+          "message": "バイナリ アーカイブ データ"
+        },
+        "app.VGFy.action.bGlzdC1hcmNoaXZl.option.YXJjaGl2ZV9sb2NhdGlvbg.desc": {
+          "source": "A FileLocationHandler location URL for the tar archive (alternative to archive_path or archive_data)",
+          "message": "tar アーカイブの FileLocationHandler ロケーション URL（archive_path または archive_data の代替）"
+        },
+        "app.VGFy.action.bGlzdC1hcmNoaXZl.option.YXJjaGl2ZV9sb2NhdGlvbg.display_name": {
+          "source": "Archive Location",
+          "message": "アーカイブ ロケーション"
+        },
+        "app.VGFy.action.bGlzdC1hcmNoaXZl.option.YXJjaGl2ZV9sb2NhdGlvbg.short_desc": {
+          "source": "Archive location URL",
+          "message": "アーカイブ ロケーション URL"
+        },
+        "app.VGFy.action.bGlzdC1hcmNoaXZl.option.YXJjaGl2ZV9wYXRo.desc": {
+          "source": "The filesystem path to the tar archive to list",
+          "message": "一覧表示するtarアーカイブのファイルシステムパス"
+        },
+        "app.VGFy.action.bGlzdC1hcmNoaXZl.option.YXJjaGl2ZV9wYXRo.display_name": {
+          "source": "Archive Path",
+          "message": "アーカイブ パス"
+        },
+        "app.VGFy.action.bGlzdC1hcmNoaXZl.option.YXJjaGl2ZV9wYXRo.short_desc": {
+          "source": "Path to the tar archive file",
+          "message": "tarアーカイブファイルへのパス"
+        },
+        "app.VGFy.action.bGlzdC1hcmNoaXZl.short_desc": {
+          "source": "List files in a tar archive",
+          "message": "tarアーカイブ内のファイルを一覧表示"
+        },
+        "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.desc": {
+          "source": "Split a tar archive into multiple fixed-size binary chunks for multi-volume storage or transfer",
+          "message": "マルチボリュームストレージまたは転送用に、tarアーカイブを複数の固定サイズバイナリチャンクに分割します"
+        },
+        "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.display_name": {
+          "source": "Split Archive",
+          "message": "アーカイブの分割"
+        },
+        "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.option.Y2h1bmtfc2l6ZQ.desc": {
+          "source": "The maximum size in bytes for each chunk. The last chunk may be smaller if the archive size is not evenly divisible",
+          "message": "各チャンクの最大サイズ（バイト単位）。アーカイブサイズが均等に割り切れない場合、最後のチャンクは小さくなる可能性があります"
+        },
+        "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.option.Y2h1bmtfc2l6ZQ.display_name": {
+          "source": "Chunk Size",
+          "message": "チャンクサイズ"
+        },
+        "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.option.Y2h1bmtfc2l6ZQ.short_desc": {
+          "source": "Maximum chunk size in bytes",
+          "message": "最大チャンクサイズ（バイト単位）"
+        },
+        "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.option.YXJjaGl2ZV9kYXRh.desc": {
+          "source": "The tar archive as binary data to split",
+          "message": "分割するバイナリデータとしてのtarアーカイブ"
+        },
+        "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.option.YXJjaGl2ZV9kYXRh.display_name": {
+          "source": "Archive Data",
+          "message": "アーカイブ データ"
+        },
+        "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.option.YXJjaGl2ZV9kYXRh.short_desc": {
+          "source": "TAR archive binary data",
+          "message": "TAR アーカイブのバイナリ データ"
+        },
+        "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.option.YXJjaGl2ZV9sb2NhdGlvbg.desc": {
+          "source": "A FileLocationHandler location URL for the tar archive (alternative to `archive_data` or `archive_path`)",
+          "message": "tarアーカイブのFileLocationHandlerロケーションURL（`archive_data`または`archive_path`の代わり）"
+        },
+        "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.option.YXJjaGl2ZV9sb2NhdGlvbg.display_name": {
+          "source": "Archive Location",
+          "message": "アーカイブ ロケーション"
+        },
+        "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.option.YXJjaGl2ZV9sb2NhdGlvbg.short_desc": {
+          "source": "Archive location URL",
+          "message": "アーカイブ ロケーション URL"
+        },
+        "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.option.YXJjaGl2ZV9wYXRo.desc": {
+          "source": "The filesystem path to the tar archive (alternative to `archive_data`)",
+          "message": "tarアーカイブへのファイルシステムパス（`archive_data`の代わり）"
+        },
+        "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.option.YXJjaGl2ZV9wYXRo.display_name": {
+          "source": "Archive Path",
+          "message": "アーカイブ パス"
+        },
+        "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.option.YXJjaGl2ZV9wYXRo.short_desc": {
+          "source": "Path to the tar archive",
+          "message": "tar アーカイブへのパス"
+        },
+        "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.short_desc": {
+          "source": "Split archive into fixed-size chunks",
+          "message": "アーカイブを固定サイズチャンクに分割"
+        },
+        "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.desc": {
+          "source": "Open a streaming input for reading a file from a tar archive without loading the entire file into memory",
+          "message": "ファイル全体をメモリに読み込むことなく、tarアーカイブからファイルを読み取るためのストリーミング入力を開きます"
+        },
+        "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.display_name": {
+          "source": "Stream Extract",
+          "message": "ストリーム展開"
+        },
+        "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.option.YXJjaGl2ZV9kYXRh.desc": {
+          "source": "The tar archive as binary data (alternative to `archive_path`)",
+          "message": "バイナリデータとしてのtarアーカイブ（`archive_path`の代替）"
+        },
+        "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.option.YXJjaGl2ZV9kYXRh.display_name": {
+          "source": "Archive Data",
+          "message": "アーカイブ データ"
+        },
+        "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.option.YXJjaGl2ZV9kYXRh.short_desc": {
+          "source": "TAR archive binary data",
+          "message": "TAR アーカイブのバイナリ データ"
+        },
+        "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.option.YXJjaGl2ZV9sb2NhdGlvbg.desc": {
+          "source": "A FileLocationHandler location URL for the tar archive (alternative to `archive_path` or `archive_data`)",
+          "message": "tarアーカイブの FileLocationHandler ロケーションURL（`archive_path` または `archive_data` の代替）"
+        },
+        "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.option.YXJjaGl2ZV9sb2NhdGlvbg.display_name": {
+          "source": "Archive Location",
+          "message": "アーカイブ ロケーション"
+        },
+        "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.option.YXJjaGl2ZV9sb2NhdGlvbg.short_desc": {
+          "source": "Archive location URL",
+          "message": "アーカイブ ロケーション URL"
+        },
+        "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.option.YXJjaGl2ZV9wYXRo.desc": {
+          "source": "The filesystem path to the tar archive",
+          "message": "tar アーカイブへのファイルシステム パス"
+        },
+        "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.option.YXJjaGl2ZV9wYXRo.display_name": {
+          "source": "Archive Path",
+          "message": "アーカイブ パス"
+        },
+        "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.option.YXJjaGl2ZV9wYXRo.short_desc": {
+          "source": "Path to the tar archive",
+          "message": "tar アーカイブへのパス"
+        },
+        "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.option.ZW50cnlfbmFtZQ.desc": {
+          "source": "The full path name of the entry to read from the archive",
+          "message": "アーカイブから読み取るエントリのフルパス名"
+        },
+        "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.option.ZW50cnlfbmFtZQ.display_name": {
+          "source": "Entry Name",
+          "message": "エントリ名"
+        },
+        "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.option.ZW50cnlfbmFtZQ.short_desc": {
+          "source": "Name of entry to stream",
+          "message": "ストリームするエントリの名前"
+        },
+        "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.short_desc": {
+          "source": "Stream extract file from archive",
+          "message": "アーカイブからファイルをストリーム展開"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.desc": {
+          "source": "Read the contents of a file from a tar archive without extracting to disk",
+          "message": "ディスクに展開せずにtarアーカイブからファイルの内容を読み取ります"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.display_name": {
+          "source": "Read File Content",
+          "message": "ファイル内容の読み取り"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.YXJjaGl2ZV9kYXRh.desc": {
+          "source": "The tar archive as binary data (alternative to archive_path)",
+          "message": "バイナリ データとしての tar アーカイブ（archive_path の代替）"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.YXJjaGl2ZV9kYXRh.display_name": {
+          "source": "Archive Data",
+          "message": "アーカイブ データ"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.YXJjaGl2ZV9kYXRh.short_desc": {
+          "source": "Binary archive data",
+          "message": "バイナリ アーカイブ データ"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.YXJjaGl2ZV9sb2NhdGlvbg.desc": {
+          "source": "A FileLocationHandler location URL for the tar archive (alternative to archive_path or archive_data)",
+          "message": "tar アーカイブの FileLocationHandler ロケーション URL（archive_path または archive_data の代替）"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.YXJjaGl2ZV9sb2NhdGlvbg.display_name": {
+          "source": "Archive Location",
+          "message": "アーカイブ ロケーション"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.YXJjaGl2ZV9sb2NhdGlvbg.short_desc": {
+          "source": "Archive location URL",
+          "message": "アーカイブ ロケーション URL"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.YXJjaGl2ZV9wYXRo.desc": {
+          "source": "The filesystem path to the tar archive",
+          "message": "tar アーカイブへのファイルシステム パス"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.YXJjaGl2ZV9wYXRo.display_name": {
+          "source": "Archive Path",
+          "message": "アーカイブ パス"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.YXJjaGl2ZV9wYXRo.short_desc": {
+          "source": "Path to the tar archive file",
+          "message": "tarアーカイブファイルへのパス"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.YXNfdGV4dA.desc": {
+          "source": "If `true`, returns content as text string instead of binary (default: `false`)",
+          "message": "`true`の場合、バイナリの代わりにテキスト文字列として内容を返します（デフォルト: `false`）"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.YXNfdGV4dA.display_name": {
+          "source": "Read as Text",
+          "message": "テキストとして読み取り"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.YXNfdGV4dA.short_desc": {
+          "source": "Return content as text string",
+          "message": "内容をテキスト文字列として返します"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.ZW50cnlfbmFtZQ.desc": {
+          "source": "The path/name of the entry to read from the archive",
+          "message": "アーカイブから読み取るエントリのパス/名前"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.ZW50cnlfbmFtZQ.display_name": {
+          "source": "Entry Name",
+          "message": "エントリ名"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.ZW50cnlfbmFtZQ.short_desc": {
+          "source": "Name of file to read",
+          "message": "読み取るファイルの名前"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.ZW5jb2Rpbmc.allowed-value.c3RyaW5nOkFTQ0lJ.display_name": {
+          "source": "ASCII",
+          "message": "ASCII"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.ZW5jb2Rpbmc.allowed-value.c3RyaW5nOklTTy04ODU5LTE.display_name": {
+          "source": "ISO-8859-1 (Latin-1)",
+          "message": "ISO-8859-1 (Latin-1)"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.ZW5jb2Rpbmc.allowed-value.c3RyaW5nOlVURi04.display_name": {
+          "source": "UTF-8",
+          "message": "UTF-8"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.ZW5jb2Rpbmc.allowed-value.c3RyaW5nOlVURi0xNg.display_name": {
+          "source": "UTF-16",
+          "message": "UTF-16"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.ZW5jb2Rpbmc.allowed-value.c3RyaW5nOlVURi0xNkJF.display_name": {
+          "source": "UTF-16 Big Endian",
+          "message": "UTF-16 ビッグエンディアン"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.ZW5jb2Rpbmc.allowed-value.c3RyaW5nOlVURi0xNkxF.display_name": {
+          "source": "UTF-16 Little Endian",
+          "message": "UTF-16 リトルエンディアン"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.ZW5jb2Rpbmc.allowed-value.c3RyaW5nOldpbmRvd3MtMTI1Mg.display_name": {
+          "source": "Windows-1252",
+          "message": "Windows-1252"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.ZW5jb2Rpbmc.desc": {
+          "source": "Character encoding to use when as_text is true. Common encodings: UTF-8, ISO-8859-1, ASCII, UTF-16, Windows-1252 (default: UTF-8)",
+          "message": "as_text が true の場合に使用する文字エンコーディング。一般的なエンコーディング: UTF-8、ISO-8859-1、ASCII、UTF-16、Windows-1252（デフォルト: UTF-8）"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.ZW5jb2Rpbmc.display_name": {
+          "source": "Encoding",
+          "message": "エンコーディング"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.ZW5jb2Rpbmc.short_desc": {
+          "source": "Text encoding for as_text mode",
+          "message": "as_text モードのテキストエンコーディング"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.short_desc": {
+          "source": "Read file without extracting",
+          "message": "展開せずにファイルを読み取り"
+        },
+        "app.VGFy.action.dmVyaWZ5LWFyY2hpdmU.desc": {
+          "source": "Verify the integrity of a tar archive by reading all entries and their data blocks without extracting to disk",
+          "message": "ディスクに展開することなく、すべてのエントリとデータブロックを読み取ってtarアーカイブの整合性を検証します"
+        },
+        "app.VGFy.action.dmVyaWZ5LWFyY2hpdmU.display_name": {
+          "source": "Verify Archive",
+          "message": "アーカイブの検証"
+        },
+        "app.VGFy.action.dmVyaWZ5LWFyY2hpdmU.option.YXJjaGl2ZV9kYXRh.desc": {
+          "source": "The tar archive as binary data (alternative to `archive_path`)",
+          "message": "バイナリデータとしてのtarアーカイブ（`archive_path`の代替）"
+        },
+        "app.VGFy.action.dmVyaWZ5LWFyY2hpdmU.option.YXJjaGl2ZV9kYXRh.display_name": {
+          "source": "Archive Data",
+          "message": "アーカイブ データ"
+        },
+        "app.VGFy.action.dmVyaWZ5LWFyY2hpdmU.option.YXJjaGl2ZV9kYXRh.short_desc": {
+          "source": "TAR archive binary data",
+          "message": "TAR アーカイブのバイナリ データ"
+        },
+        "app.VGFy.action.dmVyaWZ5LWFyY2hpdmU.option.YXJjaGl2ZV9sb2NhdGlvbg.desc": {
+          "source": "A FileLocationHandler location URL for the tar archive (alternative to `archive_path` or `archive_data`)",
+          "message": "tarアーカイブの FileLocationHandler ロケーションURL（`archive_path` または `archive_data` の代替）"
+        },
+        "app.VGFy.action.dmVyaWZ5LWFyY2hpdmU.option.YXJjaGl2ZV9sb2NhdGlvbg.display_name": {
+          "source": "Archive Location",
+          "message": "アーカイブ ロケーション"
+        },
+        "app.VGFy.action.dmVyaWZ5LWFyY2hpdmU.option.YXJjaGl2ZV9sb2NhdGlvbg.short_desc": {
+          "source": "Archive location URL",
+          "message": "アーカイブ ロケーション URL"
+        },
+        "app.VGFy.action.dmVyaWZ5LWFyY2hpdmU.option.YXJjaGl2ZV9wYXRo.desc": {
+          "source": "The filesystem path to the tar archive to verify",
+          "message": "検証するtarアーカイブのファイルシステムパス"
+        },
+        "app.VGFy.action.dmVyaWZ5LWFyY2hpdmU.option.YXJjaGl2ZV9wYXRo.display_name": {
+          "source": "Archive Path",
+          "message": "アーカイブ パス"
+        },
+        "app.VGFy.action.dmVyaWZ5LWFyY2hpdmU.option.YXJjaGl2ZV9wYXRo.short_desc": {
+          "source": "Path to the tar archive",
+          "message": "tar アーカイブへのパス"
+        },
+        "app.VGFy.action.dmVyaWZ5LWFyY2hpdmU.short_desc": {
+          "source": "Verify archive integrity",
+          "message": "アーカイブの整合性を検証"
+        },
+        "app.VGFy.desc": {
+          "source": "Create, extract, and manage TAR archives with support for gzip, bzip2, xz, and zstd compression",
+          "message": "gzip、bzip2、xz、およびzstd圧縮のサポートにより、TARアーカイブを作成、展開、管理します"
+        },
+        "app.VGFy.display_name": {
+          "source": "TAR Archives",
+          "message": "TARアーカイブ"
+        },
+        "app.VGFy.short_desc": {
+          "source": "TAR archive operations",
+          "message": "TARアーカイブ操作"
+        }
+      }
+    }
+  }
+}

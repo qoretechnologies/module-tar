@@ -1,0 +1,1413 @@
+{
+  "schema_version": 1,
+  "locales": {
+    "zh-Hant": {
+      "messages": {
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.desc": {
+          "source": "Compress binary data or files into an in-memory tar archive",
+          "message": "將二進位資料或檔案壓縮為記憶體中的 tar 封存檔"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.display_name": {
+          "source": "Compress Data",
+          "message": "壓縮資料"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOm5vbmU.display_name": {
+          "source": "None",
+          "message": "無"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOmJ6aXAy.display_name": {
+          "source": "Bzip2",
+          "message": "Bzip2"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOmd6aXA.display_name": {
+          "source": "Gzip",
+          "message": "Gzip"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOmx6NA.display_name": {
+          "source": "LZ4",
+          "message": "LZ4"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOnh6.display_name": {
+          "source": "XZ/LZMA",
+          "message": "XZ/LZMA"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOnpzdGQ.display_name": {
+          "source": "Zstandard",
+          "message": "Zstandard"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Y29tcHJlc3Npb24.desc": {
+          "source": "Compression method: none, gzip, bzip2, xz, zstd, or lz4",
+          "message": "壓縮方式：none、gzip、bzip2、xz、zstd 或 lz4"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Y29tcHJlc3Npb24.display_name": {
+          "source": "Compression",
+          "message": "壓縮"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Y29tcHJlc3Npb24.short_desc": {
+          "source": "Compression method",
+          "message": "壓縮方式"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Zm9ybWF0.allowed-value.c3RyaW5nOmdudQ.display_name": {
+          "source": "GNU Tar",
+          "message": "GNU Tar"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Zm9ybWF0.allowed-value.c3RyaW5nOnBheA.display_name": {
+          "source": "POSIX Pax",
+          "message": "POSIX Pax"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Zm9ybWF0.allowed-value.c3RyaW5nOnVzdGFy.display_name": {
+          "source": "POSIX Ustar",
+          "message": "POSIX Ustar"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Zm9ybWF0.allowed-value.c3RyaW5nOnY3.display_name": {
+          "source": "V7",
+          "message": "V7"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Zm9ybWF0.desc": {
+          "source": "The tar format: ustar, pax, gnu, or v7",
+          "message": "Tar 格式：ustar、pax、gnu 或 v7"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Zm9ybWF0.display_name": {
+          "source": "Format",
+          "message": "格式"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Zm9ybWF0.short_desc": {
+          "source": "TAR format",
+          "message": "TAR 格式"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.ZmlsZXM.desc": {
+          "source": "List of entries. Each entry should have 'name' and either 'data' (binary) or 'text' (string)",
+          "message": "條目列表。每個條目應包含 'name'，以及 'data' (二進位) 或 'text' (字串) 兩者之一"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.ZmlsZXM.display_name": {
+          "source": "Files",
+          "message": "檔案"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.ZmlsZXM.short_desc": {
+          "source": "Files to compress",
+          "message": "要壓縮的檔案"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.short_desc": {
+          "source": "Compress data to tar format",
+          "message": "將資料壓縮為 tar 格式"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.desc": {
+          "source": "Create a new tar archive from files, directories, or binary data with optional compression and format settings",
+          "message": "從檔案、目錄或二進位資料建立新的 tar 封存檔，並帶有可選的壓縮與格式設定"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.display_name": {
+          "source": "Create Archive",
+          "message": "建立封存檔"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOm5vbmU.display_name": {
+          "source": "None",
+          "message": "無"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOmJ6aXAy.display_name": {
+          "source": "Bzip2",
+          "message": "Bzip2"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOmd6aXA.display_name": {
+          "source": "Gzip",
+          "message": "Gzip"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOmx6NA.display_name": {
+          "source": "LZ4",
+          "message": "LZ4"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOnh6.display_name": {
+          "source": "XZ/LZMA",
+          "message": "XZ/LZMA"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOnpzdGQ.display_name": {
+          "source": "Zstandard",
+          "message": "Zstandard"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Y29tcHJlc3Npb24.desc": {
+          "source": "The compression method to use",
+          "message": "要使用的壓縮方法"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Y29tcHJlc3Npb24.display_name": {
+          "source": "Compression Method",
+          "message": "壓縮方法"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Y29tcHJlc3Npb24.short_desc": {
+          "source": "Archive compression type",
+          "message": "封存檔壓縮類型"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Y29tcHJlc3Npb25fbGV2ZWw.desc": {
+          "source": "Compression level from 1 (fastest, least compression) to 9 (slowest, best compression). Use -1 or omit for the default level. Typical defaults: gzip=6, bzip2=9, xz=6, zstd=3, lz4=1",
+          "message": "壓縮層級從 1（最快，壓縮率最低）到 9（最慢，壓縮率最高）。使用 -1 或省略以使用預設層級。典型預設值：gzip=6、bzip2=9、xz=6、zstd=3、lz4=1"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Y29tcHJlc3Npb25fbGV2ZWw.display_name": {
+          "source": "Compression Level",
+          "message": "壓縮層級"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Y29tcHJlc3Npb25fbGV2ZWw.short_desc": {
+          "source": "Compression strength (1-9)",
+          "message": "壓縮強度 (1-9)"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.YXJjaGl2ZV9wYXRo.desc": {
+          "source": "The path where the tar archive will be created. If not specified, returns binary data.",
+          "message": "將建立 tar 封存檔的路徑。若未指定，則傳回二進位資料。"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.YXJjaGl2ZV9wYXRo.display_name": {
+          "source": "Archive Path",
+          "message": "封存檔路徑"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.YXJjaGl2ZV9wYXRo.short_desc": {
+          "source": "Output archive file path",
+          "message": "輸出封存檔案路徑"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.ZGlyZWN0b3JpZXM.desc": {
+          "source": "List of directory entries to add (without content)",
+          "message": "要新增的目錄項目清單（不含內容）"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.ZGlyZWN0b3JpZXM.display_name": {
+          "source": "Directories",
+          "message": "目錄"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.ZGlyZWN0b3JpZXM.short_desc": {
+          "source": "Empty directories to create",
+          "message": "要建立的空白目錄"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Zm9ybWF0.allowed-value.c3RyaW5nOmdudQ.display_name": {
+          "source": "GNU Tar",
+          "message": "GNU Tar"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Zm9ybWF0.allowed-value.c3RyaW5nOnBheA.display_name": {
+          "source": "POSIX Pax",
+          "message": "POSIX Pax"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Zm9ybWF0.allowed-value.c3RyaW5nOnVzdGFy.display_name": {
+          "source": "POSIX Ustar",
+          "message": "POSIX Ustar"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Zm9ybWF0.allowed-value.c3RyaW5nOnY3.display_name": {
+          "source": "V7",
+          "message": "V7"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Zm9ybWF0.desc": {
+          "source": "The tar format to use",
+          "message": "要使用的 tar 格式"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Zm9ybWF0.display_name": {
+          "source": "Archive Format",
+          "message": "封存檔格式"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Zm9ybWF0.short_desc": {
+          "source": "TAR format variant",
+          "message": "TAR 格式變體"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.ZmlsZXM.desc": {
+          "source": "List of file entries. Each entry should have 'name' and one of: 'data' (binary), 'text' (string), or 'source_path' (file path)",
+          "message": "檔案項目清單。每個項目應包含 'name'，以及下列其中之一：'data'（二進位）、'text'（字串）或 'source_path'（檔案路徑）"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.ZmlsZXM.display_name": {
+          "source": "Files",
+          "message": "檔案"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.ZmlsZXM.short_desc": {
+          "source": "Files to add to archive",
+          "message": "要新增至封存檔的檔案"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.b3V0cHV0X2xvY2F0aW9u.desc": {
+          "source": "A FileLocationHandler location URL where the archive will be written (alternative to archive_path)",
+          "message": "將寫入封存檔的 FileLocationHandler 位置 URL（archive_path 的替代選項）"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.b3V0cHV0X2xvY2F0aW9u.display_name": {
+          "source": "Output Location",
+          "message": "輸出位置"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.b3V0cHV0X2xvY2F0aW9u.short_desc": {
+          "source": "Output location URL",
+          "message": "輸出位置 URL"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.cmVxdWlyZV9lbnRyaWVz.desc": {
+          "source": "If `true`, raises an error if the archive would be created with no entries. Default is `false`, allowing empty archives",
+          "message": "若為 `true`，則在建立了不含任何項目的封存檔時引發錯誤。預設值為 `false`，允許空白封存檔"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.cmVxdWlyZV9lbnRyaWVz.display_name": {
+          "source": "Require Entries",
+          "message": "需要項目"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.cmVxdWlyZV9lbnRyaWVz.short_desc": {
+          "source": "Require at least one entry",
+          "message": "需要至少一個項目"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.short_desc": {
+          "source": "Create a new tar archive",
+          "message": "建立新的 tar 封存檔"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.desc": {
+          "source": "Add new files or update existing files in a tar archive",
+          "message": "在 tar 封存檔中新增檔案或更新現有檔案"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.display_name": {
+          "source": "Add Files to Archive",
+          "message": "新增檔案至封存檔"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOm5vbmU.display_name": {
+          "source": "None",
+          "message": "無"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOmJ6aXAy.display_name": {
+          "source": "Bzip2",
+          "message": "Bzip2"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOmd6aXA.display_name": {
+          "source": "Gzip",
+          "message": "Gzip"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOmx6NA.display_name": {
+          "source": "LZ4",
+          "message": "LZ4"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOnh6.display_name": {
+          "source": "XZ/LZMA",
+          "message": "XZ/LZMA"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOnpzdGQ.display_name": {
+          "source": "Zstandard",
+          "message": "Zstandard"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Y29tcHJlc3Npb24.desc": {
+          "source": "Compression method: none, gzip, bzip2, xz, zstd, or lz4. Note: Adding files to a compressed archive may require decompressing and recompressing the entire archive",
+          "message": "壓縮方法：none、gzip、bzip2、xz、zstd 或 lz4。注意：新增檔案至已壓縮的封存檔可能需要解壓縮並重新壓縮整個封存檔"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Y29tcHJlc3Npb24.display_name": {
+          "source": "Compression",
+          "message": "壓縮"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Y29tcHJlc3Npb24.short_desc": {
+          "source": "Compression for the archive",
+          "message": "封存檔的壓縮方式"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.YXJjaGl2ZV9wYXRo.desc": {
+          "source": "The filesystem path to the tar archive to modify",
+          "message": "要修改的 tar 封存檔的檔案系統路徑"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.YXJjaGl2ZV9wYXRo.display_name": {
+          "source": "Archive Path",
+          "message": "封存檔路徑"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.YXJjaGl2ZV9wYXRo.short_desc": {
+          "source": "Path to the tar archive",
+          "message": "tar 封存檔的路徑"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Zm9ybWF0.allowed-value.c3RyaW5nOmdudQ.display_name": {
+          "source": "GNU Tar",
+          "message": "GNU Tar"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Zm9ybWF0.allowed-value.c3RyaW5nOnBheA.display_name": {
+          "source": "POSIX Pax",
+          "message": "POSIX Pax"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Zm9ybWF0.allowed-value.c3RyaW5nOnVzdGFy.display_name": {
+          "source": "POSIX Ustar",
+          "message": "POSIX Ustar"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Zm9ybWF0.allowed-value.c3RyaW5nOnY3.display_name": {
+          "source": "V7",
+          "message": "V7"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Zm9ybWF0.desc": {
+          "source": "The tar format: ustar, pax, gnu, or v7",
+          "message": "Tar 格式：ustar、pax、gnu 或 v7"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Zm9ybWF0.display_name": {
+          "source": "Format",
+          "message": "格式"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Zm9ybWF0.short_desc": {
+          "source": "TAR format",
+          "message": "TAR 格式"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.ZmlsZXM.desc": {
+          "source": "List of file entries to add. Each entry should have 'name' and one of: 'data', 'text', or 'source_path'",
+          "message": "要新增的檔案項目清單。每個項目應包含 'name'，以及下列其中之一：'data'、'text' 或 'source_path'"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.ZmlsZXM.display_name": {
+          "source": "Files",
+          "message": "檔案"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.ZmlsZXM.short_desc": {
+          "source": "Files to add",
+          "message": "要新增的檔案"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.short_desc": {
+          "source": "Add files to an existing archive",
+          "message": "新增檔案至現有封存檔"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.desc": {
+          "source": "Recursively archive a directory tree into a tar archive, preserving file permissions and optionally following symlinks",
+          "message": "遞迴地將目錄樹封存至 tar 封存檔中，保留檔案權限並可選擇是否追蹤符號連結"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.display_name": {
+          "source": "Archive Directory",
+          "message": "封存目錄"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOm5vbmU.display_name": {
+          "source": "None",
+          "message": "無"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOmJ6aXAy.display_name": {
+          "source": "Bzip2",
+          "message": "Bzip2"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOmd6aXA.display_name": {
+          "source": "Gzip",
+          "message": "Gzip"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOmx6NA.display_name": {
+          "source": "LZ4",
+          "message": "LZ4"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOnh6.display_name": {
+          "source": "XZ/LZMA",
+          "message": "XZ/LZMA"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOnpzdGQ.display_name": {
+          "source": "Zstandard",
+          "message": "Zstandard"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Y29tcHJlc3Npb24.desc": {
+          "source": "The compression method to use for the output archive",
+          "message": "用於輸出封存檔的壓縮方法"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Y29tcHJlc3Npb24.display_name": {
+          "source": "Compression",
+          "message": "壓縮"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Y29tcHJlc3Npb24.short_desc": {
+          "source": "Compression method",
+          "message": "壓縮方式"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.YXJjaGl2ZV9wYXRo.desc": {
+          "source": "The path where the tar archive will be created. If not specified, returns binary data",
+          "message": "將建立 tar 封存檔的路徑。若未指定，則傳回二進位資料"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.YXJjaGl2ZV9wYXRo.display_name": {
+          "source": "Archive Path",
+          "message": "封存檔路徑"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.YXJjaGl2ZV9wYXRo.short_desc": {
+          "source": "Output archive file path",
+          "message": "輸出封存檔案路徑"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.YmFzZV9uYW1l.desc": {
+          "source": "The name used for the root directory entry in the archive. If not specified, uses the basename of `directory_path`",
+          "message": "封存檔中根目錄項目所使用的名稱。若未指定，則使用 `directory_path` 的基準名稱"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.YmFzZV9uYW1l.display_name": {
+          "source": "Base Name",
+          "message": "基準名稱"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.YmFzZV9uYW1l.short_desc": {
+          "source": "Root directory name in archive",
+          "message": "封存檔中的根目錄名稱"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.ZGlyZWN0b3J5X3BhdGg.desc": {
+          "source": "The filesystem path to the directory to archive recursively",
+          "message": "要遞迴封存的目錄的檔案系統路徑"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.ZGlyZWN0b3J5X3BhdGg.display_name": {
+          "source": "Directory Path",
+          "message": "目錄路徑"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.ZGlyZWN0b3J5X3BhdGg.short_desc": {
+          "source": "Path to directory to archive",
+          "message": "要封存的目錄路徑"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Zm9sbG93X3N5bWxpbmtz.desc": {
+          "source": "If `True`, follows symbolic links and archives the target file contents. If `False` (default), archives symlinks as symlink entries",
+          "message": "若為 `True`，則追蹤符號連結並封存目標檔案內容。若為 `False`（預設），則將符號連結封存為符號連結項目"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Zm9sbG93X3N5bWxpbmtz.display_name": {
+          "source": "Follow Symlinks",
+          "message": "追蹤符號連結"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Zm9sbG93X3N5bWxpbmtz.short_desc": {
+          "source": "Follow symbolic links",
+          "message": "追蹤符號連結"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Zm9ybWF0.allowed-value.c3RyaW5nOmdudQ.display_name": {
+          "source": "GNU Tar",
+          "message": "GNU Tar"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Zm9ybWF0.allowed-value.c3RyaW5nOnBheA.display_name": {
+          "source": "POSIX Pax",
+          "message": "POSIX Pax"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Zm9ybWF0.allowed-value.c3RyaW5nOnVzdGFy.display_name": {
+          "source": "POSIX Ustar",
+          "message": "POSIX Ustar"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Zm9ybWF0.allowed-value.c3RyaW5nOnY3.display_name": {
+          "source": "V7",
+          "message": "V7"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Zm9ybWF0.desc": {
+          "source": "The tar format to use for the output archive",
+          "message": "用於輸出封存檔的 tar 格式"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Zm9ybWF0.display_name": {
+          "source": "Format",
+          "message": "格式"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Zm9ybWF0.short_desc": {
+          "source": "TAR format",
+          "message": "TAR 格式"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.b3V0cHV0X2xvY2F0aW9u.desc": {
+          "source": "A FileLocationHandler location URL where the archive will be written (alternative to `archive_path`)",
+          "message": "將寫入封存檔的 FileLocationHandler 位置 URL（`archive_path` 的替代選項）"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.b3V0cHV0X2xvY2F0aW9u.display_name": {
+          "source": "Output Location",
+          "message": "輸出位置"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.b3V0cHV0X2xvY2F0aW9u.short_desc": {
+          "source": "Output location URL",
+          "message": "輸出位置 URL"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.short_desc": {
+          "source": "Archive a directory tree",
+          "message": "封存目錄樹"
+        },
+        "app.VGFy.action.Z2V0LWFyY2hpdmUtaW5mbw.desc": {
+          "source": "Get metadata and statistics about a tar archive including entry counts, compression method, and total size",
+          "message": "取得 tar 封存檔的中繼資料與統計資料，包含項目計數、壓縮方法和總大小"
+        },
+        "app.VGFy.action.Z2V0LWFyY2hpdmUtaW5mbw.display_name": {
+          "source": "Get Archive Info",
+          "message": "取得封存檔資訊"
+        },
+        "app.VGFy.action.Z2V0LWFyY2hpdmUtaW5mbw.option.YXJjaGl2ZV9kYXRh.desc": {
+          "source": "The tar archive as binary data (alternative to archive_path)",
+          "message": "做為二進位資料的 tar 封存檔（archive_path 的替代選項）"
+        },
+        "app.VGFy.action.Z2V0LWFyY2hpdmUtaW5mbw.option.YXJjaGl2ZV9kYXRh.display_name": {
+          "source": "Archive Data",
+          "message": "封存檔資料"
+        },
+        "app.VGFy.action.Z2V0LWFyY2hpdmUtaW5mbw.option.YXJjaGl2ZV9kYXRh.short_desc": {
+          "source": "Binary archive data",
+          "message": "二進位封存檔資料"
+        },
+        "app.VGFy.action.Z2V0LWFyY2hpdmUtaW5mbw.option.YXJjaGl2ZV9sb2NhdGlvbg.desc": {
+          "source": "A FileLocationHandler location URL for the tar archive (alternative to archive_path or archive_data)",
+          "message": "tar 封存檔的 FileLocationHandler 位置 URL（archive_path 或 archive_data 的替代選項）"
+        },
+        "app.VGFy.action.Z2V0LWFyY2hpdmUtaW5mbw.option.YXJjaGl2ZV9sb2NhdGlvbg.display_name": {
+          "source": "Archive Location",
+          "message": "封存檔位置"
+        },
+        "app.VGFy.action.Z2V0LWFyY2hpdmUtaW5mbw.option.YXJjaGl2ZV9sb2NhdGlvbg.short_desc": {
+          "source": "Archive location URL",
+          "message": "封存檔位置 URL"
+        },
+        "app.VGFy.action.Z2V0LWFyY2hpdmUtaW5mbw.option.YXJjaGl2ZV9wYXRo.desc": {
+          "source": "The filesystem path to the tar archive",
+          "message": "tar 封存檔的檔案系統路徑"
+        },
+        "app.VGFy.action.Z2V0LWFyY2hpdmUtaW5mbw.option.YXJjaGl2ZV9wYXRo.display_name": {
+          "source": "Archive Path",
+          "message": "封存檔路徑"
+        },
+        "app.VGFy.action.Z2V0LWFyY2hpdmUtaW5mbw.option.YXJjaGl2ZV9wYXRo.short_desc": {
+          "source": "Path to the tar archive",
+          "message": "tar 封存檔的路徑"
+        },
+        "app.VGFy.action.Z2V0LWFyY2hpdmUtaW5mbw.short_desc": {
+          "source": "Get tar archive metadata",
+          "message": "取得 tar 封存檔中繼資料"
+        },
+        "app.VGFy.action.ZGVjb21wcmVzcy1kYXRh.desc": {
+          "source": "Decompress a tar archive and return file contents as in-memory data",
+          "message": "解壓縮 tar 封存檔並傳回檔案內容做為記憶體內資料"
+        },
+        "app.VGFy.action.ZGVjb21wcmVzcy1kYXRh.display_name": {
+          "source": "Decompress Data",
+          "message": "解壓縮資料"
+        },
+        "app.VGFy.action.ZGVjb21wcmVzcy1kYXRh.option.YXJjaGl2ZV9kYXRh.desc": {
+          "source": "The tar archive as binary data to decompress",
+          "message": "要解壓縮做為二進位資料的 tar 封存檔"
+        },
+        "app.VGFy.action.ZGVjb21wcmVzcy1kYXRh.option.YXJjaGl2ZV9kYXRh.display_name": {
+          "source": "Archive Data",
+          "message": "封存檔資料"
+        },
+        "app.VGFy.action.ZGVjb21wcmVzcy1kYXRh.option.YXJjaGl2ZV9kYXRh.short_desc": {
+          "source": "TAR archive binary data",
+          "message": "TAR 封存檔二進位資料"
+        },
+        "app.VGFy.action.ZGVjb21wcmVzcy1kYXRh.option.YXJjaGl2ZV9sb2NhdGlvbg.desc": {
+          "source": "A FileLocationHandler location URL for the tar archive (alternative to archive_data or archive_path)",
+          "message": "tar 封存檔的 FileLocationHandler 位置 URL（archive_data 或 archive_path 的替代選項）"
+        },
+        "app.VGFy.action.ZGVjb21wcmVzcy1kYXRh.option.YXJjaGl2ZV9sb2NhdGlvbg.display_name": {
+          "source": "Archive Location",
+          "message": "封存檔位置"
+        },
+        "app.VGFy.action.ZGVjb21wcmVzcy1kYXRh.option.YXJjaGl2ZV9sb2NhdGlvbg.short_desc": {
+          "source": "Archive location URL",
+          "message": "封存檔位置 URL"
+        },
+        "app.VGFy.action.ZGVjb21wcmVzcy1kYXRh.option.YXJjaGl2ZV9wYXRo.desc": {
+          "source": "The filesystem path to the tar archive (alternative to archive_data)",
+          "message": "tar 封存檔的檔案系統路徑（archive_data 的替代選項）"
+        },
+        "app.VGFy.action.ZGVjb21wcmVzcy1kYXRh.option.YXJjaGl2ZV9wYXRo.display_name": {
+          "source": "Archive Path",
+          "message": "封存檔路徑"
+        },
+        "app.VGFy.action.ZGVjb21wcmVzcy1kYXRh.option.YXJjaGl2ZV9wYXRo.short_desc": {
+          "source": "Path to the tar archive",
+          "message": "tar 封存檔的路徑"
+        },
+        "app.VGFy.action.ZGVjb21wcmVzcy1kYXRh.short_desc": {
+          "source": "Decompress tar data",
+          "message": "解壓縮 tar 資料"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.desc": {
+          "source": "Decrypt a tar archive encrypted with AES-256-CBC. Expects the IV + ciphertext format produced by the **encrypt** action",
+          "message": "解密以 AES-256-CBC 加密的 tar 歸檔。預期為 **encrypt** 動作所產生的 IV + 密文格式"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.display_name": {
+          "source": "Decrypt Archive",
+          "message": "解密歸檔"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.ZW5jcnlwdGVkX2RhdGE.desc": {
+          "source": "The encrypted tar archive as binary data",
+          "message": "作為二進位資料的已加密 tar 歸檔"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.ZW5jcnlwdGVkX2RhdGE.display_name": {
+          "source": "Encrypted Data",
+          "message": "已加密資料"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.ZW5jcnlwdGVkX2RhdGE.short_desc": {
+          "source": "Encrypted archive binary data",
+          "message": "已加密歸檔二進位資料"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.ZW5jcnlwdGVkX2xvY2F0aW9u.desc": {
+          "source": "A FileLocationHandler location URL for the encrypted archive (alternative to `encrypted_data` or `encrypted_path`)",
+          "message": "已加密歸檔的 FileLocationHandler 位置 URL（可替代 `encrypted_data` 或 `encrypted_path`）"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.ZW5jcnlwdGVkX2xvY2F0aW9u.display_name": {
+          "source": "Encrypted Location",
+          "message": "已加密位置"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.ZW5jcnlwdGVkX2xvY2F0aW9u.short_desc": {
+          "source": "Encrypted archive location URL",
+          "message": "已加密歸檔位置 URL"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.ZW5jcnlwdGVkX3BhdGg.desc": {
+          "source": "The filesystem path to the encrypted archive (alternative to `encrypted_data`)",
+          "message": "已加密歸檔的檔案系統路徑（可替代 `encrypted_data`）"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.ZW5jcnlwdGVkX3BhdGg.display_name": {
+          "source": "Encrypted File Path",
+          "message": "已加密檔案路徑"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.ZW5jcnlwdGVkX3BhdGg.short_desc": {
+          "source": "Path to encrypted archive file",
+          "message": "已加密歸檔檔案的路徑"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.a2V5.desc": {
+          "source": "A `32`-byte binary key for AES-256-CBC decryption. Provide either `key` or `password`, matching the encryption mode",
+          "message": "用於 AES-256-CBC 解密的 `32` 位元組二進位密鑰。請提供 `key` 或 `password` 其中之一，並與加密模式相符"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.a2V5.display_name": {
+          "source": "Decryption Key",
+          "message": "解密密鑰"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.a2V5.short_desc": {
+          "source": "AES-256 decryption key (32 bytes)",
+          "message": "AES-256 解密密鑰 (32 位元組)"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.cGFzc3dvcmQ.desc": {
+          "source": "The password used during encryption. The encryption mode is auto-detected from the envelope format",
+          "message": "加密時使用的密碼。加密模式會自動從封套格式中偵測"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.cGFzc3dvcmQ.display_name": {
+          "source": "Password",
+          "message": "密碼"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.cGFzc3dvcmQ.short_desc": {
+          "source": "Decryption password",
+          "message": "解密密碼"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.short_desc": {
+          "source": "Decrypt an AES-256-CBC encrypted tar archive",
+          "message": "解密以 AES-256-CBC 加密的 tar 歸檔"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.desc": {
+          "source": "Delete a file or directory entry from a tar archive by recreating the archive without the specified entry",
+          "message": "透過在不包含指定條目的情況下重新建立歸檔，以從 tar 歸檔中刪除檔案或目錄條目"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.display_name": {
+          "source": "Delete Entry",
+          "message": "刪除條目"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOm5vbmU.display_name": {
+          "source": "None",
+          "message": "無"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOmJ6aXAy.display_name": {
+          "source": "Bzip2",
+          "message": "Bzip2"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOmd6aXA.display_name": {
+          "source": "Gzip",
+          "message": "Gzip"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOmx6NA.display_name": {
+          "source": "LZ4",
+          "message": "LZ4"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOnh6.display_name": {
+          "source": "XZ/LZMA",
+          "message": "XZ/LZMA"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOnpzdGQ.display_name": {
+          "source": "Zstandard",
+          "message": "Zstandard"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Y29tcHJlc3Npb24.desc": {
+          "source": "Compression method for the output archive. If not specified, the output is uncompressed",
+          "message": "輸出歸檔的壓縮方式。若未指定，則輸出不壓縮"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Y29tcHJlc3Npb24.display_name": {
+          "source": "Output Compression",
+          "message": "輸出壓縮"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Y29tcHJlc3Npb24.short_desc": {
+          "source": "Compression for output archive",
+          "message": "輸出歸檔的壓縮"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.YXJjaGl2ZV9kYXRh.desc": {
+          "source": "The tar archive as binary data",
+          "message": "作為二進位資料的 tar 歸檔"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.YXJjaGl2ZV9kYXRh.display_name": {
+          "source": "Archive Data",
+          "message": "封存檔資料"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.YXJjaGl2ZV9kYXRh.short_desc": {
+          "source": "TAR archive binary data",
+          "message": "TAR 封存檔二進位資料"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.YXJjaGl2ZV9sb2NhdGlvbg.desc": {
+          "source": "A FileLocationHandler location URL for the tar archive (alternative to `archive_data` or `archive_path`)",
+          "message": "tar 歸檔的 FileLocationHandler 位置 URL（可替代 `archive_data` 或 `archive_path`）"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.YXJjaGl2ZV9sb2NhdGlvbg.display_name": {
+          "source": "Archive Location",
+          "message": "封存檔位置"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.YXJjaGl2ZV9sb2NhdGlvbg.short_desc": {
+          "source": "Archive location URL",
+          "message": "封存檔位置 URL"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.YXJjaGl2ZV9wYXRo.desc": {
+          "source": "The filesystem path to the tar archive (alternative to `archive_data`)",
+          "message": "tar 歸檔的檔案系統路徑（可替代 `archive_data`）"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.YXJjaGl2ZV9wYXRo.display_name": {
+          "source": "Archive Path",
+          "message": "封存檔路徑"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.YXJjaGl2ZV9wYXRo.short_desc": {
+          "source": "Path to the tar archive",
+          "message": "tar 封存檔的路徑"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.ZW50cnlfbmFtZQ.desc": {
+          "source": "The full path name of the entry to delete from the archive",
+          "message": "要從歸檔中刪除之條目的完整路徑名稱"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.ZW50cnlfbmFtZQ.display_name": {
+          "source": "Entry Name",
+          "message": "條目名稱"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.ZW50cnlfbmFtZQ.short_desc": {
+          "source": "Name of entry to delete",
+          "message": "要刪除的條目名稱"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Zm9ybWF0.allowed-value.c3RyaW5nOmdudQ.display_name": {
+          "source": "GNU Tar",
+          "message": "GNU Tar"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Zm9ybWF0.allowed-value.c3RyaW5nOnBheA.display_name": {
+          "source": "POSIX Pax",
+          "message": "POSIX Pax"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Zm9ybWF0.allowed-value.c3RyaW5nOnVzdGFy.display_name": {
+          "source": "POSIX Ustar",
+          "message": "POSIX Ustar"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Zm9ybWF0.allowed-value.c3RyaW5nOnY3.display_name": {
+          "source": "V7",
+          "message": "V7"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Zm9ybWF0.desc": {
+          "source": "The tar format for the output archive",
+          "message": "輸出歸檔的 tar 格式"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Zm9ybWF0.display_name": {
+          "source": "Output Format",
+          "message": "輸出格式"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Zm9ybWF0.short_desc": {
+          "source": "TAR format for output archive",
+          "message": "輸出歸檔的 TAR 格式"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.short_desc": {
+          "source": "Delete entry from archive",
+          "message": "從歸檔中刪除條目"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.desc": {
+          "source": "Encrypt a tar archive with AES-256-CBC. Output format is a `16`-byte random IV followed by ciphertext",
+          "message": "以 AES-256-CBC 加密 tar 歸檔。輸出格式為 `16` 位元組的隨機 IV 後接密文"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.display_name": {
+          "source": "Encrypt Archive",
+          "message": "加密歸檔"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.YXJjaGl2ZV9kYXRh.desc": {
+          "source": "The tar archive as binary data to encrypt",
+          "message": "要加密且作為二進位資料的 tar 歸檔"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.YXJjaGl2ZV9kYXRh.display_name": {
+          "source": "Archive Data",
+          "message": "封存檔資料"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.YXJjaGl2ZV9kYXRh.short_desc": {
+          "source": "TAR archive binary data",
+          "message": "TAR 封存檔二進位資料"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.YXJjaGl2ZV9sb2NhdGlvbg.desc": {
+          "source": "A FileLocationHandler location URL for the tar archive (alternative to `archive_data` or `archive_path`)",
+          "message": "tar 歸檔的 FileLocationHandler 位置 URL（可替代 `archive_data` 或 `archive_path`）"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.YXJjaGl2ZV9sb2NhdGlvbg.display_name": {
+          "source": "Archive Location",
+          "message": "封存檔位置"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.YXJjaGl2ZV9sb2NhdGlvbg.short_desc": {
+          "source": "Archive location URL",
+          "message": "封存檔位置 URL"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.YXJjaGl2ZV9wYXRo.desc": {
+          "source": "The filesystem path to the tar archive (alternative to `archive_data`)",
+          "message": "tar 歸檔的檔案系統路徑（可替代 `archive_data`）"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.YXJjaGl2ZV9wYXRo.display_name": {
+          "source": "Archive Path",
+          "message": "封存檔路徑"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.YXJjaGl2ZV9wYXRo.short_desc": {
+          "source": "Path to the tar archive",
+          "message": "tar 封存檔的路徑"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.a2V5.desc": {
+          "source": "A `32`-byte binary key for AES-256-CBC encryption. Provide either `key` or `password`, not both",
+          "message": "用於 AES-256-CBC 加密的 `32` 位元組二進位密鑰。請提供 `key` 或 `password` 其中之一，但切勿同時提供兩者"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.a2V5.display_name": {
+          "source": "Encryption Key",
+          "message": "加密密鑰"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.a2V5.short_desc": {
+          "source": "AES-256 encryption key (32 bytes)",
+          "message": "AES-256 加密密鑰 (32 位元組)"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.cGFzc3dvcmQ.desc": {
+          "source": "A password string for encryption. The key is derived using HMAC-SHA256 with a random salt. Provide either `key` or `password`, not both",
+          "message": "用於加密的密碼字串。密鑰是使用 HMAC-SHA256 搭配隨機鹽值衍生而來。請提供 `key` 或 `password` 其中之一，但切勿同時提供兩者"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.cGFzc3dvcmQ.display_name": {
+          "source": "Password",
+          "message": "密碼"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.cGFzc3dvcmQ.short_desc": {
+          "source": "Encryption password",
+          "message": "加密密碼"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.short_desc": {
+          "source": "Encrypt a tar archive with AES-256-CBC",
+          "message": "以 AES-256-CBC 加密 tar 歸檔"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.desc": {
+          "source": "Extract contents of a tar archive to a destination directory with optional `include`/`exclude` glob-style filename filters",
+          "message": "解壓縮 tar 歸檔的內容至目標目錄，可選擇使用 `include`/`exclude` glob 樣式的檔案名稱篩選條件"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.display_name": {
+          "source": "Extract Archive",
+          "message": "解壓縮歸檔"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.YXJjaGl2ZV9kYXRh.desc": {
+          "source": "The tar archive as binary data (alternative to archive_path)",
+          "message": "做為二進位資料的 tar 封存檔（archive_path 的替代選項）"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.YXJjaGl2ZV9kYXRh.display_name": {
+          "source": "Archive Data",
+          "message": "封存檔資料"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.YXJjaGl2ZV9kYXRh.short_desc": {
+          "source": "Binary archive data",
+          "message": "二進位封存檔資料"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.YXJjaGl2ZV9sb2NhdGlvbg.desc": {
+          "source": "A FileLocationHandler location URL for the tar archive (alternative to archive_path or archive_data)",
+          "message": "tar 封存檔的 FileLocationHandler 位置 URL（archive_path 或 archive_data 的替代選項）"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.YXJjaGl2ZV9sb2NhdGlvbg.display_name": {
+          "source": "Archive Location",
+          "message": "封存檔位置"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.YXJjaGl2ZV9sb2NhdGlvbg.short_desc": {
+          "source": "Archive location URL",
+          "message": "封存檔位置 URL"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.YXJjaGl2ZV9wYXRo.desc": {
+          "source": "The filesystem path to the tar archive to extract",
+          "message": "要解壓縮之 tar 歸檔的檔案系統路徑"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.YXJjaGl2ZV9wYXRo.display_name": {
+          "source": "Archive Path",
+          "message": "封存檔路徑"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.YXJjaGl2ZV9wYXRo.short_desc": {
+          "source": "Path to the tar archive",
+          "message": "tar 封存檔的路徑"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.ZGVzdGluYXRpb24.desc": {
+          "source": "The directory where files will be extracted (default: current directory)",
+          "message": "檔案將解壓縮至的目錄（預設：目前目錄）"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.ZGVzdGluYXRpb24.display_name": {
+          "source": "Destination",
+          "message": "目的地"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.ZGVzdGluYXRpb24.short_desc": {
+          "source": "Extraction destination directory",
+          "message": "解壓縮目標目錄"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.ZXhjbHVkZQ.desc": {
+          "source": "A list of glob-style patterns; entries matching any pattern will be skipped. Exclude patterns are applied after `include` patterns.\n\n**Supported wildcards**: `*` matches any characters (including `/`), `?` matches any single character, `[abc]` matches one character from the set",
+          "message": "Glob 樣式模式清單；與任一模式比對成功的條目將被跳過。排除模式會在 `include` 模式之後套用。\n\n**支援的萬用字元**：`*` 比對任何字元（包含 `/`），`?` 比對任何單一字元，`[abc]` 比對集合中的一個字元"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.ZXhjbHVkZQ.display_name": {
+          "source": "Exclude Patterns",
+          "message": "排除模式"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.ZXhjbHVkZQ.short_desc": {
+          "source": "Glob patterns for files to exclude",
+          "message": "要排除之檔案的 Glob 模式"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.aW5jbHVkZQ.desc": {
+          "source": "A list of glob-style patterns; only entries matching at least one pattern will be extracted. If not provided, all entries are included by default.\n\n**Supported wildcards**: `*` matches any characters (including `/`), `?` matches any single character, `[abc]` matches one character from the set",
+          "message": "Glob 樣式模式清單；僅有至少與一個模式比對成功的條目才會被解壓縮。若未提供，預設包含所有條目。\n\n**支援的萬用字元**：`*` 比對任何字元（包含 `/`），`?` 比對任何單一字元，`[abc]` 比對集合中的一個字元"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.aW5jbHVkZQ.display_name": {
+          "source": "Include Patterns",
+          "message": "包含模式"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.aW5jbHVkZQ.short_desc": {
+          "source": "Glob patterns for files to include",
+          "message": "要包含之檔案的 Glob 模式"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.b3ZlcndyaXRl.desc": {
+          "source": "If `true`, overwrites existing files",
+          "message": "若為 `true`，則覆蓋現有檔案"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.b3ZlcndyaXRl.display_name": {
+          "source": "Overwrite",
+          "message": "覆寫"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.b3ZlcndyaXRl.short_desc": {
+          "source": "Overwrite existing files",
+          "message": "覆蓋現有檔案"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.c3RyaXBfY291bnQ.desc": {
+          "source": "Number of leading path components to strip from entry names during extraction. For example, with `strip_count` = `1`, the entry `project/src/main.c` becomes `src/main.c`. Entries with fewer components than `strip_count` are skipped",
+          "message": "解壓縮期間要從條目名稱中剝除的前導路徑元件數量。例如，若 `strip_count` = `1`，條目 `project/src/main.c` 會變成 `src/main.c`。元件數量少於 `strip_count` 的條目將被跳過"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.c3RyaXBfY291bnQ.display_name": {
+          "source": "Strip Components",
+          "message": "剝除元件"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.c3RyaXBfY291bnQ.short_desc": {
+          "source": "Strip N leading path components",
+          "message": "剝除 N 個前導路徑元件"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.cHJlc2VydmVfcGVybWlzc2lvbnM.desc": {
+          "source": "If `true`, restores original file permissions",
+          "message": "若為 `true`，則還原原始檔案權限"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.cHJlc2VydmVfcGVybWlzc2lvbnM.display_name": {
+          "source": "Preserve Permissions",
+          "message": "保留權限"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.cHJlc2VydmVfcGVybWlzc2lvbnM.short_desc": {
+          "source": "Restore file permissions",
+          "message": "還原檔案權限"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.cHJlc2VydmVfdGltZXM.desc": {
+          "source": "If `true`, restores original modification times",
+          "message": "若為 `true`，則還原原始修改時間"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.cHJlc2VydmVfdGltZXM.display_name": {
+          "source": "Preserve Times",
+          "message": "保留時間"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.cHJlc2VydmVfdGltZXM.short_desc": {
+          "source": "Restore modification times",
+          "message": "還原修改時間"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.short_desc": {
+          "source": "Extract a tar archive with optional filters",
+          "message": "使用選擇性篩選條件解壓縮 tar 歸檔"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.desc": {
+          "source": "Extract a single file from a tar archive to a destination path on disk",
+          "message": "將 tar 歸檔中的單一檔案解壓縮至磁碟上的目標路徑"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.display_name": {
+          "source": "Extract Single File",
+          "message": "解壓縮單一檔案"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.YXJjaGl2ZV9kYXRh.desc": {
+          "source": "The tar archive as binary data",
+          "message": "作為二進位資料的 tar 歸檔"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.YXJjaGl2ZV9kYXRh.display_name": {
+          "source": "Archive Data",
+          "message": "封存檔資料"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.YXJjaGl2ZV9kYXRh.short_desc": {
+          "source": "Binary archive data",
+          "message": "二進位封存檔資料"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.YXJjaGl2ZV9sb2NhdGlvbg.desc": {
+          "source": "A FileLocationHandler location URL for the tar archive (alternative to archive_path or archive_data)",
+          "message": "tar 封存檔的 FileLocationHandler 位置 URL（archive_path 或 archive_data 的替代選項）"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.YXJjaGl2ZV9sb2NhdGlvbg.display_name": {
+          "source": "Archive Location",
+          "message": "封存檔位置"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.YXJjaGl2ZV9sb2NhdGlvbg.short_desc": {
+          "source": "Archive location URL",
+          "message": "封存檔位置 URL"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.YXJjaGl2ZV9wYXRo.desc": {
+          "source": "The filesystem path to the tar archive",
+          "message": "tar 封存檔的檔案系統路徑"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.YXJjaGl2ZV9wYXRo.display_name": {
+          "source": "Archive Path",
+          "message": "封存檔路徑"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.YXJjaGl2ZV9wYXRo.short_desc": {
+          "source": "Path to the tar archive",
+          "message": "tar 封存檔的路徑"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.ZGVzdGluYXRpb24.desc": {
+          "source": "Where to extract the file (default: current directory)",
+          "message": "解壓縮檔案的位置（預設：目前目錄）"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.ZGVzdGluYXRpb24.display_name": {
+          "source": "Destination",
+          "message": "目的地"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.ZGVzdGluYXRpb24.short_desc": {
+          "source": "Destination path",
+          "message": "目的地路徑"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.ZW50cnlfbmFtZQ.desc": {
+          "source": "The name/path of the entry to extract",
+          "message": "要解壓縮的項目名稱/路徑"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.ZW50cnlfbmFtZQ.display_name": {
+          "source": "Entry Name",
+          "message": "條目名稱"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.ZW50cnlfbmFtZQ.short_desc": {
+          "source": "File to extract",
+          "message": "要解壓縮的檔案"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.short_desc": {
+          "source": "Extract one file from archive",
+          "message": "從封存檔解壓縮單一檔案"
+        },
+        "app.VGFy.action.am9pbi1hcmNoaXZl.desc": {
+          "source": "Join binary archive chunks back into a single tar archive",
+          "message": "將二進位封存檔區塊重新合併為單一 tar 封存檔"
+        },
+        "app.VGFy.action.am9pbi1hcmNoaXZl.display_name": {
+          "source": "Join Archive Chunks",
+          "message": "合併封存檔區塊"
+        },
+        "app.VGFy.action.am9pbi1hcmNoaXZl.option.Y2h1bmtz.desc": {
+          "source": "A list of binary chunks to concatenate back into a single tar archive. Chunks must be in the correct order as produced by the split operation",
+          "message": "要重新串接為單一 tar 封存檔的二進位區塊清單。區塊必須按照分割操作所產生的正確順序排列"
+        },
+        "app.VGFy.action.am9pbi1hcmNoaXZl.option.Y2h1bmtz.display_name": {
+          "source": "Chunks",
+          "message": "區塊"
+        },
+        "app.VGFy.action.am9pbi1hcmNoaXZl.option.Y2h1bmtz.short_desc": {
+          "source": "Binary chunks to join",
+          "message": "要合併的二進位區塊"
+        },
+        "app.VGFy.action.am9pbi1hcmNoaXZl.short_desc": {
+          "source": "Join archive chunks into single archive",
+          "message": "將封存檔區塊合併為單一封存檔"
+        },
+        "app.VGFy.action.bGlzdC1hcmNoaXZl.desc": {
+          "source": "Get a list of all entries in a tar archive with metadata",
+          "message": "取得 tar 封存檔中包含中繼資料的所有項目清單"
+        },
+        "app.VGFy.action.bGlzdC1hcmNoaXZl.display_name": {
+          "source": "List Archive Contents",
+          "message": "列出封存檔內容"
+        },
+        "app.VGFy.action.bGlzdC1hcmNoaXZl.option.YXJjaGl2ZV9kYXRh.desc": {
+          "source": "The tar archive as binary data (alternative to archive_path)",
+          "message": "做為二進位資料的 tar 封存檔（archive_path 的替代選項）"
+        },
+        "app.VGFy.action.bGlzdC1hcmNoaXZl.option.YXJjaGl2ZV9kYXRh.display_name": {
+          "source": "Archive Data",
+          "message": "封存檔資料"
+        },
+        "app.VGFy.action.bGlzdC1hcmNoaXZl.option.YXJjaGl2ZV9kYXRh.short_desc": {
+          "source": "Binary archive data",
+          "message": "二進位封存檔資料"
+        },
+        "app.VGFy.action.bGlzdC1hcmNoaXZl.option.YXJjaGl2ZV9sb2NhdGlvbg.desc": {
+          "source": "A FileLocationHandler location URL for the tar archive (alternative to archive_path or archive_data)",
+          "message": "tar 封存檔的 FileLocationHandler 位置 URL（archive_path 或 archive_data 的替代選項）"
+        },
+        "app.VGFy.action.bGlzdC1hcmNoaXZl.option.YXJjaGl2ZV9sb2NhdGlvbg.display_name": {
+          "source": "Archive Location",
+          "message": "封存檔位置"
+        },
+        "app.VGFy.action.bGlzdC1hcmNoaXZl.option.YXJjaGl2ZV9sb2NhdGlvbg.short_desc": {
+          "source": "Archive location URL",
+          "message": "封存檔位置 URL"
+        },
+        "app.VGFy.action.bGlzdC1hcmNoaXZl.option.YXJjaGl2ZV9wYXRo.desc": {
+          "source": "The filesystem path to the tar archive to list",
+          "message": "要列出的 tar 封存檔之檔案系統路徑"
+        },
+        "app.VGFy.action.bGlzdC1hcmNoaXZl.option.YXJjaGl2ZV9wYXRo.display_name": {
+          "source": "Archive Path",
+          "message": "封存檔路徑"
+        },
+        "app.VGFy.action.bGlzdC1hcmNoaXZl.option.YXJjaGl2ZV9wYXRo.short_desc": {
+          "source": "Path to the tar archive file",
+          "message": "tar 封存檔案的路徑"
+        },
+        "app.VGFy.action.bGlzdC1hcmNoaXZl.short_desc": {
+          "source": "List files in a tar archive",
+          "message": "列出 tar 封存檔中的檔案"
+        },
+        "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.desc": {
+          "source": "Split a tar archive into multiple fixed-size binary chunks for multi-volume storage or transfer",
+          "message": "將 tar 封存檔分割為多個固定大小的二進位區塊，以用於多卷儲存或傳輸"
+        },
+        "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.display_name": {
+          "source": "Split Archive",
+          "message": "分割封存檔"
+        },
+        "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.option.Y2h1bmtfc2l6ZQ.desc": {
+          "source": "The maximum size in bytes for each chunk. The last chunk may be smaller if the archive size is not evenly divisible",
+          "message": "每個區塊的最大位元組大小。若封存檔大小無法整除，最後一個區塊可能會較小"
+        },
+        "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.option.Y2h1bmtfc2l6ZQ.display_name": {
+          "source": "Chunk Size",
+          "message": "區塊大小"
+        },
+        "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.option.Y2h1bmtfc2l6ZQ.short_desc": {
+          "source": "Maximum chunk size in bytes",
+          "message": "最大區塊大小（位元組）"
+        },
+        "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.option.YXJjaGl2ZV9kYXRh.desc": {
+          "source": "The tar archive as binary data to split",
+          "message": "要分割的二進位資料形式的 tar 封存檔"
+        },
+        "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.option.YXJjaGl2ZV9kYXRh.display_name": {
+          "source": "Archive Data",
+          "message": "封存檔資料"
+        },
+        "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.option.YXJjaGl2ZV9kYXRh.short_desc": {
+          "source": "TAR archive binary data",
+          "message": "TAR 封存檔二進位資料"
+        },
+        "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.option.YXJjaGl2ZV9sb2NhdGlvbg.desc": {
+          "source": "A FileLocationHandler location URL for the tar archive (alternative to `archive_data` or `archive_path`)",
+          "message": "tar 歸檔的 FileLocationHandler 位置 URL（可替代 `archive_data` 或 `archive_path`）"
+        },
+        "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.option.YXJjaGl2ZV9sb2NhdGlvbg.display_name": {
+          "source": "Archive Location",
+          "message": "封存檔位置"
+        },
+        "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.option.YXJjaGl2ZV9sb2NhdGlvbg.short_desc": {
+          "source": "Archive location URL",
+          "message": "封存檔位置 URL"
+        },
+        "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.option.YXJjaGl2ZV9wYXRo.desc": {
+          "source": "The filesystem path to the tar archive (alternative to `archive_data`)",
+          "message": "tar 歸檔的檔案系統路徑（可替代 `archive_data`）"
+        },
+        "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.option.YXJjaGl2ZV9wYXRo.display_name": {
+          "source": "Archive Path",
+          "message": "封存檔路徑"
+        },
+        "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.option.YXJjaGl2ZV9wYXRo.short_desc": {
+          "source": "Path to the tar archive",
+          "message": "tar 封存檔的路徑"
+        },
+        "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.short_desc": {
+          "source": "Split archive into fixed-size chunks",
+          "message": "將封存檔分割為固定大小的區塊"
+        },
+        "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.desc": {
+          "source": "Open a streaming input for reading a file from a tar archive without loading the entire file into memory",
+          "message": "開啟串流輸入以從 tar 封存檔讀取檔案，無需將整個檔案載入記憶體"
+        },
+        "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.display_name": {
+          "source": "Stream Extract",
+          "message": "串流解壓縮"
+        },
+        "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.option.YXJjaGl2ZV9kYXRh.desc": {
+          "source": "The tar archive as binary data (alternative to `archive_path`)",
+          "message": "二進位資料形式的 tar 封存檔（`archive_path` 的替代方案）"
+        },
+        "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.option.YXJjaGl2ZV9kYXRh.display_name": {
+          "source": "Archive Data",
+          "message": "封存檔資料"
+        },
+        "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.option.YXJjaGl2ZV9kYXRh.short_desc": {
+          "source": "TAR archive binary data",
+          "message": "TAR 封存檔二進位資料"
+        },
+        "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.option.YXJjaGl2ZV9sb2NhdGlvbg.desc": {
+          "source": "A FileLocationHandler location URL for the tar archive (alternative to `archive_path` or `archive_data`)",
+          "message": "tar 封存檔的 FileLocationHandler 位置 URL（`archive_path` 或 `archive_data` 的替代方案）"
+        },
+        "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.option.YXJjaGl2ZV9sb2NhdGlvbg.display_name": {
+          "source": "Archive Location",
+          "message": "封存檔位置"
+        },
+        "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.option.YXJjaGl2ZV9sb2NhdGlvbg.short_desc": {
+          "source": "Archive location URL",
+          "message": "封存檔位置 URL"
+        },
+        "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.option.YXJjaGl2ZV9wYXRo.desc": {
+          "source": "The filesystem path to the tar archive",
+          "message": "tar 封存檔的檔案系統路徑"
+        },
+        "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.option.YXJjaGl2ZV9wYXRo.display_name": {
+          "source": "Archive Path",
+          "message": "封存檔路徑"
+        },
+        "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.option.YXJjaGl2ZV9wYXRo.short_desc": {
+          "source": "Path to the tar archive",
+          "message": "tar 封存檔的路徑"
+        },
+        "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.option.ZW50cnlfbmFtZQ.desc": {
+          "source": "The full path name of the entry to read from the archive",
+          "message": "要從封存檔讀取的項目的完整路徑名稱"
+        },
+        "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.option.ZW50cnlfbmFtZQ.display_name": {
+          "source": "Entry Name",
+          "message": "條目名稱"
+        },
+        "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.option.ZW50cnlfbmFtZQ.short_desc": {
+          "source": "Name of entry to stream",
+          "message": "要串流讀取的項目名稱"
+        },
+        "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.short_desc": {
+          "source": "Stream extract file from archive",
+          "message": "從封存檔串流解壓縮檔案"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.desc": {
+          "source": "Read the contents of a file from a tar archive without extracting to disk",
+          "message": "從 tar 封存檔讀取檔案內容而無需解壓縮至磁碟"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.display_name": {
+          "source": "Read File Content",
+          "message": "讀取檔案內容"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.YXJjaGl2ZV9kYXRh.desc": {
+          "source": "The tar archive as binary data (alternative to archive_path)",
+          "message": "做為二進位資料的 tar 封存檔（archive_path 的替代選項）"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.YXJjaGl2ZV9kYXRh.display_name": {
+          "source": "Archive Data",
+          "message": "封存檔資料"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.YXJjaGl2ZV9kYXRh.short_desc": {
+          "source": "Binary archive data",
+          "message": "二進位封存檔資料"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.YXJjaGl2ZV9sb2NhdGlvbg.desc": {
+          "source": "A FileLocationHandler location URL for the tar archive (alternative to archive_path or archive_data)",
+          "message": "tar 封存檔的 FileLocationHandler 位置 URL（archive_path 或 archive_data 的替代選項）"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.YXJjaGl2ZV9sb2NhdGlvbg.display_name": {
+          "source": "Archive Location",
+          "message": "封存檔位置"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.YXJjaGl2ZV9sb2NhdGlvbg.short_desc": {
+          "source": "Archive location URL",
+          "message": "封存檔位置 URL"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.YXJjaGl2ZV9wYXRo.desc": {
+          "source": "The filesystem path to the tar archive",
+          "message": "tar 封存檔的檔案系統路徑"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.YXJjaGl2ZV9wYXRo.display_name": {
+          "source": "Archive Path",
+          "message": "封存檔路徑"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.YXJjaGl2ZV9wYXRo.short_desc": {
+          "source": "Path to the tar archive file",
+          "message": "tar 封存檔案的路徑"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.YXNfdGV4dA.desc": {
+          "source": "If `true`, returns content as text string instead of binary (default: `false`)",
+          "message": "若為 `true`，則將內容以文字字串而非二進位形式傳回（預設：`false`）"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.YXNfdGV4dA.display_name": {
+          "source": "Read as Text",
+          "message": "以文字形式讀取"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.YXNfdGV4dA.short_desc": {
+          "source": "Return content as text string",
+          "message": "將內容以文字字串形式傳回"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.ZW50cnlfbmFtZQ.desc": {
+          "source": "The path/name of the entry to read from the archive",
+          "message": "要從封存檔讀取的項目路徑/名稱"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.ZW50cnlfbmFtZQ.display_name": {
+          "source": "Entry Name",
+          "message": "條目名稱"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.ZW50cnlfbmFtZQ.short_desc": {
+          "source": "Name of file to read",
+          "message": "要讀取的檔案名稱"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.ZW5jb2Rpbmc.allowed-value.c3RyaW5nOkFTQ0lJ.display_name": {
+          "source": "ASCII",
+          "message": "ASCII"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.ZW5jb2Rpbmc.allowed-value.c3RyaW5nOklTTy04ODU5LTE.display_name": {
+          "source": "ISO-8859-1 (Latin-1)",
+          "message": "ISO-8859-1 (Latin-1)"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.ZW5jb2Rpbmc.allowed-value.c3RyaW5nOlVURi04.display_name": {
+          "source": "UTF-8",
+          "message": "UTF-8"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.ZW5jb2Rpbmc.allowed-value.c3RyaW5nOlVURi0xNg.display_name": {
+          "source": "UTF-16",
+          "message": "UTF-16"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.ZW5jb2Rpbmc.allowed-value.c3RyaW5nOlVURi0xNkJF.display_name": {
+          "source": "UTF-16 Big Endian",
+          "message": "UTF-16 大端序"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.ZW5jb2Rpbmc.allowed-value.c3RyaW5nOlVURi0xNkxF.display_name": {
+          "source": "UTF-16 Little Endian",
+          "message": "UTF-16 小端序"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.ZW5jb2Rpbmc.allowed-value.c3RyaW5nOldpbmRvd3MtMTI1Mg.display_name": {
+          "source": "Windows-1252",
+          "message": "Windows-1252"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.ZW5jb2Rpbmc.desc": {
+          "source": "Character encoding to use when as_text is true. Common encodings: UTF-8, ISO-8859-1, ASCII, UTF-16, Windows-1252 (default: UTF-8)",
+          "message": "當 as_text 為 true 時使用的字元編碼。常見編碼：UTF-8、ISO-8859-1、ASCII、UTF-16、Windows-1252（預設：UTF-8）"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.ZW5jb2Rpbmc.display_name": {
+          "source": "Encoding",
+          "message": "編碼"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.ZW5jb2Rpbmc.short_desc": {
+          "source": "Text encoding for as_text mode",
+          "message": "as_text 模式的文字編碼"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.short_desc": {
+          "source": "Read file without extracting",
+          "message": "不需解壓縮即可讀取檔案"
+        },
+        "app.VGFy.action.dmVyaWZ5LWFyY2hpdmU.desc": {
+          "source": "Verify the integrity of a tar archive by reading all entries and their data blocks without extracting to disk",
+          "message": "透過讀取所有項目及其資料區塊而不解壓縮至磁碟，來驗證 tar 封存檔的完整性"
+        },
+        "app.VGFy.action.dmVyaWZ5LWFyY2hpdmU.display_name": {
+          "source": "Verify Archive",
+          "message": "驗證封存檔"
+        },
+        "app.VGFy.action.dmVyaWZ5LWFyY2hpdmU.option.YXJjaGl2ZV9kYXRh.desc": {
+          "source": "The tar archive as binary data (alternative to `archive_path`)",
+          "message": "二進位資料形式的 tar 封存檔（`archive_path` 的替代方案）"
+        },
+        "app.VGFy.action.dmVyaWZ5LWFyY2hpdmU.option.YXJjaGl2ZV9kYXRh.display_name": {
+          "source": "Archive Data",
+          "message": "封存檔資料"
+        },
+        "app.VGFy.action.dmVyaWZ5LWFyY2hpdmU.option.YXJjaGl2ZV9kYXRh.short_desc": {
+          "source": "TAR archive binary data",
+          "message": "TAR 封存檔二進位資料"
+        },
+        "app.VGFy.action.dmVyaWZ5LWFyY2hpdmU.option.YXJjaGl2ZV9sb2NhdGlvbg.desc": {
+          "source": "A FileLocationHandler location URL for the tar archive (alternative to `archive_path` or `archive_data`)",
+          "message": "tar 封存檔的 FileLocationHandler 位置 URL（`archive_path` 或 `archive_data` 的替代方案）"
+        },
+        "app.VGFy.action.dmVyaWZ5LWFyY2hpdmU.option.YXJjaGl2ZV9sb2NhdGlvbg.display_name": {
+          "source": "Archive Location",
+          "message": "封存檔位置"
+        },
+        "app.VGFy.action.dmVyaWZ5LWFyY2hpdmU.option.YXJjaGl2ZV9sb2NhdGlvbg.short_desc": {
+          "source": "Archive location URL",
+          "message": "封存檔位置 URL"
+        },
+        "app.VGFy.action.dmVyaWZ5LWFyY2hpdmU.option.YXJjaGl2ZV9wYXRo.desc": {
+          "source": "The filesystem path to the tar archive to verify",
+          "message": "要驗證的 tar 封存檔之檔案系統路徑"
+        },
+        "app.VGFy.action.dmVyaWZ5LWFyY2hpdmU.option.YXJjaGl2ZV9wYXRo.display_name": {
+          "source": "Archive Path",
+          "message": "封存檔路徑"
+        },
+        "app.VGFy.action.dmVyaWZ5LWFyY2hpdmU.option.YXJjaGl2ZV9wYXRo.short_desc": {
+          "source": "Path to the tar archive",
+          "message": "tar 封存檔的路徑"
+        },
+        "app.VGFy.action.dmVyaWZ5LWFyY2hpdmU.short_desc": {
+          "source": "Verify archive integrity",
+          "message": "驗證封存檔完整性"
+        },
+        "app.VGFy.desc": {
+          "source": "Create, extract, and manage TAR archives with support for gzip, bzip2, xz, and zstd compression",
+          "message": "建立、解壓縮與管理 TAR 封存檔，支援 gzip、bzip2、xz 及 zstd 壓縮"
+        },
+        "app.VGFy.display_name": {
+          "source": "TAR Archives",
+          "message": "TAR 封存檔"
+        },
+        "app.VGFy.short_desc": {
+          "source": "TAR archive operations",
+          "message": "TAR 封存檔操作"
+        }
+      }
+    }
+  }
+}

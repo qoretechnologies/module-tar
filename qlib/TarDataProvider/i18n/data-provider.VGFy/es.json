@@ -1,0 +1,1413 @@
+{
+  "schema_version": 1,
+  "locales": {
+    "es": {
+      "messages": {
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.desc": {
+          "source": "Compress binary data or files into an in-memory tar archive",
+          "message": "Comprimir datos binarios o archivos en un archivo tar en memoria"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.display_name": {
+          "source": "Compress Data",
+          "message": "Comprimir datos"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOm5vbmU.display_name": {
+          "source": "None",
+          "message": "Ninguno"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOmJ6aXAy.display_name": {
+          "source": "Bzip2",
+          "message": "Bzip2"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOmd6aXA.display_name": {
+          "source": "Gzip",
+          "message": "Gzip"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOmx6NA.display_name": {
+          "source": "LZ4",
+          "message": "LZ4"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOnh6.display_name": {
+          "source": "XZ/LZMA",
+          "message": "XZ/LZMA"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOnpzdGQ.display_name": {
+          "source": "Zstandard",
+          "message": "Zstandard"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Y29tcHJlc3Npb24.desc": {
+          "source": "Compression method: none, gzip, bzip2, xz, zstd, or lz4",
+          "message": "Método de compresión: none, gzip, bzip2, xz, zstd o lz4"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Y29tcHJlc3Npb24.display_name": {
+          "source": "Compression",
+          "message": "Compresión"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Y29tcHJlc3Npb24.short_desc": {
+          "source": "Compression method",
+          "message": "Método de compresión"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Zm9ybWF0.allowed-value.c3RyaW5nOmdudQ.display_name": {
+          "source": "GNU Tar",
+          "message": "GNU Tar"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Zm9ybWF0.allowed-value.c3RyaW5nOnBheA.display_name": {
+          "source": "POSIX Pax",
+          "message": "POSIX Pax"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Zm9ybWF0.allowed-value.c3RyaW5nOnVzdGFy.display_name": {
+          "source": "POSIX Ustar",
+          "message": "POSIX Ustar"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Zm9ybWF0.allowed-value.c3RyaW5nOnY3.display_name": {
+          "source": "V7",
+          "message": "V7"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Zm9ybWF0.desc": {
+          "source": "The tar format: ustar, pax, gnu, or v7",
+          "message": "El formato tar: ustar, pax, gnu o v7"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Zm9ybWF0.display_name": {
+          "source": "Format",
+          "message": "Formato"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Zm9ybWF0.short_desc": {
+          "source": "TAR format",
+          "message": "Formato TAR"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.ZmlsZXM.desc": {
+          "source": "List of entries. Each entry should have 'name' and either 'data' (binary) or 'text' (string)",
+          "message": "Lista de entradas. Cada entrada debe tener 'name' y ya sea 'data' (binario) o 'text' (cadena de caracteres)"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.ZmlsZXM.display_name": {
+          "source": "Files",
+          "message": "Archivos"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.ZmlsZXM.short_desc": {
+          "source": "Files to compress",
+          "message": "Archivos a comprimir"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.short_desc": {
+          "source": "Compress data to tar format",
+          "message": "Comprimir datos al formato tar"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.desc": {
+          "source": "Create a new tar archive from files, directories, or binary data with optional compression and format settings",
+          "message": "Crear un nuevo archivo tar a partir de archivos, directorios o datos binarios con configuraciones opcionales de compresión y formato"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.display_name": {
+          "source": "Create Archive",
+          "message": "Crear archivo"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOm5vbmU.display_name": {
+          "source": "None",
+          "message": "Ninguno"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOmJ6aXAy.display_name": {
+          "source": "Bzip2",
+          "message": "Bzip2"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOmd6aXA.display_name": {
+          "source": "Gzip",
+          "message": "Gzip"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOmx6NA.display_name": {
+          "source": "LZ4",
+          "message": "LZ4"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOnh6.display_name": {
+          "source": "XZ/LZMA",
+          "message": "XZ/LZMA"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOnpzdGQ.display_name": {
+          "source": "Zstandard",
+          "message": "Zstandard"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Y29tcHJlc3Npb24.desc": {
+          "source": "The compression method to use",
+          "message": "El método de compresión a utilizar"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Y29tcHJlc3Npb24.display_name": {
+          "source": "Compression Method",
+          "message": "Método de compresión"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Y29tcHJlc3Npb24.short_desc": {
+          "source": "Archive compression type",
+          "message": "Tipo de compresión del archivo"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Y29tcHJlc3Npb25fbGV2ZWw.desc": {
+          "source": "Compression level from 1 (fastest, least compression) to 9 (slowest, best compression). Use -1 or omit for the default level. Typical defaults: gzip=6, bzip2=9, xz=6, zstd=3, lz4=1",
+          "message": "Nivel de compresión de 1 (más rápido, menor compresión) a 9 (más lento, mejor compresión). Use -1 u omita para el nivel predeterminado. Valores predeterminados típicos: gzip=6, bzip2=9, xz=6, zstd=3, lz4=1"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Y29tcHJlc3Npb25fbGV2ZWw.display_name": {
+          "source": "Compression Level",
+          "message": "Nivel de compresión"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Y29tcHJlc3Npb25fbGV2ZWw.short_desc": {
+          "source": "Compression strength (1-9)",
+          "message": "Fuerza de compresión (1-9)"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.YXJjaGl2ZV9wYXRo.desc": {
+          "source": "The path where the tar archive will be created. If not specified, returns binary data.",
+          "message": "La ruta donde se creará el archivo tar. Si no se especifica, devuelve datos binarios."
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.YXJjaGl2ZV9wYXRo.display_name": {
+          "source": "Archive Path",
+          "message": "Ruta del archivo"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.YXJjaGl2ZV9wYXRo.short_desc": {
+          "source": "Output archive file path",
+          "message": "Ruta del archivo de salida"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.ZGlyZWN0b3JpZXM.desc": {
+          "source": "List of directory entries to add (without content)",
+          "message": "Lista de entradas de directorio a agregar (sin contenido)"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.ZGlyZWN0b3JpZXM.display_name": {
+          "source": "Directories",
+          "message": "Directorios"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.ZGlyZWN0b3JpZXM.short_desc": {
+          "source": "Empty directories to create",
+          "message": "Directorios vacíos a crear"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Zm9ybWF0.allowed-value.c3RyaW5nOmdudQ.display_name": {
+          "source": "GNU Tar",
+          "message": "GNU Tar"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Zm9ybWF0.allowed-value.c3RyaW5nOnBheA.display_name": {
+          "source": "POSIX Pax",
+          "message": "POSIX Pax"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Zm9ybWF0.allowed-value.c3RyaW5nOnVzdGFy.display_name": {
+          "source": "POSIX Ustar",
+          "message": "POSIX Ustar"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Zm9ybWF0.allowed-value.c3RyaW5nOnY3.display_name": {
+          "source": "V7",
+          "message": "V7"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Zm9ybWF0.desc": {
+          "source": "The tar format to use",
+          "message": "El formato tar a utilizar"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Zm9ybWF0.display_name": {
+          "source": "Archive Format",
+          "message": "Formato del archivo"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Zm9ybWF0.short_desc": {
+          "source": "TAR format variant",
+          "message": "Variante de formato TAR"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.ZmlsZXM.desc": {
+          "source": "List of file entries. Each entry should have 'name' and one of: 'data' (binary), 'text' (string), or 'source_path' (file path)",
+          "message": "Lista de entradas de archivo. Cada entrada debe tener 'name' y uno de los siguientes: 'data' (binario), 'text' (cadena) o 'source_path' (ruta de archivo)"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.ZmlsZXM.display_name": {
+          "source": "Files",
+          "message": "Archivos"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.ZmlsZXM.short_desc": {
+          "source": "Files to add to archive",
+          "message": "Archivos a agregar al archivo"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.b3V0cHV0X2xvY2F0aW9u.desc": {
+          "source": "A FileLocationHandler location URL where the archive will be written (alternative to archive_path)",
+          "message": "Una URL de ubicación de FileLocationHandler donde se escribirá el archivo (alternativa a archive_path)"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.b3V0cHV0X2xvY2F0aW9u.display_name": {
+          "source": "Output Location",
+          "message": "Ubicación de salida"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.b3V0cHV0X2xvY2F0aW9u.short_desc": {
+          "source": "Output location URL",
+          "message": "URL de ubicación de salida"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.cmVxdWlyZV9lbnRyaWVz.desc": {
+          "source": "If `true`, raises an error if the archive would be created with no entries. Default is `false`, allowing empty archives",
+          "message": "Si es `true`, genera un error si el archivo se creara sin entradas. El valor predeterminado es `false`, lo que permite archivos vacíos"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.cmVxdWlyZV9lbnRyaWVz.display_name": {
+          "source": "Require Entries",
+          "message": "Requerir entradas"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.cmVxdWlyZV9lbnRyaWVz.short_desc": {
+          "source": "Require at least one entry",
+          "message": "Requerir al menos una entrada"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.short_desc": {
+          "source": "Create a new tar archive",
+          "message": "Crear un nuevo archivo tar"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.desc": {
+          "source": "Add new files or update existing files in a tar archive",
+          "message": "Agregar nuevos archivos o actualizar archivos existentes en un archivo tar"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.display_name": {
+          "source": "Add Files to Archive",
+          "message": "Agregar archivos al archivo"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOm5vbmU.display_name": {
+          "source": "None",
+          "message": "Ninguno"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOmJ6aXAy.display_name": {
+          "source": "Bzip2",
+          "message": "Bzip2"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOmd6aXA.display_name": {
+          "source": "Gzip",
+          "message": "Gzip"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOmx6NA.display_name": {
+          "source": "LZ4",
+          "message": "LZ4"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOnh6.display_name": {
+          "source": "XZ/LZMA",
+          "message": "XZ/LZMA"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOnpzdGQ.display_name": {
+          "source": "Zstandard",
+          "message": "Zstandard"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Y29tcHJlc3Npb24.desc": {
+          "source": "Compression method: none, gzip, bzip2, xz, zstd, or lz4. Note: Adding files to a compressed archive may require decompressing and recompressing the entire archive",
+          "message": "Método de compresión: none, gzip, bzip2, xz, zstd o lz4. Nota: Agregar archivos a un archivo comprimido puede requerir descomprimir y volver a comprimir todo el archivo"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Y29tcHJlc3Npb24.display_name": {
+          "source": "Compression",
+          "message": "Compresión"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Y29tcHJlc3Npb24.short_desc": {
+          "source": "Compression for the archive",
+          "message": "Compresión para el archivo"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.YXJjaGl2ZV9wYXRo.desc": {
+          "source": "The filesystem path to the tar archive to modify",
+          "message": "La ruta del sistema de archivos al archivo tar a modificar"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.YXJjaGl2ZV9wYXRo.display_name": {
+          "source": "Archive Path",
+          "message": "Ruta del archivo"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.YXJjaGl2ZV9wYXRo.short_desc": {
+          "source": "Path to the tar archive",
+          "message": "Ruta al archivo tar"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Zm9ybWF0.allowed-value.c3RyaW5nOmdudQ.display_name": {
+          "source": "GNU Tar",
+          "message": "GNU Tar"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Zm9ybWF0.allowed-value.c3RyaW5nOnBheA.display_name": {
+          "source": "POSIX Pax",
+          "message": "POSIX Pax"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Zm9ybWF0.allowed-value.c3RyaW5nOnVzdGFy.display_name": {
+          "source": "POSIX Ustar",
+          "message": "POSIX Ustar"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Zm9ybWF0.allowed-value.c3RyaW5nOnY3.display_name": {
+          "source": "V7",
+          "message": "V7"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Zm9ybWF0.desc": {
+          "source": "The tar format: ustar, pax, gnu, or v7",
+          "message": "El formato tar: ustar, pax, gnu o v7"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Zm9ybWF0.display_name": {
+          "source": "Format",
+          "message": "Formato"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Zm9ybWF0.short_desc": {
+          "source": "TAR format",
+          "message": "Formato TAR"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.ZmlsZXM.desc": {
+          "source": "List of file entries to add. Each entry should have 'name' and one of: 'data', 'text', or 'source_path'",
+          "message": "Lista de entradas de archivos a agregar. Cada entrada debe tener 'name' y uno de los siguientes: 'data', 'text' o 'source_path'"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.ZmlsZXM.display_name": {
+          "source": "Files",
+          "message": "Archivos"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.ZmlsZXM.short_desc": {
+          "source": "Files to add",
+          "message": "Archivos a agregar"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.short_desc": {
+          "source": "Add files to an existing archive",
+          "message": "Agregar archivos a un archivo existente"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.desc": {
+          "source": "Recursively archive a directory tree into a tar archive, preserving file permissions and optionally following symlinks",
+          "message": "Archivar recursivamente un árbol de directorios en un archivo tar, conservando los permisos de archivos y siguiendo opcionalmente enlaces simbólicos"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.display_name": {
+          "source": "Archive Directory",
+          "message": "Directorio de archivo"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOm5vbmU.display_name": {
+          "source": "None",
+          "message": "Ninguno"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOmJ6aXAy.display_name": {
+          "source": "Bzip2",
+          "message": "Bzip2"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOmd6aXA.display_name": {
+          "source": "Gzip",
+          "message": "Gzip"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOmx6NA.display_name": {
+          "source": "LZ4",
+          "message": "LZ4"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOnh6.display_name": {
+          "source": "XZ/LZMA",
+          "message": "XZ/LZMA"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOnpzdGQ.display_name": {
+          "source": "Zstandard",
+          "message": "Zstandard"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Y29tcHJlc3Npb24.desc": {
+          "source": "The compression method to use for the output archive",
+          "message": "El método de compresión a utilizar para el archivo de salida"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Y29tcHJlc3Npb24.display_name": {
+          "source": "Compression",
+          "message": "Compresión"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Y29tcHJlc3Npb24.short_desc": {
+          "source": "Compression method",
+          "message": "Método de compresión"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.YXJjaGl2ZV9wYXRo.desc": {
+          "source": "The path where the tar archive will be created. If not specified, returns binary data",
+          "message": "La ruta donde se creará el archivo tar. Si no se especifica, devuelve datos binarios"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.YXJjaGl2ZV9wYXRo.display_name": {
+          "source": "Archive Path",
+          "message": "Ruta del archivo"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.YXJjaGl2ZV9wYXRo.short_desc": {
+          "source": "Output archive file path",
+          "message": "Ruta del archivo de salida"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.YmFzZV9uYW1l.desc": {
+          "source": "The name used for the root directory entry in the archive. If not specified, uses the basename of `directory_path`",
+          "message": "El nombre utilizado para la entrada del directorio raíz en el archivo. Si no se especifica, utiliza el nombre base de `directory_path`"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.YmFzZV9uYW1l.display_name": {
+          "source": "Base Name",
+          "message": "Nombre base"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.YmFzZV9uYW1l.short_desc": {
+          "source": "Root directory name in archive",
+          "message": "Nombre del directorio raíz en el archivo"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.ZGlyZWN0b3J5X3BhdGg.desc": {
+          "source": "The filesystem path to the directory to archive recursively",
+          "message": "La ruta del sistema de archivos al directorio que se archivará recursivamente"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.ZGlyZWN0b3J5X3BhdGg.display_name": {
+          "source": "Directory Path",
+          "message": "Ruta del directorio"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.ZGlyZWN0b3J5X3BhdGg.short_desc": {
+          "source": "Path to directory to archive",
+          "message": "Ruta al directorio a archivar"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Zm9sbG93X3N5bWxpbmtz.desc": {
+          "source": "If `True`, follows symbolic links and archives the target file contents. If `False` (default), archives symlinks as symlink entries",
+          "message": "Si es `True`, sigue los enlaces simbólicos y archiva el contenido del archivo de destino. Si es `False` (predeterminado), archiva los enlaces simbólicos como entradas de enlaces simbólicos"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Zm9sbG93X3N5bWxpbmtz.display_name": {
+          "source": "Follow Symlinks",
+          "message": "Seguir enlaces simbólicos"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Zm9sbG93X3N5bWxpbmtz.short_desc": {
+          "source": "Follow symbolic links",
+          "message": "Seguir enlaces simbólicos"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Zm9ybWF0.allowed-value.c3RyaW5nOmdudQ.display_name": {
+          "source": "GNU Tar",
+          "message": "GNU Tar"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Zm9ybWF0.allowed-value.c3RyaW5nOnBheA.display_name": {
+          "source": "POSIX Pax",
+          "message": "POSIX Pax"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Zm9ybWF0.allowed-value.c3RyaW5nOnVzdGFy.display_name": {
+          "source": "POSIX Ustar",
+          "message": "POSIX Ustar"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Zm9ybWF0.allowed-value.c3RyaW5nOnY3.display_name": {
+          "source": "V7",
+          "message": "V7"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Zm9ybWF0.desc": {
+          "source": "The tar format to use for the output archive",
+          "message": "El formato tar a utilizar para el archivo de salida"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Zm9ybWF0.display_name": {
+          "source": "Format",
+          "message": "Formato"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Zm9ybWF0.short_desc": {
+          "source": "TAR format",
+          "message": "Formato TAR"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.b3V0cHV0X2xvY2F0aW9u.desc": {
+          "source": "A FileLocationHandler location URL where the archive will be written (alternative to `archive_path`)",
+          "message": "Una URL de ubicación de FileLocationHandler donde se escribirá el archivo (alternativa a `archive_path`)"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.b3V0cHV0X2xvY2F0aW9u.display_name": {
+          "source": "Output Location",
+          "message": "Ubicación de salida"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.b3V0cHV0X2xvY2F0aW9u.short_desc": {
+          "source": "Output location URL",
+          "message": "URL de ubicación de salida"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.short_desc": {
+          "source": "Archive a directory tree",
+          "message": "Archivar un árbol de directorios"
+        },
+        "app.VGFy.action.Z2V0LWFyY2hpdmUtaW5mbw.desc": {
+          "source": "Get metadata and statistics about a tar archive including entry counts, compression method, and total size",
+          "message": "Obtener metadatos y estadísticas sobre un archivo tar, incluyendo recuento de entradas, método de compresión y tamaño total"
+        },
+        "app.VGFy.action.Z2V0LWFyY2hpdmUtaW5mbw.display_name": {
+          "source": "Get Archive Info",
+          "message": "Obtener información del archivo"
+        },
+        "app.VGFy.action.Z2V0LWFyY2hpdmUtaW5mbw.option.YXJjaGl2ZV9kYXRh.desc": {
+          "source": "The tar archive as binary data (alternative to archive_path)",
+          "message": "El archivo tar como datos binarios (alternativa a archive_path)"
+        },
+        "app.VGFy.action.Z2V0LWFyY2hpdmUtaW5mbw.option.YXJjaGl2ZV9kYXRh.display_name": {
+          "source": "Archive Data",
+          "message": "Datos del archivo"
+        },
+        "app.VGFy.action.Z2V0LWFyY2hpdmUtaW5mbw.option.YXJjaGl2ZV9kYXRh.short_desc": {
+          "source": "Binary archive data",
+          "message": "Datos binarios del archivo"
+        },
+        "app.VGFy.action.Z2V0LWFyY2hpdmUtaW5mbw.option.YXJjaGl2ZV9sb2NhdGlvbg.desc": {
+          "source": "A FileLocationHandler location URL for the tar archive (alternative to archive_path or archive_data)",
+          "message": "Una URL de ubicación de FileLocationHandler para el archivo tar (alternativa a archive_path o archive_data)"
+        },
+        "app.VGFy.action.Z2V0LWFyY2hpdmUtaW5mbw.option.YXJjaGl2ZV9sb2NhdGlvbg.display_name": {
+          "source": "Archive Location",
+          "message": "Ubicación del archivo"
+        },
+        "app.VGFy.action.Z2V0LWFyY2hpdmUtaW5mbw.option.YXJjaGl2ZV9sb2NhdGlvbg.short_desc": {
+          "source": "Archive location URL",
+          "message": "URL de ubicación del archivo"
+        },
+        "app.VGFy.action.Z2V0LWFyY2hpdmUtaW5mbw.option.YXJjaGl2ZV9wYXRo.desc": {
+          "source": "The filesystem path to the tar archive",
+          "message": "La ruta del sistema de archivos al archivo tar"
+        },
+        "app.VGFy.action.Z2V0LWFyY2hpdmUtaW5mbw.option.YXJjaGl2ZV9wYXRo.display_name": {
+          "source": "Archive Path",
+          "message": "Ruta del archivo"
+        },
+        "app.VGFy.action.Z2V0LWFyY2hpdmUtaW5mbw.option.YXJjaGl2ZV9wYXRo.short_desc": {
+          "source": "Path to the tar archive",
+          "message": "Ruta al archivo tar"
+        },
+        "app.VGFy.action.Z2V0LWFyY2hpdmUtaW5mbw.short_desc": {
+          "source": "Get tar archive metadata",
+          "message": "Obtener metadatos del archivo tar"
+        },
+        "app.VGFy.action.ZGVjb21wcmVzcy1kYXRh.desc": {
+          "source": "Decompress a tar archive and return file contents as in-memory data",
+          "message": "Descomprimir un archivo tar y devolver el contenido de los archivos como datos en memoria"
+        },
+        "app.VGFy.action.ZGVjb21wcmVzcy1kYXRh.display_name": {
+          "source": "Decompress Data",
+          "message": "Descomprimir datos"
+        },
+        "app.VGFy.action.ZGVjb21wcmVzcy1kYXRh.option.YXJjaGl2ZV9kYXRh.desc": {
+          "source": "The tar archive as binary data to decompress",
+          "message": "El archivo tar como datos binarios a descomprimir"
+        },
+        "app.VGFy.action.ZGVjb21wcmVzcy1kYXRh.option.YXJjaGl2ZV9kYXRh.display_name": {
+          "source": "Archive Data",
+          "message": "Datos del archivo"
+        },
+        "app.VGFy.action.ZGVjb21wcmVzcy1kYXRh.option.YXJjaGl2ZV9kYXRh.short_desc": {
+          "source": "TAR archive binary data",
+          "message": "Datos binarios del archivo TAR"
+        },
+        "app.VGFy.action.ZGVjb21wcmVzcy1kYXRh.option.YXJjaGl2ZV9sb2NhdGlvbg.desc": {
+          "source": "A FileLocationHandler location URL for the tar archive (alternative to archive_data or archive_path)",
+          "message": "Una URL de ubicación de FileLocationHandler para el archivo tar (alternativa a archive_data o archive_path)"
+        },
+        "app.VGFy.action.ZGVjb21wcmVzcy1kYXRh.option.YXJjaGl2ZV9sb2NhdGlvbg.display_name": {
+          "source": "Archive Location",
+          "message": "Ubicación del archivo"
+        },
+        "app.VGFy.action.ZGVjb21wcmVzcy1kYXRh.option.YXJjaGl2ZV9sb2NhdGlvbg.short_desc": {
+          "source": "Archive location URL",
+          "message": "URL de ubicación del archivo"
+        },
+        "app.VGFy.action.ZGVjb21wcmVzcy1kYXRh.option.YXJjaGl2ZV9wYXRo.desc": {
+          "source": "The filesystem path to the tar archive (alternative to archive_data)",
+          "message": "La ruta del sistema de archivos al archivo tar (alternativa a archive_data)"
+        },
+        "app.VGFy.action.ZGVjb21wcmVzcy1kYXRh.option.YXJjaGl2ZV9wYXRo.display_name": {
+          "source": "Archive Path",
+          "message": "Ruta del archivo"
+        },
+        "app.VGFy.action.ZGVjb21wcmVzcy1kYXRh.option.YXJjaGl2ZV9wYXRo.short_desc": {
+          "source": "Path to the tar archive",
+          "message": "Ruta al archivo tar"
+        },
+        "app.VGFy.action.ZGVjb21wcmVzcy1kYXRh.short_desc": {
+          "source": "Decompress tar data",
+          "message": "Descomprimir datos tar"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.desc": {
+          "source": "Decrypt a tar archive encrypted with AES-256-CBC. Expects the IV + ciphertext format produced by the **encrypt** action",
+          "message": "Descifrar un archivo tar cifrado con AES-256-CBC. Espera el formato IV + texto cifrado producido por la acción **encrypt**"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.display_name": {
+          "source": "Decrypt Archive",
+          "message": "Descifrar archivo"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.ZW5jcnlwdGVkX2RhdGE.desc": {
+          "source": "The encrypted tar archive as binary data",
+          "message": "El archivo tar cifrado como datos binarios"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.ZW5jcnlwdGVkX2RhdGE.display_name": {
+          "source": "Encrypted Data",
+          "message": "Datos cifrados"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.ZW5jcnlwdGVkX2RhdGE.short_desc": {
+          "source": "Encrypted archive binary data",
+          "message": "Datos binarios del archivo cifrado"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.ZW5jcnlwdGVkX2xvY2F0aW9u.desc": {
+          "source": "A FileLocationHandler location URL for the encrypted archive (alternative to `encrypted_data` or `encrypted_path`)",
+          "message": "Una URL de ubicación de FileLocationHandler para el archivo cifrado (alternativa a `encrypted_data` o `encrypted_path`)"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.ZW5jcnlwdGVkX2xvY2F0aW9u.display_name": {
+          "source": "Encrypted Location",
+          "message": "Ubicación cifrada"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.ZW5jcnlwdGVkX2xvY2F0aW9u.short_desc": {
+          "source": "Encrypted archive location URL",
+          "message": "URL de ubicación del archivo cifrado"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.ZW5jcnlwdGVkX3BhdGg.desc": {
+          "source": "The filesystem path to the encrypted archive (alternative to `encrypted_data`)",
+          "message": "La ruta del sistema de archivos al archivo cifrado (alternativa a `encrypted_data`)"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.ZW5jcnlwdGVkX3BhdGg.display_name": {
+          "source": "Encrypted File Path",
+          "message": "Ruta del archivo cifrado"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.ZW5jcnlwdGVkX3BhdGg.short_desc": {
+          "source": "Path to encrypted archive file",
+          "message": "Ruta al archivo cifrado"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.a2V5.desc": {
+          "source": "A `32`-byte binary key for AES-256-CBC decryption. Provide either `key` or `password`, matching the encryption mode",
+          "message": "Una clave binaria de `32` bytes para el descifrado AES-256-CBC. Proporcione `key` o `password`, según el modo de cifrado"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.a2V5.display_name": {
+          "source": "Decryption Key",
+          "message": "Clave de descifrado"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.a2V5.short_desc": {
+          "source": "AES-256 decryption key (32 bytes)",
+          "message": "Clave de descifrado AES-256 (32 bytes)"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.cGFzc3dvcmQ.desc": {
+          "source": "The password used during encryption. The encryption mode is auto-detected from the envelope format",
+          "message": "La contraseña utilizada durante el cifrado. El modo de cifrado se detecta automáticamente a partir del formato de sobre"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.cGFzc3dvcmQ.display_name": {
+          "source": "Password",
+          "message": "Contraseña"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.cGFzc3dvcmQ.short_desc": {
+          "source": "Decryption password",
+          "message": "Contraseña de descifrado"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.short_desc": {
+          "source": "Decrypt an AES-256-CBC encrypted tar archive",
+          "message": "Descifrar un archivo tar cifrado con AES-256-CBC"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.desc": {
+          "source": "Delete a file or directory entry from a tar archive by recreating the archive without the specified entry",
+          "message": "Eliminar una entrada de archivo o directorio de un archivo tar recreando el archivo sin la entrada especificada"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.display_name": {
+          "source": "Delete Entry",
+          "message": "Eliminar entrada"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOm5vbmU.display_name": {
+          "source": "None",
+          "message": "Ninguno"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOmJ6aXAy.display_name": {
+          "source": "Bzip2",
+          "message": "Bzip2"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOmd6aXA.display_name": {
+          "source": "Gzip",
+          "message": "Gzip"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOmx6NA.display_name": {
+          "source": "LZ4",
+          "message": "LZ4"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOnh6.display_name": {
+          "source": "XZ/LZMA",
+          "message": "XZ/LZMA"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOnpzdGQ.display_name": {
+          "source": "Zstandard",
+          "message": "Zstandard"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Y29tcHJlc3Npb24.desc": {
+          "source": "Compression method for the output archive. If not specified, the output is uncompressed",
+          "message": "Método de compresión para el archivo de salida. Si no se especifica, la salida no se comprime"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Y29tcHJlc3Npb24.display_name": {
+          "source": "Output Compression",
+          "message": "Compresión de salida"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Y29tcHJlc3Npb24.short_desc": {
+          "source": "Compression for output archive",
+          "message": "Compresión para el archivo de salida"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.YXJjaGl2ZV9kYXRh.desc": {
+          "source": "The tar archive as binary data",
+          "message": "El archivo tar como datos binarios"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.YXJjaGl2ZV9kYXRh.display_name": {
+          "source": "Archive Data",
+          "message": "Datos del archivo"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.YXJjaGl2ZV9kYXRh.short_desc": {
+          "source": "TAR archive binary data",
+          "message": "Datos binarios del archivo TAR"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.YXJjaGl2ZV9sb2NhdGlvbg.desc": {
+          "source": "A FileLocationHandler location URL for the tar archive (alternative to `archive_data` or `archive_path`)",
+          "message": "Una URL de ubicación de FileLocationHandler para el archivo tar (alternativa a `archive_data` o `archive_path`)"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.YXJjaGl2ZV9sb2NhdGlvbg.display_name": {
+          "source": "Archive Location",
+          "message": "Ubicación del archivo"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.YXJjaGl2ZV9sb2NhdGlvbg.short_desc": {
+          "source": "Archive location URL",
+          "message": "URL de ubicación del archivo"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.YXJjaGl2ZV9wYXRo.desc": {
+          "source": "The filesystem path to the tar archive (alternative to `archive_data`)",
+          "message": "La ruta del sistema de archivos al archivo tar (alternativa a `archive_data`)"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.YXJjaGl2ZV9wYXRo.display_name": {
+          "source": "Archive Path",
+          "message": "Ruta del archivo"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.YXJjaGl2ZV9wYXRo.short_desc": {
+          "source": "Path to the tar archive",
+          "message": "Ruta al archivo tar"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.ZW50cnlfbmFtZQ.desc": {
+          "source": "The full path name of the entry to delete from the archive",
+          "message": "El nombre de ruta completo de la entrada que se va a eliminar del archivo"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.ZW50cnlfbmFtZQ.display_name": {
+          "source": "Entry Name",
+          "message": "Nombre de entrada"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.ZW50cnlfbmFtZQ.short_desc": {
+          "source": "Name of entry to delete",
+          "message": "Nombre de la entrada a eliminar"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Zm9ybWF0.allowed-value.c3RyaW5nOmdudQ.display_name": {
+          "source": "GNU Tar",
+          "message": "GNU Tar"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Zm9ybWF0.allowed-value.c3RyaW5nOnBheA.display_name": {
+          "source": "POSIX Pax",
+          "message": "POSIX Pax"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Zm9ybWF0.allowed-value.c3RyaW5nOnVzdGFy.display_name": {
+          "source": "POSIX Ustar",
+          "message": "POSIX Ustar"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Zm9ybWF0.allowed-value.c3RyaW5nOnY3.display_name": {
+          "source": "V7",
+          "message": "V7"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Zm9ybWF0.desc": {
+          "source": "The tar format for the output archive",
+          "message": "El formato tar para el archivo de salida"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Zm9ybWF0.display_name": {
+          "source": "Output Format",
+          "message": "Formato de salida"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Zm9ybWF0.short_desc": {
+          "source": "TAR format for output archive",
+          "message": "Formato TAR para el archivo de salida"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.short_desc": {
+          "source": "Delete entry from archive",
+          "message": "Eliminar entrada del archivo"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.desc": {
+          "source": "Encrypt a tar archive with AES-256-CBC. Output format is a `16`-byte random IV followed by ciphertext",
+          "message": "Cifrar un archivo tar con AES-256-CBC. El formato de salida es un IV aleatorio de `16` bytes seguido del texto cifrado"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.display_name": {
+          "source": "Encrypt Archive",
+          "message": "Cifrar archivo"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.YXJjaGl2ZV9kYXRh.desc": {
+          "source": "The tar archive as binary data to encrypt",
+          "message": "El archivo tar como datos binarios a cifrar"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.YXJjaGl2ZV9kYXRh.display_name": {
+          "source": "Archive Data",
+          "message": "Datos del archivo"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.YXJjaGl2ZV9kYXRh.short_desc": {
+          "source": "TAR archive binary data",
+          "message": "Datos binarios del archivo TAR"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.YXJjaGl2ZV9sb2NhdGlvbg.desc": {
+          "source": "A FileLocationHandler location URL for the tar archive (alternative to `archive_data` or `archive_path`)",
+          "message": "Una URL de ubicación de FileLocationHandler para el archivo tar (alternativa a `archive_data` o `archive_path`)"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.YXJjaGl2ZV9sb2NhdGlvbg.display_name": {
+          "source": "Archive Location",
+          "message": "Ubicación del archivo"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.YXJjaGl2ZV9sb2NhdGlvbg.short_desc": {
+          "source": "Archive location URL",
+          "message": "URL de ubicación del archivo"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.YXJjaGl2ZV9wYXRo.desc": {
+          "source": "The filesystem path to the tar archive (alternative to `archive_data`)",
+          "message": "La ruta del sistema de archivos al archivo tar (alternativa a `archive_data`)"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.YXJjaGl2ZV9wYXRo.display_name": {
+          "source": "Archive Path",
+          "message": "Ruta del archivo"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.YXJjaGl2ZV9wYXRo.short_desc": {
+          "source": "Path to the tar archive",
+          "message": "Ruta al archivo tar"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.a2V5.desc": {
+          "source": "A `32`-byte binary key for AES-256-CBC encryption. Provide either `key` or `password`, not both",
+          "message": "Una clave binaria de `32` bytes para el cifrado AES-256-CBC. Proporcione `key` o `password`, no ambos"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.a2V5.display_name": {
+          "source": "Encryption Key",
+          "message": "Clave de cifrado"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.a2V5.short_desc": {
+          "source": "AES-256 encryption key (32 bytes)",
+          "message": "Clave de cifrado AES-256 (32 bytes)"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.cGFzc3dvcmQ.desc": {
+          "source": "A password string for encryption. The key is derived using HMAC-SHA256 with a random salt. Provide either `key` or `password`, not both",
+          "message": "Una cadena de contraseña para el cifrado. La clave se deriva mediante HMAC-SHA256 con una sal aleatoria. Proporcione `key` o `password`, no ambos"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.cGFzc3dvcmQ.display_name": {
+          "source": "Password",
+          "message": "Contraseña"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.cGFzc3dvcmQ.short_desc": {
+          "source": "Encryption password",
+          "message": "Contraseña de cifrado"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.short_desc": {
+          "source": "Encrypt a tar archive with AES-256-CBC",
+          "message": "Cifrar un archivo tar con AES-256-CBC"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.desc": {
+          "source": "Extract contents of a tar archive to a destination directory with optional `include`/`exclude` glob-style filename filters",
+          "message": "Extraer el contenido de un archivo tar en un directorio de destino con filtros opcionales de nombre de archivo de tipo glob `include`/`exclude`"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.display_name": {
+          "source": "Extract Archive",
+          "message": "Extraer archivo"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.YXJjaGl2ZV9kYXRh.desc": {
+          "source": "The tar archive as binary data (alternative to archive_path)",
+          "message": "El archivo tar como datos binarios (alternativa a archive_path)"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.YXJjaGl2ZV9kYXRh.display_name": {
+          "source": "Archive Data",
+          "message": "Datos del archivo"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.YXJjaGl2ZV9kYXRh.short_desc": {
+          "source": "Binary archive data",
+          "message": "Datos binarios del archivo"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.YXJjaGl2ZV9sb2NhdGlvbg.desc": {
+          "source": "A FileLocationHandler location URL for the tar archive (alternative to archive_path or archive_data)",
+          "message": "Una URL de ubicación de FileLocationHandler para el archivo tar (alternativa a archive_path o archive_data)"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.YXJjaGl2ZV9sb2NhdGlvbg.display_name": {
+          "source": "Archive Location",
+          "message": "Ubicación del archivo"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.YXJjaGl2ZV9sb2NhdGlvbg.short_desc": {
+          "source": "Archive location URL",
+          "message": "URL de ubicación del archivo"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.YXJjaGl2ZV9wYXRo.desc": {
+          "source": "The filesystem path to the tar archive to extract",
+          "message": "La ruta del sistema de archivos al archivo tar a extraer"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.YXJjaGl2ZV9wYXRo.display_name": {
+          "source": "Archive Path",
+          "message": "Ruta del archivo"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.YXJjaGl2ZV9wYXRo.short_desc": {
+          "source": "Path to the tar archive",
+          "message": "Ruta al archivo tar"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.ZGVzdGluYXRpb24.desc": {
+          "source": "The directory where files will be extracted (default: current directory)",
+          "message": "El directorio donde se extraerán los archivos (predeterminado: directorio actual)"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.ZGVzdGluYXRpb24.display_name": {
+          "source": "Destination",
+          "message": "Destino"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.ZGVzdGluYXRpb24.short_desc": {
+          "source": "Extraction destination directory",
+          "message": "Directorio de destino de la extracción"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.ZXhjbHVkZQ.desc": {
+          "source": "A list of glob-style patterns; entries matching any pattern will be skipped. Exclude patterns are applied after `include` patterns.\n\n**Supported wildcards**: `*` matches any characters (including `/`), `?` matches any single character, `[abc]` matches one character from the set",
+          "message": "Una lista de patrones de tipo glob; se omitirán las entradas que coincidan con cualquier patrón. Los patrones de exclusión se aplican después de los patrones `include`.\n\n**Comodines admitidos**: `*` coincide con cualquier carácter (incluidos `/`), `?` coincide con cualquier carácter único, `[abc]` coincide con un carácter del conjunto"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.ZXhjbHVkZQ.display_name": {
+          "source": "Exclude Patterns",
+          "message": "Patrones de exclusión"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.ZXhjbHVkZQ.short_desc": {
+          "source": "Glob patterns for files to exclude",
+          "message": "Patrones glob para archivos a excluir"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.aW5jbHVkZQ.desc": {
+          "source": "A list of glob-style patterns; only entries matching at least one pattern will be extracted. If not provided, all entries are included by default.\n\n**Supported wildcards**: `*` matches any characters (including `/`), `?` matches any single character, `[abc]` matches one character from the set",
+          "message": "Una lista de patrones de tipo glob; solo se extraerán las entradas que coincidan con al menos un patrón. Si no se proporciona, todas las entradas se incluyen de forma predeterminada.\n\n**Comodines admitidos**: `*` coincide con cualquier carácter (incluidos `/`), `?` coincide con cualquier carácter único, `[abc]` coincide con un carácter del conjunto"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.aW5jbHVkZQ.display_name": {
+          "source": "Include Patterns",
+          "message": "Patrones de inclusión"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.aW5jbHVkZQ.short_desc": {
+          "source": "Glob patterns for files to include",
+          "message": "Patrones glob para archivos a incluir"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.b3ZlcndyaXRl.desc": {
+          "source": "If `true`, overwrites existing files",
+          "message": "Si es `true`, sobrescribe los archivos existentes"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.b3ZlcndyaXRl.display_name": {
+          "source": "Overwrite",
+          "message": "Sobrescribir"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.b3ZlcndyaXRl.short_desc": {
+          "source": "Overwrite existing files",
+          "message": "Sobrescribir archivos existentes"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.c3RyaXBfY291bnQ.desc": {
+          "source": "Number of leading path components to strip from entry names during extraction. For example, with `strip_count` = `1`, the entry `project/src/main.c` becomes `src/main.c`. Entries with fewer components than `strip_count` are skipped",
+          "message": "Número de componentes iniciales de la ruta a eliminar de los nombres de entrada durante la extracción. Por ejemplo, con `strip_count` = `1`, la entrada `project/src/main.c` se convierte en `src/main.c`. Las entradas con menos componentes que `strip_count` se omiten"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.c3RyaXBfY291bnQ.display_name": {
+          "source": "Strip Components",
+          "message": "Eliminar componentes"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.c3RyaXBfY291bnQ.short_desc": {
+          "source": "Strip N leading path components",
+          "message": "Eliminar N componentes iniciales de la ruta"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.cHJlc2VydmVfcGVybWlzc2lvbnM.desc": {
+          "source": "If `true`, restores original file permissions",
+          "message": "Si es `true`, restaura los permisos de archivo originales"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.cHJlc2VydmVfcGVybWlzc2lvbnM.display_name": {
+          "source": "Preserve Permissions",
+          "message": "Conservar permisos"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.cHJlc2VydmVfcGVybWlzc2lvbnM.short_desc": {
+          "source": "Restore file permissions",
+          "message": "Restaurar permisos de archivos"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.cHJlc2VydmVfdGltZXM.desc": {
+          "source": "If `true`, restores original modification times",
+          "message": "Si es `true`, restaura las horas de modificación originales"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.cHJlc2VydmVfdGltZXM.display_name": {
+          "source": "Preserve Times",
+          "message": "Conservar fechas y horas"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.cHJlc2VydmVfdGltZXM.short_desc": {
+          "source": "Restore modification times",
+          "message": "Restaurar horas de modificación"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.short_desc": {
+          "source": "Extract a tar archive with optional filters",
+          "message": "Extraer un archivo tar con filtros opcionales"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.desc": {
+          "source": "Extract a single file from a tar archive to a destination path on disk",
+          "message": "Extraer un solo archivo de un archivo tar a una ruta de destino en el disco"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.display_name": {
+          "source": "Extract Single File",
+          "message": "Extraer un solo archivo"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.YXJjaGl2ZV9kYXRh.desc": {
+          "source": "The tar archive as binary data",
+          "message": "El archivo tar como datos binarios"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.YXJjaGl2ZV9kYXRh.display_name": {
+          "source": "Archive Data",
+          "message": "Datos del archivo"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.YXJjaGl2ZV9kYXRh.short_desc": {
+          "source": "Binary archive data",
+          "message": "Datos binarios del archivo"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.YXJjaGl2ZV9sb2NhdGlvbg.desc": {
+          "source": "A FileLocationHandler location URL for the tar archive (alternative to archive_path or archive_data)",
+          "message": "Una URL de ubicación de FileLocationHandler para el archivo tar (alternativa a archive_path o archive_data)"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.YXJjaGl2ZV9sb2NhdGlvbg.display_name": {
+          "source": "Archive Location",
+          "message": "Ubicación del archivo"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.YXJjaGl2ZV9sb2NhdGlvbg.short_desc": {
+          "source": "Archive location URL",
+          "message": "URL de ubicación del archivo"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.YXJjaGl2ZV9wYXRo.desc": {
+          "source": "The filesystem path to the tar archive",
+          "message": "La ruta del sistema de archivos al archivo tar"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.YXJjaGl2ZV9wYXRo.display_name": {
+          "source": "Archive Path",
+          "message": "Ruta del archivo"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.YXJjaGl2ZV9wYXRo.short_desc": {
+          "source": "Path to the tar archive",
+          "message": "Ruta al archivo tar"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.ZGVzdGluYXRpb24.desc": {
+          "source": "Where to extract the file (default: current directory)",
+          "message": "Dónde extraer el archivo (por defecto: directorio actual)"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.ZGVzdGluYXRpb24.display_name": {
+          "source": "Destination",
+          "message": "Destino"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.ZGVzdGluYXRpb24.short_desc": {
+          "source": "Destination path",
+          "message": "Ruta de destino"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.ZW50cnlfbmFtZQ.desc": {
+          "source": "The name/path of the entry to extract",
+          "message": "El nombre/ruta de la entrada a extraer"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.ZW50cnlfbmFtZQ.display_name": {
+          "source": "Entry Name",
+          "message": "Nombre de entrada"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.ZW50cnlfbmFtZQ.short_desc": {
+          "source": "File to extract",
+          "message": "Archivo a extraer"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.short_desc": {
+          "source": "Extract one file from archive",
+          "message": "Extraer un archivo del archivo tar"
+        },
+        "app.VGFy.action.am9pbi1hcmNoaXZl.desc": {
+          "source": "Join binary archive chunks back into a single tar archive",
+          "message": "Unir fragmentos binarios de archivo para formar de nuevo un único archivo tar"
+        },
+        "app.VGFy.action.am9pbi1hcmNoaXZl.display_name": {
+          "source": "Join Archive Chunks",
+          "message": "Unir fragmentos de archivo"
+        },
+        "app.VGFy.action.am9pbi1hcmNoaXZl.option.Y2h1bmtz.desc": {
+          "source": "A list of binary chunks to concatenate back into a single tar archive. Chunks must be in the correct order as produced by the split operation",
+          "message": "Una lista de fragmentos binarios para volver a concatenar en un único archivo tar. Los fragmentos deben estar en el orden correcto tal como los produjo la operación de división"
+        },
+        "app.VGFy.action.am9pbi1hcmNoaXZl.option.Y2h1bmtz.display_name": {
+          "source": "Chunks",
+          "message": "Fragmentos"
+        },
+        "app.VGFy.action.am9pbi1hcmNoaXZl.option.Y2h1bmtz.short_desc": {
+          "source": "Binary chunks to join",
+          "message": "Fragmentos binarios a unir"
+        },
+        "app.VGFy.action.am9pbi1hcmNoaXZl.short_desc": {
+          "source": "Join archive chunks into single archive",
+          "message": "Unir fragmentos de archivo en un único archivo"
+        },
+        "app.VGFy.action.bGlzdC1hcmNoaXZl.desc": {
+          "source": "Get a list of all entries in a tar archive with metadata",
+          "message": "Obtener una lista de todas las entradas de un archivo tar con metadatos"
+        },
+        "app.VGFy.action.bGlzdC1hcmNoaXZl.display_name": {
+          "source": "List Archive Contents",
+          "message": "Listar contenido del archivo"
+        },
+        "app.VGFy.action.bGlzdC1hcmNoaXZl.option.YXJjaGl2ZV9kYXRh.desc": {
+          "source": "The tar archive as binary data (alternative to archive_path)",
+          "message": "El archivo tar como datos binarios (alternativa a archive_path)"
+        },
+        "app.VGFy.action.bGlzdC1hcmNoaXZl.option.YXJjaGl2ZV9kYXRh.display_name": {
+          "source": "Archive Data",
+          "message": "Datos del archivo"
+        },
+        "app.VGFy.action.bGlzdC1hcmNoaXZl.option.YXJjaGl2ZV9kYXRh.short_desc": {
+          "source": "Binary archive data",
+          "message": "Datos binarios del archivo"
+        },
+        "app.VGFy.action.bGlzdC1hcmNoaXZl.option.YXJjaGl2ZV9sb2NhdGlvbg.desc": {
+          "source": "A FileLocationHandler location URL for the tar archive (alternative to archive_path or archive_data)",
+          "message": "Una URL de ubicación de FileLocationHandler para el archivo tar (alternativa a archive_path o archive_data)"
+        },
+        "app.VGFy.action.bGlzdC1hcmNoaXZl.option.YXJjaGl2ZV9sb2NhdGlvbg.display_name": {
+          "source": "Archive Location",
+          "message": "Ubicación del archivo"
+        },
+        "app.VGFy.action.bGlzdC1hcmNoaXZl.option.YXJjaGl2ZV9sb2NhdGlvbg.short_desc": {
+          "source": "Archive location URL",
+          "message": "URL de ubicación del archivo"
+        },
+        "app.VGFy.action.bGlzdC1hcmNoaXZl.option.YXJjaGl2ZV9wYXRo.desc": {
+          "source": "The filesystem path to the tar archive to list",
+          "message": "La ruta del sistema de archivos al archivo tar que se va a listar"
+        },
+        "app.VGFy.action.bGlzdC1hcmNoaXZl.option.YXJjaGl2ZV9wYXRo.display_name": {
+          "source": "Archive Path",
+          "message": "Ruta del archivo"
+        },
+        "app.VGFy.action.bGlzdC1hcmNoaXZl.option.YXJjaGl2ZV9wYXRo.short_desc": {
+          "source": "Path to the tar archive file",
+          "message": "Ruta al archivo tar"
+        },
+        "app.VGFy.action.bGlzdC1hcmNoaXZl.short_desc": {
+          "source": "List files in a tar archive",
+          "message": "Listar archivos en un archivo tar"
+        },
+        "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.desc": {
+          "source": "Split a tar archive into multiple fixed-size binary chunks for multi-volume storage or transfer",
+          "message": "Dividir un archivo tar en varios fragmentos binarios de tamaño fijo para almacenamiento o transferencia multivolumen"
+        },
+        "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.display_name": {
+          "source": "Split Archive",
+          "message": "Dividir archivo"
+        },
+        "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.option.Y2h1bmtfc2l6ZQ.desc": {
+          "source": "The maximum size in bytes for each chunk. The last chunk may be smaller if the archive size is not evenly divisible",
+          "message": "El tamaño máximo en bytes para cada fragmento. El último fragmento puede ser más pequeño si el tamaño del archivo no es divisible exactamente"
+        },
+        "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.option.Y2h1bmtfc2l6ZQ.display_name": {
+          "source": "Chunk Size",
+          "message": "Tamaño de fragmento"
+        },
+        "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.option.Y2h1bmtfc2l6ZQ.short_desc": {
+          "source": "Maximum chunk size in bytes",
+          "message": "Tamaño máximo de fragmento en bytes"
+        },
+        "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.option.YXJjaGl2ZV9kYXRh.desc": {
+          "source": "The tar archive as binary data to split",
+          "message": "El archivo tar como datos binarios a dividir"
+        },
+        "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.option.YXJjaGl2ZV9kYXRh.display_name": {
+          "source": "Archive Data",
+          "message": "Datos del archivo"
+        },
+        "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.option.YXJjaGl2ZV9kYXRh.short_desc": {
+          "source": "TAR archive binary data",
+          "message": "Datos binarios del archivo TAR"
+        },
+        "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.option.YXJjaGl2ZV9sb2NhdGlvbg.desc": {
+          "source": "A FileLocationHandler location URL for the tar archive (alternative to `archive_data` or `archive_path`)",
+          "message": "Una URL de ubicación de FileLocationHandler para el archivo tar (alternativa a `archive_data` o `archive_path`)"
+        },
+        "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.option.YXJjaGl2ZV9sb2NhdGlvbg.display_name": {
+          "source": "Archive Location",
+          "message": "Ubicación del archivo"
+        },
+        "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.option.YXJjaGl2ZV9sb2NhdGlvbg.short_desc": {
+          "source": "Archive location URL",
+          "message": "URL de ubicación del archivo"
+        },
+        "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.option.YXJjaGl2ZV9wYXRo.desc": {
+          "source": "The filesystem path to the tar archive (alternative to `archive_data`)",
+          "message": "La ruta del sistema de archivos al archivo tar (alternativa a `archive_data`)"
+        },
+        "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.option.YXJjaGl2ZV9wYXRo.display_name": {
+          "source": "Archive Path",
+          "message": "Ruta del archivo"
+        },
+        "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.option.YXJjaGl2ZV9wYXRo.short_desc": {
+          "source": "Path to the tar archive",
+          "message": "Ruta al archivo tar"
+        },
+        "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.short_desc": {
+          "source": "Split archive into fixed-size chunks",
+          "message": "Dividir archivo en fragmentos de tamaño fijo"
+        },
+        "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.desc": {
+          "source": "Open a streaming input for reading a file from a tar archive without loading the entire file into memory",
+          "message": "Abrir una entrada de transmisión para leer un archivo de un archivo tar sin cargar todo el archivo en memoria"
+        },
+        "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.display_name": {
+          "source": "Stream Extract",
+          "message": "Extraer en flujo"
+        },
+        "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.option.YXJjaGl2ZV9kYXRh.desc": {
+          "source": "The tar archive as binary data (alternative to `archive_path`)",
+          "message": "El archivo tar como datos binarios (alternativa a `archive_path`)"
+        },
+        "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.option.YXJjaGl2ZV9kYXRh.display_name": {
+          "source": "Archive Data",
+          "message": "Datos del archivo"
+        },
+        "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.option.YXJjaGl2ZV9kYXRh.short_desc": {
+          "source": "TAR archive binary data",
+          "message": "Datos binarios del archivo TAR"
+        },
+        "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.option.YXJjaGl2ZV9sb2NhdGlvbg.desc": {
+          "source": "A FileLocationHandler location URL for the tar archive (alternative to `archive_path` or `archive_data`)",
+          "message": "Una URL de ubicación FileLocationHandler para el archivo tar (alternativa a `archive_path` o `archive_data`)"
+        },
+        "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.option.YXJjaGl2ZV9sb2NhdGlvbg.display_name": {
+          "source": "Archive Location",
+          "message": "Ubicación del archivo"
+        },
+        "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.option.YXJjaGl2ZV9sb2NhdGlvbg.short_desc": {
+          "source": "Archive location URL",
+          "message": "URL de ubicación del archivo"
+        },
+        "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.option.YXJjaGl2ZV9wYXRo.desc": {
+          "source": "The filesystem path to the tar archive",
+          "message": "La ruta del sistema de archivos al archivo tar"
+        },
+        "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.option.YXJjaGl2ZV9wYXRo.display_name": {
+          "source": "Archive Path",
+          "message": "Ruta del archivo"
+        },
+        "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.option.YXJjaGl2ZV9wYXRo.short_desc": {
+          "source": "Path to the tar archive",
+          "message": "Ruta al archivo tar"
+        },
+        "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.option.ZW50cnlfbmFtZQ.desc": {
+          "source": "The full path name of the entry to read from the archive",
+          "message": "El nombre de ruta completo de la entrada que se va a leer del archivo"
+        },
+        "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.option.ZW50cnlfbmFtZQ.display_name": {
+          "source": "Entry Name",
+          "message": "Nombre de entrada"
+        },
+        "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.option.ZW50cnlfbmFtZQ.short_desc": {
+          "source": "Name of entry to stream",
+          "message": "Nombre de la entrada a transmitir"
+        },
+        "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.short_desc": {
+          "source": "Stream extract file from archive",
+          "message": "Extraer archivo en flujo desde el archivo tar"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.desc": {
+          "source": "Read the contents of a file from a tar archive without extracting to disk",
+          "message": "Leer el contenido de un archivo desde un archivo tar sin extraer a disco"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.display_name": {
+          "source": "Read File Content",
+          "message": "Leer contenido del archivo"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.YXJjaGl2ZV9kYXRh.desc": {
+          "source": "The tar archive as binary data (alternative to archive_path)",
+          "message": "El archivo tar como datos binarios (alternativa a archive_path)"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.YXJjaGl2ZV9kYXRh.display_name": {
+          "source": "Archive Data",
+          "message": "Datos del archivo"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.YXJjaGl2ZV9kYXRh.short_desc": {
+          "source": "Binary archive data",
+          "message": "Datos binarios del archivo"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.YXJjaGl2ZV9sb2NhdGlvbg.desc": {
+          "source": "A FileLocationHandler location URL for the tar archive (alternative to archive_path or archive_data)",
+          "message": "Una URL de ubicación de FileLocationHandler para el archivo tar (alternativa a archive_path o archive_data)"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.YXJjaGl2ZV9sb2NhdGlvbg.display_name": {
+          "source": "Archive Location",
+          "message": "Ubicación del archivo"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.YXJjaGl2ZV9sb2NhdGlvbg.short_desc": {
+          "source": "Archive location URL",
+          "message": "URL de ubicación del archivo"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.YXJjaGl2ZV9wYXRo.desc": {
+          "source": "The filesystem path to the tar archive",
+          "message": "La ruta del sistema de archivos al archivo tar"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.YXJjaGl2ZV9wYXRo.display_name": {
+          "source": "Archive Path",
+          "message": "Ruta del archivo"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.YXJjaGl2ZV9wYXRo.short_desc": {
+          "source": "Path to the tar archive file",
+          "message": "Ruta al archivo tar"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.YXNfdGV4dA.desc": {
+          "source": "If `true`, returns content as text string instead of binary (default: `false`)",
+          "message": "Si es `true`, devuelve el contenido como cadena de texto en lugar de binario (por defecto: `false`)"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.YXNfdGV4dA.display_name": {
+          "source": "Read as Text",
+          "message": "Leer como texto"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.YXNfdGV4dA.short_desc": {
+          "source": "Return content as text string",
+          "message": "Devolver el contenido como cadena de texto"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.ZW50cnlfbmFtZQ.desc": {
+          "source": "The path/name of the entry to read from the archive",
+          "message": "La ruta/nombre de la entrada que se va a leer del archivo"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.ZW50cnlfbmFtZQ.display_name": {
+          "source": "Entry Name",
+          "message": "Nombre de entrada"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.ZW50cnlfbmFtZQ.short_desc": {
+          "source": "Name of file to read",
+          "message": "Nombre del archivo a leer"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.ZW5jb2Rpbmc.allowed-value.c3RyaW5nOkFTQ0lJ.display_name": {
+          "source": "ASCII",
+          "message": "ASCII"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.ZW5jb2Rpbmc.allowed-value.c3RyaW5nOklTTy04ODU5LTE.display_name": {
+          "source": "ISO-8859-1 (Latin-1)",
+          "message": "ISO-8859-1 (Latin-1)"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.ZW5jb2Rpbmc.allowed-value.c3RyaW5nOlVURi04.display_name": {
+          "source": "UTF-8",
+          "message": "UTF-8"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.ZW5jb2Rpbmc.allowed-value.c3RyaW5nOlVURi0xNg.display_name": {
+          "source": "UTF-16",
+          "message": "UTF-16"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.ZW5jb2Rpbmc.allowed-value.c3RyaW5nOlVURi0xNkJF.display_name": {
+          "source": "UTF-16 Big Endian",
+          "message": "UTF-16 Big Endian"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.ZW5jb2Rpbmc.allowed-value.c3RyaW5nOlVURi0xNkxF.display_name": {
+          "source": "UTF-16 Little Endian",
+          "message": "UTF-16 Little Endian"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.ZW5jb2Rpbmc.allowed-value.c3RyaW5nOldpbmRvd3MtMTI1Mg.display_name": {
+          "source": "Windows-1252",
+          "message": "Windows-1252"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.ZW5jb2Rpbmc.desc": {
+          "source": "Character encoding to use when as_text is true. Common encodings: UTF-8, ISO-8859-1, ASCII, UTF-16, Windows-1252 (default: UTF-8)",
+          "message": "Codificación de caracteres que se utilizará cuando as_text es verdadero. Codificaciones comunes: UTF-8, ISO-8859-1, ASCII, UTF-16, Windows-1252 (por defecto: UTF-8)"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.ZW5jb2Rpbmc.display_name": {
+          "source": "Encoding",
+          "message": "Codificación"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.ZW5jb2Rpbmc.short_desc": {
+          "source": "Text encoding for as_text mode",
+          "message": "Codificación de texto para el modo as_text"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.short_desc": {
+          "source": "Read file without extracting",
+          "message": "Leer archivo sin extraer"
+        },
+        "app.VGFy.action.dmVyaWZ5LWFyY2hpdmU.desc": {
+          "source": "Verify the integrity of a tar archive by reading all entries and their data blocks without extracting to disk",
+          "message": "Verificar la integridad de un archivo tar leyendo todas las entradas y sus bloques de datos sin extraer a disco"
+        },
+        "app.VGFy.action.dmVyaWZ5LWFyY2hpdmU.display_name": {
+          "source": "Verify Archive",
+          "message": "Verificar archivo"
+        },
+        "app.VGFy.action.dmVyaWZ5LWFyY2hpdmU.option.YXJjaGl2ZV9kYXRh.desc": {
+          "source": "The tar archive as binary data (alternative to `archive_path`)",
+          "message": "El archivo tar como datos binarios (alternativa a `archive_path`)"
+        },
+        "app.VGFy.action.dmVyaWZ5LWFyY2hpdmU.option.YXJjaGl2ZV9kYXRh.display_name": {
+          "source": "Archive Data",
+          "message": "Datos del archivo"
+        },
+        "app.VGFy.action.dmVyaWZ5LWFyY2hpdmU.option.YXJjaGl2ZV9kYXRh.short_desc": {
+          "source": "TAR archive binary data",
+          "message": "Datos binarios del archivo TAR"
+        },
+        "app.VGFy.action.dmVyaWZ5LWFyY2hpdmU.option.YXJjaGl2ZV9sb2NhdGlvbg.desc": {
+          "source": "A FileLocationHandler location URL for the tar archive (alternative to `archive_path` or `archive_data`)",
+          "message": "Una URL de ubicación FileLocationHandler para el archivo tar (alternativa a `archive_path` o `archive_data`)"
+        },
+        "app.VGFy.action.dmVyaWZ5LWFyY2hpdmU.option.YXJjaGl2ZV9sb2NhdGlvbg.display_name": {
+          "source": "Archive Location",
+          "message": "Ubicación del archivo"
+        },
+        "app.VGFy.action.dmVyaWZ5LWFyY2hpdmU.option.YXJjaGl2ZV9sb2NhdGlvbg.short_desc": {
+          "source": "Archive location URL",
+          "message": "URL de ubicación del archivo"
+        },
+        "app.VGFy.action.dmVyaWZ5LWFyY2hpdmU.option.YXJjaGl2ZV9wYXRo.desc": {
+          "source": "The filesystem path to the tar archive to verify",
+          "message": "La ruta del sistema de archivos al archivo tar que se va a verificar"
+        },
+        "app.VGFy.action.dmVyaWZ5LWFyY2hpdmU.option.YXJjaGl2ZV9wYXRo.display_name": {
+          "source": "Archive Path",
+          "message": "Ruta del archivo"
+        },
+        "app.VGFy.action.dmVyaWZ5LWFyY2hpdmU.option.YXJjaGl2ZV9wYXRo.short_desc": {
+          "source": "Path to the tar archive",
+          "message": "Ruta al archivo tar"
+        },
+        "app.VGFy.action.dmVyaWZ5LWFyY2hpdmU.short_desc": {
+          "source": "Verify archive integrity",
+          "message": "Verificar la integridad del archivo"
+        },
+        "app.VGFy.desc": {
+          "source": "Create, extract, and manage TAR archives with support for gzip, bzip2, xz, and zstd compression",
+          "message": "Crear, extraer y gestionar archivos TAR con soporte para compresión gzip, bzip2, xz y zstd"
+        },
+        "app.VGFy.display_name": {
+          "source": "TAR Archives",
+          "message": "Archivos TAR"
+        },
+        "app.VGFy.short_desc": {
+          "source": "TAR archive operations",
+          "message": "Operaciones con archivos TAR"
+        }
+      }
+    }
+  }
+}

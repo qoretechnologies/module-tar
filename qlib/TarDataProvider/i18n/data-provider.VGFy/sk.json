@@ -1,0 +1,1413 @@
+{
+  "schema_version": 1,
+  "locales": {
+    "sk": {
+      "messages": {
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.desc": {
+          "source": "Compress binary data or files into an in-memory tar archive",
+          "message": "Komprimovať binárne údaje alebo súbory do archívu tar v pamäti"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.display_name": {
+          "source": "Compress Data",
+          "message": "Komprimovať údaje"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOm5vbmU.display_name": {
+          "source": "None",
+          "message": "Žiadne"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOmJ6aXAy.display_name": {
+          "source": "Bzip2",
+          "message": "Bzip2"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOmd6aXA.display_name": {
+          "source": "Gzip",
+          "message": "Gzip"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOmx6NA.display_name": {
+          "source": "LZ4",
+          "message": "LZ4"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOnh6.display_name": {
+          "source": "XZ/LZMA",
+          "message": "XZ/LZMA"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOnpzdGQ.display_name": {
+          "source": "Zstandard",
+          "message": "Zstandard"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Y29tcHJlc3Npb24.desc": {
+          "source": "Compression method: none, gzip, bzip2, xz, zstd, or lz4",
+          "message": "Metóda kompresie: none, gzip, bzip2, xz, zstd alebo lz4"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Y29tcHJlc3Npb24.display_name": {
+          "source": "Compression",
+          "message": "Kompresia"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Y29tcHJlc3Npb24.short_desc": {
+          "source": "Compression method",
+          "message": "Metóda kompresie"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Zm9ybWF0.allowed-value.c3RyaW5nOmdudQ.display_name": {
+          "source": "GNU Tar",
+          "message": "GNU Tar"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Zm9ybWF0.allowed-value.c3RyaW5nOnBheA.display_name": {
+          "source": "POSIX Pax",
+          "message": "POSIX Pax"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Zm9ybWF0.allowed-value.c3RyaW5nOnVzdGFy.display_name": {
+          "source": "POSIX Ustar",
+          "message": "POSIX Ustar"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Zm9ybWF0.allowed-value.c3RyaW5nOnY3.display_name": {
+          "source": "V7",
+          "message": "V7"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Zm9ybWF0.desc": {
+          "source": "The tar format: ustar, pax, gnu, or v7",
+          "message": "Formát tar: ustar, pax, gnu alebo v7"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Zm9ybWF0.display_name": {
+          "source": "Format",
+          "message": "Formát"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Zm9ybWF0.short_desc": {
+          "source": "TAR format",
+          "message": "Formát TAR"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.ZmlsZXM.desc": {
+          "source": "List of entries. Each entry should have 'name' and either 'data' (binary) or 'text' (string)",
+          "message": "Zoznam položiek. Každá položka by mala mať 'name' a buď 'data' (binárne), alebo 'text' (reťazec)"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.ZmlsZXM.display_name": {
+          "source": "Files",
+          "message": "Súbory"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.ZmlsZXM.short_desc": {
+          "source": "Files to compress",
+          "message": "Súbory na kompresiu"
+        },
+        "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.short_desc": {
+          "source": "Compress data to tar format",
+          "message": "Komprimovať údaje do formátu tar"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.desc": {
+          "source": "Create a new tar archive from files, directories, or binary data with optional compression and format settings",
+          "message": "Vytvoriť nový archív tar zo súborov, adresárov alebo binárnych údajov s voliteľnými nastaveniami kompresie a formátu"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.display_name": {
+          "source": "Create Archive",
+          "message": "Vytvoriť archív"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOm5vbmU.display_name": {
+          "source": "None",
+          "message": "Žiadne"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOmJ6aXAy.display_name": {
+          "source": "Bzip2",
+          "message": "Bzip2"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOmd6aXA.display_name": {
+          "source": "Gzip",
+          "message": "Gzip"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOmx6NA.display_name": {
+          "source": "LZ4",
+          "message": "LZ4"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOnh6.display_name": {
+          "source": "XZ/LZMA",
+          "message": "XZ/LZMA"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOnpzdGQ.display_name": {
+          "source": "Zstandard",
+          "message": "Zstandard"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Y29tcHJlc3Npb24.desc": {
+          "source": "The compression method to use",
+          "message": "Metóda kompresie, ktorá sa má použiť"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Y29tcHJlc3Npb24.display_name": {
+          "source": "Compression Method",
+          "message": "Metóda kompresie"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Y29tcHJlc3Npb24.short_desc": {
+          "source": "Archive compression type",
+          "message": "Typ kompresie archívu"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Y29tcHJlc3Npb25fbGV2ZWw.desc": {
+          "source": "Compression level from 1 (fastest, least compression) to 9 (slowest, best compression). Use -1 or omit for the default level. Typical defaults: gzip=6, bzip2=9, xz=6, zstd=3, lz4=1",
+          "message": "Úroveň kompresie od 1 (najrýchlejšia, najmenšia kompresia) do 9 (najpomalšia, najlepšia kompresia). Použite -1 alebo vynechajte pre predvolenú úroveň. Typické predvolené hodnoty: gzip=6, bzip2=9, xz=6, zstd=3, lz4=1"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Y29tcHJlc3Npb25fbGV2ZWw.display_name": {
+          "source": "Compression Level",
+          "message": "Úroveň kompresie"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Y29tcHJlc3Npb25fbGV2ZWw.short_desc": {
+          "source": "Compression strength (1-9)",
+          "message": "Miera kompresie (1-9)"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.YXJjaGl2ZV9wYXRo.desc": {
+          "source": "The path where the tar archive will be created. If not specified, returns binary data.",
+          "message": "Cesta, kde bude vytvorený archív tar. Ak nie je určená, vráti binárne dáta."
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.YXJjaGl2ZV9wYXRo.display_name": {
+          "source": "Archive Path",
+          "message": "Cesta k archívu"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.YXJjaGl2ZV9wYXRo.short_desc": {
+          "source": "Output archive file path",
+          "message": "Cesta k výstupnému súboru archívu"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.ZGlyZWN0b3JpZXM.desc": {
+          "source": "List of directory entries to add (without content)",
+          "message": "Zoznam položiek adresára na pridanie (bez obsahu)"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.ZGlyZWN0b3JpZXM.display_name": {
+          "source": "Directories",
+          "message": "Adresáre"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.ZGlyZWN0b3JpZXM.short_desc": {
+          "source": "Empty directories to create",
+          "message": "Prázdne adresáre na vytvorenie"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Zm9ybWF0.allowed-value.c3RyaW5nOmdudQ.display_name": {
+          "source": "GNU Tar",
+          "message": "GNU Tar"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Zm9ybWF0.allowed-value.c3RyaW5nOnBheA.display_name": {
+          "source": "POSIX Pax",
+          "message": "POSIX Pax"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Zm9ybWF0.allowed-value.c3RyaW5nOnVzdGFy.display_name": {
+          "source": "POSIX Ustar",
+          "message": "POSIX Ustar"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Zm9ybWF0.allowed-value.c3RyaW5nOnY3.display_name": {
+          "source": "V7",
+          "message": "V7"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Zm9ybWF0.desc": {
+          "source": "The tar format to use",
+          "message": "Formát tar, ktorý sa má použiť"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Zm9ybWF0.display_name": {
+          "source": "Archive Format",
+          "message": "Formát archívu"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Zm9ybWF0.short_desc": {
+          "source": "TAR format variant",
+          "message": "Variant formátu TAR"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.ZmlsZXM.desc": {
+          "source": "List of file entries. Each entry should have 'name' and one of: 'data' (binary), 'text' (string), or 'source_path' (file path)",
+          "message": "Zoznam súborových položiek. Každá položka by mala mať 'name' a jedno z: 'data' (binárne), 'text' (reťazec) alebo 'source_path' (cesta k súboru)"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.ZmlsZXM.display_name": {
+          "source": "Files",
+          "message": "Súbory"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.ZmlsZXM.short_desc": {
+          "source": "Files to add to archive",
+          "message": "Súbory na pridanie do archívu"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.b3V0cHV0X2xvY2F0aW9u.desc": {
+          "source": "A FileLocationHandler location URL where the archive will be written (alternative to archive_path)",
+          "message": "URL umiestnenia FileLocationHandler, kam sa zapíše archív (alternatíva k archive_path)"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.b3V0cHV0X2xvY2F0aW9u.display_name": {
+          "source": "Output Location",
+          "message": "Cieľové umiestnenie"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.b3V0cHV0X2xvY2F0aW9u.short_desc": {
+          "source": "Output location URL",
+          "message": "URL výstupného umiestnenia"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.cmVxdWlyZV9lbnRyaWVz.desc": {
+          "source": "If `true`, raises an error if the archive would be created with no entries. Default is `false`, allowing empty archives",
+          "message": "Ak je `true`, vyvolá chybu, ak by sa archív vytvoril bez položiek. Predvolené je `false`, čo povoľuje prázdne archívy"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.cmVxdWlyZV9lbnRyaWVz.display_name": {
+          "source": "Require Entries",
+          "message": "Vyžadovať položky"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.cmVxdWlyZV9lbnRyaWVz.short_desc": {
+          "source": "Require at least one entry",
+          "message": "Vyžadovať aspoň jednu položku"
+        },
+        "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.short_desc": {
+          "source": "Create a new tar archive",
+          "message": "Vytvoriť nový archív tar"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.desc": {
+          "source": "Add new files or update existing files in a tar archive",
+          "message": "Pridať nové súbory alebo aktualizovať existujúce súbory v archíve tar"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.display_name": {
+          "source": "Add Files to Archive",
+          "message": "Pridať súbory do archívu"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOm5vbmU.display_name": {
+          "source": "None",
+          "message": "Žiadne"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOmJ6aXAy.display_name": {
+          "source": "Bzip2",
+          "message": "Bzip2"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOmd6aXA.display_name": {
+          "source": "Gzip",
+          "message": "Gzip"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOmx6NA.display_name": {
+          "source": "LZ4",
+          "message": "LZ4"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOnh6.display_name": {
+          "source": "XZ/LZMA",
+          "message": "XZ/LZMA"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOnpzdGQ.display_name": {
+          "source": "Zstandard",
+          "message": "Zstandard"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Y29tcHJlc3Npb24.desc": {
+          "source": "Compression method: none, gzip, bzip2, xz, zstd, or lz4. Note: Adding files to a compressed archive may require decompressing and recompressing the entire archive",
+          "message": "Metóda kompresie: none, gzip, bzip2, xz, zstd alebo lz4. Poznámka: Pridanie súborov do komprimovaného archívu môže vyžadovať dekompresiu a opätovnú kompresiu celého archívu"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Y29tcHJlc3Npb24.display_name": {
+          "source": "Compression",
+          "message": "Kompresia"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Y29tcHJlc3Npb24.short_desc": {
+          "source": "Compression for the archive",
+          "message": "Kompresia pre archív"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.YXJjaGl2ZV9wYXRo.desc": {
+          "source": "The filesystem path to the tar archive to modify",
+          "message": "Cesta v súborovom systéme k archívu tar, ktorý sa má upraviť"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.YXJjaGl2ZV9wYXRo.display_name": {
+          "source": "Archive Path",
+          "message": "Cesta k archívu"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.YXJjaGl2ZV9wYXRo.short_desc": {
+          "source": "Path to the tar archive",
+          "message": "Cesta k archívu tar"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Zm9ybWF0.allowed-value.c3RyaW5nOmdudQ.display_name": {
+          "source": "GNU Tar",
+          "message": "GNU Tar"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Zm9ybWF0.allowed-value.c3RyaW5nOnBheA.display_name": {
+          "source": "POSIX Pax",
+          "message": "POSIX Pax"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Zm9ybWF0.allowed-value.c3RyaW5nOnVzdGFy.display_name": {
+          "source": "POSIX Ustar",
+          "message": "POSIX Ustar"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Zm9ybWF0.allowed-value.c3RyaW5nOnY3.display_name": {
+          "source": "V7",
+          "message": "V7"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Zm9ybWF0.desc": {
+          "source": "The tar format: ustar, pax, gnu, or v7",
+          "message": "Formát tar: ustar, pax, gnu alebo v7"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Zm9ybWF0.display_name": {
+          "source": "Format",
+          "message": "Formát"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.Zm9ybWF0.short_desc": {
+          "source": "TAR format",
+          "message": "Formát TAR"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.ZmlsZXM.desc": {
+          "source": "List of file entries to add. Each entry should have 'name' and one of: 'data', 'text', or 'source_path'",
+          "message": "Zoznam súborových položiek na pridanie. Každá položka by mala mať 'name' a jedno z: 'data', 'text' alebo 'source_path'"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.ZmlsZXM.display_name": {
+          "source": "Files",
+          "message": "Súbory"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.option.ZmlsZXM.short_desc": {
+          "source": "Files to add",
+          "message": "Súbory na pridanie"
+        },
+        "app.VGFy.action.YWRkLWZpbGVz.short_desc": {
+          "source": "Add files to an existing archive",
+          "message": "Pridať súbory do existujúceho archívu"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.desc": {
+          "source": "Recursively archive a directory tree into a tar archive, preserving file permissions and optionally following symlinks",
+          "message": "Rekurzívne archivovať strom adresárov do archívu tar so zachovaním prístupových práv k súborom a voliteľne s nasledovaním symbolických odkazov"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.display_name": {
+          "source": "Archive Directory",
+          "message": "Archívny adresár"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOm5vbmU.display_name": {
+          "source": "None",
+          "message": "Žiadne"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOmJ6aXAy.display_name": {
+          "source": "Bzip2",
+          "message": "Bzip2"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOmd6aXA.display_name": {
+          "source": "Gzip",
+          "message": "Gzip"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOmx6NA.display_name": {
+          "source": "LZ4",
+          "message": "LZ4"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOnh6.display_name": {
+          "source": "XZ/LZMA",
+          "message": "XZ/LZMA"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOnpzdGQ.display_name": {
+          "source": "Zstandard",
+          "message": "Zstandard"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Y29tcHJlc3Npb24.desc": {
+          "source": "The compression method to use for the output archive",
+          "message": "Metóda kompresie, ktorá sa má použiť pre výstupný archív"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Y29tcHJlc3Npb24.display_name": {
+          "source": "Compression",
+          "message": "Kompresia"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Y29tcHJlc3Npb24.short_desc": {
+          "source": "Compression method",
+          "message": "Metóda kompresie"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.YXJjaGl2ZV9wYXRo.desc": {
+          "source": "The path where the tar archive will be created. If not specified, returns binary data",
+          "message": "Cesta, kde bude vytvorený archív tar. Ak nie je určená, vráti binárne dáta"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.YXJjaGl2ZV9wYXRo.display_name": {
+          "source": "Archive Path",
+          "message": "Cesta k archívu"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.YXJjaGl2ZV9wYXRo.short_desc": {
+          "source": "Output archive file path",
+          "message": "Cesta k výstupnému súboru archívu"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.YmFzZV9uYW1l.desc": {
+          "source": "The name used for the root directory entry in the archive. If not specified, uses the basename of `directory_path`",
+          "message": "Názov použitý pre položku koreňového adresára v archíve. Ak nie je určený, použije sa basename z `directory_path`"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.YmFzZV9uYW1l.display_name": {
+          "source": "Base Name",
+          "message": "Základný názov"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.YmFzZV9uYW1l.short_desc": {
+          "source": "Root directory name in archive",
+          "message": "Názov koreňového adresára v archíve"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.ZGlyZWN0b3J5X3BhdGg.desc": {
+          "source": "The filesystem path to the directory to archive recursively",
+          "message": "Cesta v súborovom systéme k adresáru, ktorý sa má rekurzívne archivovať"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.ZGlyZWN0b3J5X3BhdGg.display_name": {
+          "source": "Directory Path",
+          "message": "Cesta k adresáru"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.ZGlyZWN0b3J5X3BhdGg.short_desc": {
+          "source": "Path to directory to archive",
+          "message": "Cesta k adresáru na archiváciu"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Zm9sbG93X3N5bWxpbmtz.desc": {
+          "source": "If `True`, follows symbolic links and archives the target file contents. If `False` (default), archives symlinks as symlink entries",
+          "message": "Ak je `True`, nasleduje symbolické odkazy a archivuje obsah cieľového súboru. Ak je `False` (predvolené), archivuje symbolické odkazy ako položky symbolických odkazov"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Zm9sbG93X3N5bWxpbmtz.display_name": {
+          "source": "Follow Symlinks",
+          "message": "Nasledovať symbolické odkazy"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Zm9sbG93X3N5bWxpbmtz.short_desc": {
+          "source": "Follow symbolic links",
+          "message": "Nasledovať symbolické odkazy"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Zm9ybWF0.allowed-value.c3RyaW5nOmdudQ.display_name": {
+          "source": "GNU Tar",
+          "message": "GNU Tar"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Zm9ybWF0.allowed-value.c3RyaW5nOnBheA.display_name": {
+          "source": "POSIX Pax",
+          "message": "POSIX Pax"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Zm9ybWF0.allowed-value.c3RyaW5nOnVzdGFy.display_name": {
+          "source": "POSIX Ustar",
+          "message": "POSIX Ustar"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Zm9ybWF0.allowed-value.c3RyaW5nOnY3.display_name": {
+          "source": "V7",
+          "message": "V7"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Zm9ybWF0.desc": {
+          "source": "The tar format to use for the output archive",
+          "message": "Formát tar, ktorý sa má použiť pre výstupný archív"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Zm9ybWF0.display_name": {
+          "source": "Format",
+          "message": "Formát"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Zm9ybWF0.short_desc": {
+          "source": "TAR format",
+          "message": "Formát TAR"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.b3V0cHV0X2xvY2F0aW9u.desc": {
+          "source": "A FileLocationHandler location URL where the archive will be written (alternative to `archive_path`)",
+          "message": "URL umiestnenia FileLocationHandler, kam sa zapíše archív (alternatíva k `archive_path`)"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.b3V0cHV0X2xvY2F0aW9u.display_name": {
+          "source": "Output Location",
+          "message": "Cieľové umiestnenie"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.b3V0cHV0X2xvY2F0aW9u.short_desc": {
+          "source": "Output location URL",
+          "message": "URL výstupného umiestnenia"
+        },
+        "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.short_desc": {
+          "source": "Archive a directory tree",
+          "message": "Archivovať strom adresárov"
+        },
+        "app.VGFy.action.Z2V0LWFyY2hpdmUtaW5mbw.desc": {
+          "source": "Get metadata and statistics about a tar archive including entry counts, compression method, and total size",
+          "message": "Získať metadáta a štatistiky o archíve tar vrátane počtu položiek, metódy kompresie a celkovej veľkosti"
+        },
+        "app.VGFy.action.Z2V0LWFyY2hpdmUtaW5mbw.display_name": {
+          "source": "Get Archive Info",
+          "message": "Získať informácie o archíve"
+        },
+        "app.VGFy.action.Z2V0LWFyY2hpdmUtaW5mbw.option.YXJjaGl2ZV9kYXRh.desc": {
+          "source": "The tar archive as binary data (alternative to archive_path)",
+          "message": "Archív tar ako binárne dáta (alternatíva k archive_path)"
+        },
+        "app.VGFy.action.Z2V0LWFyY2hpdmUtaW5mbw.option.YXJjaGl2ZV9kYXRh.display_name": {
+          "source": "Archive Data",
+          "message": "Dáta archívu"
+        },
+        "app.VGFy.action.Z2V0LWFyY2hpdmUtaW5mbw.option.YXJjaGl2ZV9kYXRh.short_desc": {
+          "source": "Binary archive data",
+          "message": "Binárne dáta archívu"
+        },
+        "app.VGFy.action.Z2V0LWFyY2hpdmUtaW5mbw.option.YXJjaGl2ZV9sb2NhdGlvbg.desc": {
+          "source": "A FileLocationHandler location URL for the tar archive (alternative to archive_path or archive_data)",
+          "message": "URL umiestnenia FileLocationHandler pre archív tar (alternatíva k archive_path alebo archive_data)"
+        },
+        "app.VGFy.action.Z2V0LWFyY2hpdmUtaW5mbw.option.YXJjaGl2ZV9sb2NhdGlvbg.display_name": {
+          "source": "Archive Location",
+          "message": "Umiestnenie archívu"
+        },
+        "app.VGFy.action.Z2V0LWFyY2hpdmUtaW5mbw.option.YXJjaGl2ZV9sb2NhdGlvbg.short_desc": {
+          "source": "Archive location URL",
+          "message": "URL umiestnenia archívu"
+        },
+        "app.VGFy.action.Z2V0LWFyY2hpdmUtaW5mbw.option.YXJjaGl2ZV9wYXRo.desc": {
+          "source": "The filesystem path to the tar archive",
+          "message": "Cesta v súborovom systéme k archívu tar"
+        },
+        "app.VGFy.action.Z2V0LWFyY2hpdmUtaW5mbw.option.YXJjaGl2ZV9wYXRo.display_name": {
+          "source": "Archive Path",
+          "message": "Cesta k archívu"
+        },
+        "app.VGFy.action.Z2V0LWFyY2hpdmUtaW5mbw.option.YXJjaGl2ZV9wYXRo.short_desc": {
+          "source": "Path to the tar archive",
+          "message": "Cesta k archívu tar"
+        },
+        "app.VGFy.action.Z2V0LWFyY2hpdmUtaW5mbw.short_desc": {
+          "source": "Get tar archive metadata",
+          "message": "Získať metadáta archívu tar"
+        },
+        "app.VGFy.action.ZGVjb21wcmVzcy1kYXRh.desc": {
+          "source": "Decompress a tar archive and return file contents as in-memory data",
+          "message": "Dekomprimovať archív tar a vrátiť obsah súborov ako dáta v pamäti"
+        },
+        "app.VGFy.action.ZGVjb21wcmVzcy1kYXRh.display_name": {
+          "source": "Decompress Data",
+          "message": "Dekomprimovať dáta"
+        },
+        "app.VGFy.action.ZGVjb21wcmVzcy1kYXRh.option.YXJjaGl2ZV9kYXRh.desc": {
+          "source": "The tar archive as binary data to decompress",
+          "message": "Archív tar ako binárne dáta na dekompresiu"
+        },
+        "app.VGFy.action.ZGVjb21wcmVzcy1kYXRh.option.YXJjaGl2ZV9kYXRh.display_name": {
+          "source": "Archive Data",
+          "message": "Dáta archívu"
+        },
+        "app.VGFy.action.ZGVjb21wcmVzcy1kYXRh.option.YXJjaGl2ZV9kYXRh.short_desc": {
+          "source": "TAR archive binary data",
+          "message": "Binárne dáta archívu TAR"
+        },
+        "app.VGFy.action.ZGVjb21wcmVzcy1kYXRh.option.YXJjaGl2ZV9sb2NhdGlvbg.desc": {
+          "source": "A FileLocationHandler location URL for the tar archive (alternative to archive_data or archive_path)",
+          "message": "URL umiestnenia FileLocationHandler pre archív tar (alternatíva k archive_data alebo archive_path)"
+        },
+        "app.VGFy.action.ZGVjb21wcmVzcy1kYXRh.option.YXJjaGl2ZV9sb2NhdGlvbg.display_name": {
+          "source": "Archive Location",
+          "message": "Umiestnenie archívu"
+        },
+        "app.VGFy.action.ZGVjb21wcmVzcy1kYXRh.option.YXJjaGl2ZV9sb2NhdGlvbg.short_desc": {
+          "source": "Archive location URL",
+          "message": "URL umiestnenia archívu"
+        },
+        "app.VGFy.action.ZGVjb21wcmVzcy1kYXRh.option.YXJjaGl2ZV9wYXRo.desc": {
+          "source": "The filesystem path to the tar archive (alternative to archive_data)",
+          "message": "Cesta v súborovom systéme k archívu tar (alternatíva k archive_data)"
+        },
+        "app.VGFy.action.ZGVjb21wcmVzcy1kYXRh.option.YXJjaGl2ZV9wYXRo.display_name": {
+          "source": "Archive Path",
+          "message": "Cesta k archívu"
+        },
+        "app.VGFy.action.ZGVjb21wcmVzcy1kYXRh.option.YXJjaGl2ZV9wYXRo.short_desc": {
+          "source": "Path to the tar archive",
+          "message": "Cesta k archívu tar"
+        },
+        "app.VGFy.action.ZGVjb21wcmVzcy1kYXRh.short_desc": {
+          "source": "Decompress tar data",
+          "message": "Dekomprimovať dáta tar"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.desc": {
+          "source": "Decrypt a tar archive encrypted with AES-256-CBC. Expects the IV + ciphertext format produced by the **encrypt** action",
+          "message": "Dešifrovať tar archív šifrovaný pomocou AES-256-CBC. Očakáva formát IV + šifrovaný text vytvorený akciou **encrypt**"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.display_name": {
+          "source": "Decrypt Archive",
+          "message": "Dešifrovať archív"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.ZW5jcnlwdGVkX2RhdGE.desc": {
+          "source": "The encrypted tar archive as binary data",
+          "message": "Šifrovaný tar archív ako binárne dáta"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.ZW5jcnlwdGVkX2RhdGE.display_name": {
+          "source": "Encrypted Data",
+          "message": "Šifrované dáta"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.ZW5jcnlwdGVkX2RhdGE.short_desc": {
+          "source": "Encrypted archive binary data",
+          "message": "Binárne dáta šifrovaného archívu"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.ZW5jcnlwdGVkX2xvY2F0aW9u.desc": {
+          "source": "A FileLocationHandler location URL for the encrypted archive (alternative to `encrypted_data` or `encrypted_path`)",
+          "message": "URL adresa umiestnenia FileLocationHandler pre šifrovaný archív (alternatíva k `encrypted_data` alebo `encrypted_path`)"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.ZW5jcnlwdGVkX2xvY2F0aW9u.display_name": {
+          "source": "Encrypted Location",
+          "message": "Šifrované umiestnenie"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.ZW5jcnlwdGVkX2xvY2F0aW9u.short_desc": {
+          "source": "Encrypted archive location URL",
+          "message": "URL adresa umiestnenia šifrovaného archívu"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.ZW5jcnlwdGVkX3BhdGg.desc": {
+          "source": "The filesystem path to the encrypted archive (alternative to `encrypted_data`)",
+          "message": "Cesta v súborovom systéme k šifrovanému archívu (alternatíva k `encrypted_data`)"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.ZW5jcnlwdGVkX3BhdGg.display_name": {
+          "source": "Encrypted File Path",
+          "message": "Cesta k šifrovanému súboru"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.ZW5jcnlwdGVkX3BhdGg.short_desc": {
+          "source": "Path to encrypted archive file",
+          "message": "Cesta k súboru šifrovaného archívu"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.a2V5.desc": {
+          "source": "A `32`-byte binary key for AES-256-CBC decryption. Provide either `key` or `password`, matching the encryption mode",
+          "message": "`32`-bajtový binárny kľúč pre dešifrovanie AES-256-CBC. Zadajte buď `key` alebo `password`, zodpovedajúce režimu šifrovania"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.a2V5.display_name": {
+          "source": "Decryption Key",
+          "message": "Dešifrovací kľúč"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.a2V5.short_desc": {
+          "source": "AES-256 decryption key (32 bytes)",
+          "message": "Dešifrovací kľúč AES-256 (32 bajtov)"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.cGFzc3dvcmQ.desc": {
+          "source": "The password used during encryption. The encryption mode is auto-detected from the envelope format",
+          "message": "Heslo použité pri šifrovaní. Režim šifrovania je automaticky zistený z formátu obálky"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.cGFzc3dvcmQ.display_name": {
+          "source": "Password",
+          "message": "Heslo"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.cGFzc3dvcmQ.short_desc": {
+          "source": "Decryption password",
+          "message": "Dešifrovacie heslo"
+        },
+        "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.short_desc": {
+          "source": "Decrypt an AES-256-CBC encrypted tar archive",
+          "message": "Dešifrovať tar archív šifrovaný pomocou AES-256-CBC"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.desc": {
+          "source": "Delete a file or directory entry from a tar archive by recreating the archive without the specified entry",
+          "message": "Odstrániť položku súboru alebo adresára z tar archívu opätovným vytvorením archívu bez špecifikovanej položky"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.display_name": {
+          "source": "Delete Entry",
+          "message": "Odstrániť položku"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOm5vbmU.display_name": {
+          "source": "None",
+          "message": "Žiadne"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOmJ6aXAy.display_name": {
+          "source": "Bzip2",
+          "message": "Bzip2"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOmd6aXA.display_name": {
+          "source": "Gzip",
+          "message": "Gzip"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOmx6NA.display_name": {
+          "source": "LZ4",
+          "message": "LZ4"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOnh6.display_name": {
+          "source": "XZ/LZMA",
+          "message": "XZ/LZMA"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOnpzdGQ.display_name": {
+          "source": "Zstandard",
+          "message": "Zstandard"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Y29tcHJlc3Npb24.desc": {
+          "source": "Compression method for the output archive. If not specified, the output is uncompressed",
+          "message": "Metóda kompresie pre výstupný archív. Ak nie je zadaná, výstup je nekomprimovaný"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Y29tcHJlc3Npb24.display_name": {
+          "source": "Output Compression",
+          "message": "Kompresia výstupu"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Y29tcHJlc3Npb24.short_desc": {
+          "source": "Compression for output archive",
+          "message": "Kompresia pre výstupný archív"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.YXJjaGl2ZV9kYXRh.desc": {
+          "source": "The tar archive as binary data",
+          "message": "Tar archív ako binárne dáta"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.YXJjaGl2ZV9kYXRh.display_name": {
+          "source": "Archive Data",
+          "message": "Dáta archívu"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.YXJjaGl2ZV9kYXRh.short_desc": {
+          "source": "TAR archive binary data",
+          "message": "Binárne dáta archívu TAR"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.YXJjaGl2ZV9sb2NhdGlvbg.desc": {
+          "source": "A FileLocationHandler location URL for the tar archive (alternative to `archive_data` or `archive_path`)",
+          "message": "URL adresa umiestnenia FileLocationHandler pre tar archív (alternatíva k `archive_data` alebo `archive_path`)"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.YXJjaGl2ZV9sb2NhdGlvbg.display_name": {
+          "source": "Archive Location",
+          "message": "Umiestnenie archívu"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.YXJjaGl2ZV9sb2NhdGlvbg.short_desc": {
+          "source": "Archive location URL",
+          "message": "URL umiestnenia archívu"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.YXJjaGl2ZV9wYXRo.desc": {
+          "source": "The filesystem path to the tar archive (alternative to `archive_data`)",
+          "message": "Cesta v súborovom systéme k tar archívu (alternatíva k `archive_data`)"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.YXJjaGl2ZV9wYXRo.display_name": {
+          "source": "Archive Path",
+          "message": "Cesta k archívu"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.YXJjaGl2ZV9wYXRo.short_desc": {
+          "source": "Path to the tar archive",
+          "message": "Cesta k archívu tar"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.ZW50cnlfbmFtZQ.desc": {
+          "source": "The full path name of the entry to delete from the archive",
+          "message": "Úplný názov cesty položky, ktorá sa má odstrániť z archívu"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.ZW50cnlfbmFtZQ.display_name": {
+          "source": "Entry Name",
+          "message": "Názov položky"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.ZW50cnlfbmFtZQ.short_desc": {
+          "source": "Name of entry to delete",
+          "message": "Názov položky na odstránenie"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Zm9ybWF0.allowed-value.c3RyaW5nOmdudQ.display_name": {
+          "source": "GNU Tar",
+          "message": "GNU Tar"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Zm9ybWF0.allowed-value.c3RyaW5nOnBheA.display_name": {
+          "source": "POSIX Pax",
+          "message": "POSIX Pax"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Zm9ybWF0.allowed-value.c3RyaW5nOnVzdGFy.display_name": {
+          "source": "POSIX Ustar",
+          "message": "POSIX Ustar"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Zm9ybWF0.allowed-value.c3RyaW5nOnY3.display_name": {
+          "source": "V7",
+          "message": "V7"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Zm9ybWF0.desc": {
+          "source": "The tar format for the output archive",
+          "message": "Formát tar pre výstupný archív"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Zm9ybWF0.display_name": {
+          "source": "Output Format",
+          "message": "Výstupný formát"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Zm9ybWF0.short_desc": {
+          "source": "TAR format for output archive",
+          "message": "Formát TAR pre výstupný archív"
+        },
+        "app.VGFy.action.ZGVsZXRlLWVudHJ5.short_desc": {
+          "source": "Delete entry from archive",
+          "message": "Odstrániť položku z archívu"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.desc": {
+          "source": "Encrypt a tar archive with AES-256-CBC. Output format is a `16`-byte random IV followed by ciphertext",
+          "message": "Zašifrovať tar archív pomocou AES-256-CBC. Výstupný formát je `16`-bajtový náhodný IV nasledovaný šifrovaným textom"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.display_name": {
+          "source": "Encrypt Archive",
+          "message": "Zašifrovať archív"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.YXJjaGl2ZV9kYXRh.desc": {
+          "source": "The tar archive as binary data to encrypt",
+          "message": "Tar archív ako binárne dáta na zašifrovanie"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.YXJjaGl2ZV9kYXRh.display_name": {
+          "source": "Archive Data",
+          "message": "Dáta archívu"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.YXJjaGl2ZV9kYXRh.short_desc": {
+          "source": "TAR archive binary data",
+          "message": "Binárne dáta archívu TAR"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.YXJjaGl2ZV9sb2NhdGlvbg.desc": {
+          "source": "A FileLocationHandler location URL for the tar archive (alternative to `archive_data` or `archive_path`)",
+          "message": "URL adresa umiestnenia FileLocationHandler pre tar archív (alternatíva k `archive_data` alebo `archive_path`)"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.YXJjaGl2ZV9sb2NhdGlvbg.display_name": {
+          "source": "Archive Location",
+          "message": "Umiestnenie archívu"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.YXJjaGl2ZV9sb2NhdGlvbg.short_desc": {
+          "source": "Archive location URL",
+          "message": "URL umiestnenia archívu"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.YXJjaGl2ZV9wYXRo.desc": {
+          "source": "The filesystem path to the tar archive (alternative to `archive_data`)",
+          "message": "Cesta v súborovom systéme k tar archívu (alternatíva k `archive_data`)"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.YXJjaGl2ZV9wYXRo.display_name": {
+          "source": "Archive Path",
+          "message": "Cesta k archívu"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.YXJjaGl2ZV9wYXRo.short_desc": {
+          "source": "Path to the tar archive",
+          "message": "Cesta k archívu tar"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.a2V5.desc": {
+          "source": "A `32`-byte binary key for AES-256-CBC encryption. Provide either `key` or `password`, not both",
+          "message": "`32`-bajtový binárny kľúč pre šifrovanie AES-256-CBC. Zadajte buď `key` alebo `password`, nie obidve"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.a2V5.display_name": {
+          "source": "Encryption Key",
+          "message": "Šifrovací kľúč"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.a2V5.short_desc": {
+          "source": "AES-256 encryption key (32 bytes)",
+          "message": "Šifrovací kľúč AES-256 (32 bajtov)"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.cGFzc3dvcmQ.desc": {
+          "source": "A password string for encryption. The key is derived using HMAC-SHA256 with a random salt. Provide either `key` or `password`, not both",
+          "message": "Heselný reťazec pre šifrovanie. Kľúč je odvodený pomocou HMAC-SHA256 s náhodnou soľou. Zadajte buď `key` alebo `password`, nie obidve"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.cGFzc3dvcmQ.display_name": {
+          "source": "Password",
+          "message": "Heslo"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.cGFzc3dvcmQ.short_desc": {
+          "source": "Encryption password",
+          "message": "Šifrovacie heslo"
+        },
+        "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.short_desc": {
+          "source": "Encrypt a tar archive with AES-256-CBC",
+          "message": "Zašifrovať tar archív pomocou AES-256-CBC"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.desc": {
+          "source": "Extract contents of a tar archive to a destination directory with optional `include`/`exclude` glob-style filename filters",
+          "message": "Extrahovať obsah tar archívu do cieľového adresára s voliteľnými filtrami názvov súborov v štýle glob `include`/`exclude`"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.display_name": {
+          "source": "Extract Archive",
+          "message": "Extrahovať archív"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.YXJjaGl2ZV9kYXRh.desc": {
+          "source": "The tar archive as binary data (alternative to archive_path)",
+          "message": "Archív tar ako binárne dáta (alternatíva k archive_path)"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.YXJjaGl2ZV9kYXRh.display_name": {
+          "source": "Archive Data",
+          "message": "Dáta archívu"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.YXJjaGl2ZV9kYXRh.short_desc": {
+          "source": "Binary archive data",
+          "message": "Binárne dáta archívu"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.YXJjaGl2ZV9sb2NhdGlvbg.desc": {
+          "source": "A FileLocationHandler location URL for the tar archive (alternative to archive_path or archive_data)",
+          "message": "URL umiestnenia FileLocationHandler pre archív tar (alternatíva k archive_path alebo archive_data)"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.YXJjaGl2ZV9sb2NhdGlvbg.display_name": {
+          "source": "Archive Location",
+          "message": "Umiestnenie archívu"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.YXJjaGl2ZV9sb2NhdGlvbg.short_desc": {
+          "source": "Archive location URL",
+          "message": "URL umiestnenia archívu"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.YXJjaGl2ZV9wYXRo.desc": {
+          "source": "The filesystem path to the tar archive to extract",
+          "message": "Cesta v súborovom systéme k tar archívu na extrakciu"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.YXJjaGl2ZV9wYXRo.display_name": {
+          "source": "Archive Path",
+          "message": "Cesta k archívu"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.YXJjaGl2ZV9wYXRo.short_desc": {
+          "source": "Path to the tar archive",
+          "message": "Cesta k archívu tar"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.ZGVzdGluYXRpb24.desc": {
+          "source": "The directory where files will be extracted (default: current directory)",
+          "message": "Adresár, do ktorého sa extrahujú súbory (predvolené: aktuálny adresár)"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.ZGVzdGluYXRpb24.display_name": {
+          "source": "Destination",
+          "message": "Cieľ"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.ZGVzdGluYXRpb24.short_desc": {
+          "source": "Extraction destination directory",
+          "message": "Cieľový adresár extrakcie"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.ZXhjbHVkZQ.desc": {
+          "source": "A list of glob-style patterns; entries matching any pattern will be skipped. Exclude patterns are applied after `include` patterns.\n\n**Supported wildcards**: `*` matches any characters (including `/`), `?` matches any single character, `[abc]` matches one character from the set",
+          "message": "Zoznam vzorov v štýle glob; položky zodpovedajúce akémukoľvek vzoru sa preskočia. Vzory vylúčenia sa aplikujú po vzoroch `include`.\n\n**Podporované žolíkové znaky**: `*` zodpovedá akýmkoľvek znakom (vrátane `/`), `?` zodpovedá akémukoľvek jednému znaku, `[abc]` zodpovedá jednému znaku z množiny"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.ZXhjbHVkZQ.display_name": {
+          "source": "Exclude Patterns",
+          "message": "Vzory vylúčenia"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.ZXhjbHVkZQ.short_desc": {
+          "source": "Glob patterns for files to exclude",
+          "message": "Glob vzory pre súbory na vylúčenie"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.aW5jbHVkZQ.desc": {
+          "source": "A list of glob-style patterns; only entries matching at least one pattern will be extracted. If not provided, all entries are included by default.\n\n**Supported wildcards**: `*` matches any characters (including `/`), `?` matches any single character, `[abc]` matches one character from the set",
+          "message": "Zoznam vzorov v štýle glob; extrahujú sa iba položky zodpovedajúce alespoň jednému vzoru. Ak nie je zadané, predvolene sa zahrnú všetky položky.\n\n**Podporované žolíkové znaky**: `*` zodpovedá akýmkoľvek znakom (vrátane `/`), `?` zodpovedá akémukoľvek jednému znaku, `[abc]` zodpovedá jednému znaku z množiny"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.aW5jbHVkZQ.display_name": {
+          "source": "Include Patterns",
+          "message": "Vzory zahrnutia"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.aW5jbHVkZQ.short_desc": {
+          "source": "Glob patterns for files to include",
+          "message": "Glob vzory pre súbory na zahrnutie"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.b3ZlcndyaXRl.desc": {
+          "source": "If `true`, overwrites existing files",
+          "message": "Ak je `true`, prepíše existujúce súbory"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.b3ZlcndyaXRl.display_name": {
+          "source": "Overwrite",
+          "message": "Prepísať"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.b3ZlcndyaXRl.short_desc": {
+          "source": "Overwrite existing files",
+          "message": "Prepísať existujúce súbory"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.c3RyaXBfY291bnQ.desc": {
+          "source": "Number of leading path components to strip from entry names during extraction. For example, with `strip_count` = `1`, the entry `project/src/main.c` becomes `src/main.c`. Entries with fewer components than `strip_count` are skipped",
+          "message": "Počet úvodných komponentov cesty, ktoré sa majú odstrániť z názvov položiek počas extrakcie. Napríklad pri `strip_count` = `1` sa z položky `project/src/main.c` stane `src/main.c`. Položky s menším počtom komponentov ako `strip_count` sa preskočia"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.c3RyaXBfY291bnQ.display_name": {
+          "source": "Strip Components",
+          "message": "Odstrániť komponenty"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.c3RyaXBfY291bnQ.short_desc": {
+          "source": "Strip N leading path components",
+          "message": "Odstrániť N úvodných komponentov cesty"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.cHJlc2VydmVfcGVybWlzc2lvbnM.desc": {
+          "source": "If `true`, restores original file permissions",
+          "message": "Ak je `true`, obnoví pôvodné oprávnenia súborov"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.cHJlc2VydmVfcGVybWlzc2lvbnM.display_name": {
+          "source": "Preserve Permissions",
+          "message": "Zachovať oprávnenia"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.cHJlc2VydmVfcGVybWlzc2lvbnM.short_desc": {
+          "source": "Restore file permissions",
+          "message": "Obnoviť oprávnenia súborov"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.cHJlc2VydmVfdGltZXM.desc": {
+          "source": "If `true`, restores original modification times",
+          "message": "Ak je `true`, obnoví pôvodné časy úprav"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.cHJlc2VydmVfdGltZXM.display_name": {
+          "source": "Preserve Times",
+          "message": "Zachovať časy"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.cHJlc2VydmVfdGltZXM.short_desc": {
+          "source": "Restore modification times",
+          "message": "Obnoviť časy úprav"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.short_desc": {
+          "source": "Extract a tar archive with optional filters",
+          "message": "Extrahovať tar archív s voliteľnými filtrami"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.desc": {
+          "source": "Extract a single file from a tar archive to a destination path on disk",
+          "message": "Extrahovať jediný súbor z tar archívu do cieľovej cesty na disku"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.display_name": {
+          "source": "Extract Single File",
+          "message": "Extrahovať jediný súbor"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.YXJjaGl2ZV9kYXRh.desc": {
+          "source": "The tar archive as binary data",
+          "message": "Tar archív ako binárne dáta"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.YXJjaGl2ZV9kYXRh.display_name": {
+          "source": "Archive Data",
+          "message": "Dáta archívu"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.YXJjaGl2ZV9kYXRh.short_desc": {
+          "source": "Binary archive data",
+          "message": "Binárne dáta archívu"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.YXJjaGl2ZV9sb2NhdGlvbg.desc": {
+          "source": "A FileLocationHandler location URL for the tar archive (alternative to archive_path or archive_data)",
+          "message": "URL umiestnenia FileLocationHandler pre archív tar (alternatíva k archive_path alebo archive_data)"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.YXJjaGl2ZV9sb2NhdGlvbg.display_name": {
+          "source": "Archive Location",
+          "message": "Umiestnenie archívu"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.YXJjaGl2ZV9sb2NhdGlvbg.short_desc": {
+          "source": "Archive location URL",
+          "message": "URL umiestnenia archívu"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.YXJjaGl2ZV9wYXRo.desc": {
+          "source": "The filesystem path to the tar archive",
+          "message": "Cesta v súborovom systéme k archívu tar"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.YXJjaGl2ZV9wYXRo.display_name": {
+          "source": "Archive Path",
+          "message": "Cesta k archívu"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.YXJjaGl2ZV9wYXRo.short_desc": {
+          "source": "Path to the tar archive",
+          "message": "Cesta k archívu tar"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.ZGVzdGluYXRpb24.desc": {
+          "source": "Where to extract the file (default: current directory)",
+          "message": "Kam sa má súbor rozbaliť (predvolené: aktuálny adresár)"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.ZGVzdGluYXRpb24.display_name": {
+          "source": "Destination",
+          "message": "Cieľ"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.ZGVzdGluYXRpb24.short_desc": {
+          "source": "Destination path",
+          "message": "Cieľová cesta"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.ZW50cnlfbmFtZQ.desc": {
+          "source": "The name/path of the entry to extract",
+          "message": "Názov/cesta položky na rozbalenie"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.ZW50cnlfbmFtZQ.display_name": {
+          "source": "Entry Name",
+          "message": "Názov položky"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.ZW50cnlfbmFtZQ.short_desc": {
+          "source": "File to extract",
+          "message": "Súbor na rozbalenie"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.short_desc": {
+          "source": "Extract one file from archive",
+          "message": "Rozbaliť jeden súbor z archívu"
+        },
+        "app.VGFy.action.am9pbi1hcmNoaXZl.desc": {
+          "source": "Join binary archive chunks back into a single tar archive",
+          "message": "Spojiť binárne časti archívu späť do jedného tar archívu"
+        },
+        "app.VGFy.action.am9pbi1hcmNoaXZl.display_name": {
+          "source": "Join Archive Chunks",
+          "message": "Spojiť časti archívu"
+        },
+        "app.VGFy.action.am9pbi1hcmNoaXZl.option.Y2h1bmtz.desc": {
+          "source": "A list of binary chunks to concatenate back into a single tar archive. Chunks must be in the correct order as produced by the split operation",
+          "message": "Zoznam binárnych častí na spájanie späť do jedného tar archívu. Časti musia byť v správnom poradí, ako boli vytvorené operáciou rozdelenia"
+        },
+        "app.VGFy.action.am9pbi1hcmNoaXZl.option.Y2h1bmtz.display_name": {
+          "source": "Chunks",
+          "message": "Časti"
+        },
+        "app.VGFy.action.am9pbi1hcmNoaXZl.option.Y2h1bmtz.short_desc": {
+          "source": "Binary chunks to join",
+          "message": "Binárne časti na spojenie"
+        },
+        "app.VGFy.action.am9pbi1hcmNoaXZl.short_desc": {
+          "source": "Join archive chunks into single archive",
+          "message": "Spojiť časti archívu do jedného archívu"
+        },
+        "app.VGFy.action.bGlzdC1hcmNoaXZl.desc": {
+          "source": "Get a list of all entries in a tar archive with metadata",
+          "message": "Získať zoznam všetkých položiek v tar archíve s metadátami"
+        },
+        "app.VGFy.action.bGlzdC1hcmNoaXZl.display_name": {
+          "source": "List Archive Contents",
+          "message": "Zobraziť obsah archívu"
+        },
+        "app.VGFy.action.bGlzdC1hcmNoaXZl.option.YXJjaGl2ZV9kYXRh.desc": {
+          "source": "The tar archive as binary data (alternative to archive_path)",
+          "message": "Archív tar ako binárne dáta (alternatíva k archive_path)"
+        },
+        "app.VGFy.action.bGlzdC1hcmNoaXZl.option.YXJjaGl2ZV9kYXRh.display_name": {
+          "source": "Archive Data",
+          "message": "Dáta archívu"
+        },
+        "app.VGFy.action.bGlzdC1hcmNoaXZl.option.YXJjaGl2ZV9kYXRh.short_desc": {
+          "source": "Binary archive data",
+          "message": "Binárne dáta archívu"
+        },
+        "app.VGFy.action.bGlzdC1hcmNoaXZl.option.YXJjaGl2ZV9sb2NhdGlvbg.desc": {
+          "source": "A FileLocationHandler location URL for the tar archive (alternative to archive_path or archive_data)",
+          "message": "URL umiestnenia FileLocationHandler pre archív tar (alternatíva k archive_path alebo archive_data)"
+        },
+        "app.VGFy.action.bGlzdC1hcmNoaXZl.option.YXJjaGl2ZV9sb2NhdGlvbg.display_name": {
+          "source": "Archive Location",
+          "message": "Umiestnenie archívu"
+        },
+        "app.VGFy.action.bGlzdC1hcmNoaXZl.option.YXJjaGl2ZV9sb2NhdGlvbg.short_desc": {
+          "source": "Archive location URL",
+          "message": "URL umiestnenia archívu"
+        },
+        "app.VGFy.action.bGlzdC1hcmNoaXZl.option.YXJjaGl2ZV9wYXRo.desc": {
+          "source": "The filesystem path to the tar archive to list",
+          "message": "Cesta v súborovom systéme k tar archívu na zobrazenie"
+        },
+        "app.VGFy.action.bGlzdC1hcmNoaXZl.option.YXJjaGl2ZV9wYXRo.display_name": {
+          "source": "Archive Path",
+          "message": "Cesta k archívu"
+        },
+        "app.VGFy.action.bGlzdC1hcmNoaXZl.option.YXJjaGl2ZV9wYXRo.short_desc": {
+          "source": "Path to the tar archive file",
+          "message": "Cesta k súboru tar archívu"
+        },
+        "app.VGFy.action.bGlzdC1hcmNoaXZl.short_desc": {
+          "source": "List files in a tar archive",
+          "message": "Zobraziť súbory v tar archíve"
+        },
+        "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.desc": {
+          "source": "Split a tar archive into multiple fixed-size binary chunks for multi-volume storage or transfer",
+          "message": "Rozdeliť tar archív na viacero binárnych častí s pevnou veľkosťou pre viaczväzkové úložisko alebo prenos"
+        },
+        "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.display_name": {
+          "source": "Split Archive",
+          "message": "Rozdeliť archív"
+        },
+        "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.option.Y2h1bmtfc2l6ZQ.desc": {
+          "source": "The maximum size in bytes for each chunk. The last chunk may be smaller if the archive size is not evenly divisible",
+          "message": "Maximálna veľkosť v bajtoch pre každú časť. Posledná časť môže byť menšia, ak veľkosť archívu nie je rovnomerne deliteľná"
+        },
+        "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.option.Y2h1bmtfc2l6ZQ.display_name": {
+          "source": "Chunk Size",
+          "message": "Veľkosť časti"
+        },
+        "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.option.Y2h1bmtfc2l6ZQ.short_desc": {
+          "source": "Maximum chunk size in bytes",
+          "message": "Maximálna veľkosť časti v bajtoch"
+        },
+        "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.option.YXJjaGl2ZV9kYXRh.desc": {
+          "source": "The tar archive as binary data to split",
+          "message": "Tar archív ako binárne dáta na rozdelenie"
+        },
+        "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.option.YXJjaGl2ZV9kYXRh.display_name": {
+          "source": "Archive Data",
+          "message": "Dáta archívu"
+        },
+        "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.option.YXJjaGl2ZV9kYXRh.short_desc": {
+          "source": "TAR archive binary data",
+          "message": "Binárne dáta archívu TAR"
+        },
+        "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.option.YXJjaGl2ZV9sb2NhdGlvbg.desc": {
+          "source": "A FileLocationHandler location URL for the tar archive (alternative to `archive_data` or `archive_path`)",
+          "message": "URL adresa umiestnenia FileLocationHandler pre tar archív (alternatíva k `archive_data` alebo `archive_path`)"
+        },
+        "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.option.YXJjaGl2ZV9sb2NhdGlvbg.display_name": {
+          "source": "Archive Location",
+          "message": "Umiestnenie archívu"
+        },
+        "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.option.YXJjaGl2ZV9sb2NhdGlvbg.short_desc": {
+          "source": "Archive location URL",
+          "message": "URL umiestnenia archívu"
+        },
+        "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.option.YXJjaGl2ZV9wYXRo.desc": {
+          "source": "The filesystem path to the tar archive (alternative to `archive_data`)",
+          "message": "Cesta v súborovom systéme k tar archívu (alternatíva k `archive_data`)"
+        },
+        "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.option.YXJjaGl2ZV9wYXRo.display_name": {
+          "source": "Archive Path",
+          "message": "Cesta k archívu"
+        },
+        "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.option.YXJjaGl2ZV9wYXRo.short_desc": {
+          "source": "Path to the tar archive",
+          "message": "Cesta k archívu tar"
+        },
+        "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.short_desc": {
+          "source": "Split archive into fixed-size chunks",
+          "message": "Rozdeliť archív na časti s pevnou veľkosťou"
+        },
+        "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.desc": {
+          "source": "Open a streaming input for reading a file from a tar archive without loading the entire file into memory",
+          "message": "Otvoriť streamovací vstup na čítanie súboru z tar archívu bez načítania celého súboru do pamäte"
+        },
+        "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.display_name": {
+          "source": "Stream Extract",
+          "message": "Streamovacie rozbalenie"
+        },
+        "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.option.YXJjaGl2ZV9kYXRh.desc": {
+          "source": "The tar archive as binary data (alternative to `archive_path`)",
+          "message": "Tar archív ako binárne dáta (alternatíva k `archive_path`)"
+        },
+        "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.option.YXJjaGl2ZV9kYXRh.display_name": {
+          "source": "Archive Data",
+          "message": "Dáta archívu"
+        },
+        "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.option.YXJjaGl2ZV9kYXRh.short_desc": {
+          "source": "TAR archive binary data",
+          "message": "Binárne dáta archívu TAR"
+        },
+        "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.option.YXJjaGl2ZV9sb2NhdGlvbg.desc": {
+          "source": "A FileLocationHandler location URL for the tar archive (alternative to `archive_path` or `archive_data`)",
+          "message": "URL umiestnenia FileLocationHandler pre tar archív (alternatíva k `archive_path` alebo `archive_data`)"
+        },
+        "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.option.YXJjaGl2ZV9sb2NhdGlvbg.display_name": {
+          "source": "Archive Location",
+          "message": "Umiestnenie archívu"
+        },
+        "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.option.YXJjaGl2ZV9sb2NhdGlvbg.short_desc": {
+          "source": "Archive location URL",
+          "message": "URL umiestnenia archívu"
+        },
+        "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.option.YXJjaGl2ZV9wYXRo.desc": {
+          "source": "The filesystem path to the tar archive",
+          "message": "Cesta v súborovom systéme k archívu tar"
+        },
+        "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.option.YXJjaGl2ZV9wYXRo.display_name": {
+          "source": "Archive Path",
+          "message": "Cesta k archívu"
+        },
+        "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.option.YXJjaGl2ZV9wYXRo.short_desc": {
+          "source": "Path to the tar archive",
+          "message": "Cesta k archívu tar"
+        },
+        "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.option.ZW50cnlfbmFtZQ.desc": {
+          "source": "The full path name of the entry to read from the archive",
+          "message": "Úplná cesta položky na čítanie z archívu"
+        },
+        "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.option.ZW50cnlfbmFtZQ.display_name": {
+          "source": "Entry Name",
+          "message": "Názov položky"
+        },
+        "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.option.ZW50cnlfbmFtZQ.short_desc": {
+          "source": "Name of entry to stream",
+          "message": "Názov položky na streamovanie"
+        },
+        "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.short_desc": {
+          "source": "Stream extract file from archive",
+          "message": "Streamovacie rozbalenie súboru z archívu"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.desc": {
+          "source": "Read the contents of a file from a tar archive without extracting to disk",
+          "message": "Prečítať obsah súboru z tar archívu bez rozbalenia na disk"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.display_name": {
+          "source": "Read File Content",
+          "message": "Prečítať obsah súboru"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.YXJjaGl2ZV9kYXRh.desc": {
+          "source": "The tar archive as binary data (alternative to archive_path)",
+          "message": "Archív tar ako binárne dáta (alternatíva k archive_path)"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.YXJjaGl2ZV9kYXRh.display_name": {
+          "source": "Archive Data",
+          "message": "Dáta archívu"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.YXJjaGl2ZV9kYXRh.short_desc": {
+          "source": "Binary archive data",
+          "message": "Binárne dáta archívu"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.YXJjaGl2ZV9sb2NhdGlvbg.desc": {
+          "source": "A FileLocationHandler location URL for the tar archive (alternative to archive_path or archive_data)",
+          "message": "URL umiestnenia FileLocationHandler pre archív tar (alternatíva k archive_path alebo archive_data)"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.YXJjaGl2ZV9sb2NhdGlvbg.display_name": {
+          "source": "Archive Location",
+          "message": "Umiestnenie archívu"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.YXJjaGl2ZV9sb2NhdGlvbg.short_desc": {
+          "source": "Archive location URL",
+          "message": "URL umiestnenia archívu"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.YXJjaGl2ZV9wYXRo.desc": {
+          "source": "The filesystem path to the tar archive",
+          "message": "Cesta v súborovom systéme k archívu tar"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.YXJjaGl2ZV9wYXRo.display_name": {
+          "source": "Archive Path",
+          "message": "Cesta k archívu"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.YXJjaGl2ZV9wYXRo.short_desc": {
+          "source": "Path to the tar archive file",
+          "message": "Cesta k súboru tar archívu"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.YXNfdGV4dA.desc": {
+          "source": "If `true`, returns content as text string instead of binary (default: `false`)",
+          "message": "Ak je `true`, vráti obsah ako textový reťazec namiesto binárnych dát (predvolené: `false`)"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.YXNfdGV4dA.display_name": {
+          "source": "Read as Text",
+          "message": "Prečítať ako text"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.YXNfdGV4dA.short_desc": {
+          "source": "Return content as text string",
+          "message": "Vrátiť obsah ako textový reťazec"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.ZW50cnlfbmFtZQ.desc": {
+          "source": "The path/name of the entry to read from the archive",
+          "message": "Cesta/názov položky na čítanie z archívu"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.ZW50cnlfbmFtZQ.display_name": {
+          "source": "Entry Name",
+          "message": "Názov položky"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.ZW50cnlfbmFtZQ.short_desc": {
+          "source": "Name of file to read",
+          "message": "Názov súboru na čítanie"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.ZW5jb2Rpbmc.allowed-value.c3RyaW5nOkFTQ0lJ.display_name": {
+          "source": "ASCII",
+          "message": "ASCII"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.ZW5jb2Rpbmc.allowed-value.c3RyaW5nOklTTy04ODU5LTE.display_name": {
+          "source": "ISO-8859-1 (Latin-1)",
+          "message": "ISO-8859-1 (Latin-1)"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.ZW5jb2Rpbmc.allowed-value.c3RyaW5nOlVURi04.display_name": {
+          "source": "UTF-8",
+          "message": "UTF-8"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.ZW5jb2Rpbmc.allowed-value.c3RyaW5nOlVURi0xNg.display_name": {
+          "source": "UTF-16",
+          "message": "UTF-16"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.ZW5jb2Rpbmc.allowed-value.c3RyaW5nOlVURi0xNkJF.display_name": {
+          "source": "UTF-16 Big Endian",
+          "message": "UTF-16 Big Endian"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.ZW5jb2Rpbmc.allowed-value.c3RyaW5nOlVURi0xNkxF.display_name": {
+          "source": "UTF-16 Little Endian",
+          "message": "UTF-16 Little Endian"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.ZW5jb2Rpbmc.allowed-value.c3RyaW5nOldpbmRvd3MtMTI1Mg.display_name": {
+          "source": "Windows-1252",
+          "message": "Windows-1252"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.ZW5jb2Rpbmc.desc": {
+          "source": "Character encoding to use when as_text is true. Common encodings: UTF-8, ISO-8859-1, ASCII, UTF-16, Windows-1252 (default: UTF-8)",
+          "message": "Kódovanie znakov, ktoré sa použije, keď je as_text nastavené na true. Bežné kódovania: UTF-8, ISO-8859-1, ASCII, UTF-16, Windows-1252 (predvolené: UTF-8)"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.ZW5jb2Rpbmc.display_name": {
+          "source": "Encoding",
+          "message": "Kódovanie"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.option.ZW5jb2Rpbmc.short_desc": {
+          "source": "Text encoding for as_text mode",
+          "message": "Kódovanie textu pre režim as_text"
+        },
+        "app.VGFy.action.cmVhZC1maWxl.short_desc": {
+          "source": "Read file without extracting",
+          "message": "Prečítať súbor bez rozbalenia"
+        },
+        "app.VGFy.action.dmVyaWZ5LWFyY2hpdmU.desc": {
+          "source": "Verify the integrity of a tar archive by reading all entries and their data blocks without extracting to disk",
+          "message": "Overiť integritu tar archívu prečítaním všetkých položiek a ich dátových blokov bez rozbalenia na disk"
+        },
+        "app.VGFy.action.dmVyaWZ5LWFyY2hpdmU.display_name": {
+          "source": "Verify Archive",
+          "message": "Overiť archív"
+        },
+        "app.VGFy.action.dmVyaWZ5LWFyY2hpdmU.option.YXJjaGl2ZV9kYXRh.desc": {
+          "source": "The tar archive as binary data (alternative to `archive_path`)",
+          "message": "Tar archív ako binárne dáta (alternatíva k `archive_path`)"
+        },
+        "app.VGFy.action.dmVyaWZ5LWFyY2hpdmU.option.YXJjaGl2ZV9kYXRh.display_name": {
+          "source": "Archive Data",
+          "message": "Dáta archívu"
+        },
+        "app.VGFy.action.dmVyaWZ5LWFyY2hpdmU.option.YXJjaGl2ZV9kYXRh.short_desc": {
+          "source": "TAR archive binary data",
+          "message": "Binárne dáta archívu TAR"
+        },
+        "app.VGFy.action.dmVyaWZ5LWFyY2hpdmU.option.YXJjaGl2ZV9sb2NhdGlvbg.desc": {
+          "source": "A FileLocationHandler location URL for the tar archive (alternative to `archive_path` or `archive_data`)",
+          "message": "URL umiestnenia FileLocationHandler pre tar archív (alternatíva k `archive_path` alebo `archive_data`)"
+        },
+        "app.VGFy.action.dmVyaWZ5LWFyY2hpdmU.option.YXJjaGl2ZV9sb2NhdGlvbg.display_name": {
+          "source": "Archive Location",
+          "message": "Umiestnenie archívu"
+        },
+        "app.VGFy.action.dmVyaWZ5LWFyY2hpdmU.option.YXJjaGl2ZV9sb2NhdGlvbg.short_desc": {
+          "source": "Archive location URL",
+          "message": "URL umiestnenia archívu"
+        },
+        "app.VGFy.action.dmVyaWZ5LWFyY2hpdmU.option.YXJjaGl2ZV9wYXRo.desc": {
+          "source": "The filesystem path to the tar archive to verify",
+          "message": "Cesta v súborovom systéme k tar archívu na overenie"
+        },
+        "app.VGFy.action.dmVyaWZ5LWFyY2hpdmU.option.YXJjaGl2ZV9wYXRo.display_name": {
+          "source": "Archive Path",
+          "message": "Cesta k archívu"
+        },
+        "app.VGFy.action.dmVyaWZ5LWFyY2hpdmU.option.YXJjaGl2ZV9wYXRo.short_desc": {
+          "source": "Path to the tar archive",
+          "message": "Cesta k archívu tar"
+        },
+        "app.VGFy.action.dmVyaWZ5LWFyY2hpdmU.short_desc": {
+          "source": "Verify archive integrity",
+          "message": "Overiť integritu archívu"
+        },
+        "app.VGFy.desc": {
+          "source": "Create, extract, and manage TAR archives with support for gzip, bzip2, xz, and zstd compression",
+          "message": "Vytvárajte, rozbaľujte a spravujte TAR archívy s podporou kompresie gzip, bzip2, xz a zstd"
+        },
+        "app.VGFy.display_name": {
+          "source": "TAR Archives",
+          "message": "TAR archívy"
+        },
+        "app.VGFy.short_desc": {
+          "source": "TAR archive operations",
+          "message": "Operácie s TAR archívmi"
+        }
+      }
+    }
+  }
+}
