@@ -1,0 +1,9 @@
+Document: qore-tar-module
+Title: Qore TAR Module Reference
+Author: Qore Technologies, s.r.o.
+Abstract: API references for archive operations and TarDataProvider.
+Section: Programming
+
+Format: HTML
+Index: /usr/share/doc/qore-tar-module-doc/docs/tar/html/index.html
+Files: /usr/share/doc/qore-tar-module-doc/docs/*/html/*.html

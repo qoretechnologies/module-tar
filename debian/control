@@ -1,0 +1,41 @@
+Source: qore-tar-module
+Section: interpreters
+Priority: optional
+Maintainer: David Nichols <david@qore.org>
+Build-Depends: debhelper-compat (= 13),
+               cmake (>= 3.5),
+               libarchive-dev,
+               libssl-dev,
+               libqore-dev (>= 3.0.0~),
+               qore (>= 3.0.0~),
+               qore-misc-tools (>= 3.0.0~) <!nocheck>,
+               python3
+Build-Depends-Indep: doxygen <!nodoc>
+Standards-Version: 4.7.4
+Rules-Requires-Root: no
+Homepage: https://qore.org
+Vcs-Git: https://github.com/qoretechnologies/module-tar.git
+Vcs-Browser: https://github.com/qoretechnologies/module-tar
+
+Package: qore-tar-module
+Architecture: any
+Depends: ${qore:Depends},
+         ${shlibs:Depends},
+         ${misc:Depends}
+Suggests: qore-tar-module-doc
+Description: archive modules and command-line tool for Qore
+ This package provides the native tar archive module, TarDataProvider and
+ the qtar command-line tool. It includes source and compiled Qore modules,
+ compiler metadata, provider resources and translations. Archive compression
+ uses libarchive and encryption support uses OpenSSL.
+
+Package: qore-tar-module-doc
+Section: doc
+Architecture: all
+Multi-Arch: foreign
+Build-Profiles: <!nodoc>
+Depends: ${misc:Depends}
+Suggests: qore-tar-module
+Description: documentation and examples for Qore's archive modules
+ This package contains HTML API references and example tests for the tar
+ native module, TarDataProvider and qtar.

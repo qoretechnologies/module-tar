@@ -1,0 +1,84 @@
+Debian/Ubuntu packaging for the tar module
+==========================================
+
+qore-tar-module contains the native tar module, TarDataProvider source and AOT
+modules, compiler metadata, provider logo and locale catalogs, and the qtar
+command-line tool and manual page. qore-tar-module-doc contains both HTML API
+references and example tests. Debhelper generates matching debug symbols.
+
+Build prerequisites and scope
+-----------------------------
+
+Use an isolated native build environment with the packaged Qore runtime and
+libqore-dev, then install the Build-Depends from debian/control. Qualification
+targets Ubuntu 26.04 amd64 with Qore 3.0 development packages. Other releases
+and architectures need their own qualified SDK and native tests. Cross builds
+are rejected because Qore tools run during compilation.
+
+The package uses distribution libarchive and requires OpenSSL to keep encryption
+available. The minimum Qore runtime and SONAME package versions come from the
+SDK used to compile the module; other dependencies come from dh_shlibdeps.
+Architecture-specific qmods and shared metadata require the native interpreter;
+the runtime package is not marked Multi-Arch: same.
+
+AOT modules and catalogs
+------------------------
+
+AOT compilation is enabled explicitly, source-tree qmod symlinks are disabled,
+and noopt selects AOT optimization level zero. The Qore SDK propagates the
+Debian prefix maps into AOT compilation and metadata generation. Build-time
+metadata and tests use the new native module, new qmods and packaged standard
+library. The qtar suite inherits this module path for its child processes.
+
+The stripping wrapper copied from Qore preserves appended dependency and
+source-location metadata around dh_strip; its real-ELF unit tests run in the
+build. dwz skips the runtime package because LLVM DWARF forms are unsupported;
+dh_strip still generates matching debug symbols for both modules.
+
+All source-owned catalogs and the project ownership manifest are packaged.
+qore-data-provider-i18n checks complete translations for the standard locales
+against the built provider. The build therefore requires qore-misc-tools.
+
+Source and binary builds
+------------------------
+
+Use a fresh version for each changed upload. This snapshot precedes 1.0.0.
+From a clean committed checkout:
+
+    version=1.0.0~git20260928.1
+    mkdir -p ../tar-package-work
+    git archive --format=tar --prefix="qore-tar-module-$version/" \
+        HEAD -- . ':!debian' | xz > \
+        "../tar-package-work/qore-tar-module_$version.orig.tar.xz"
+    tar -xf "../tar-package-work/qore-tar-module_$version.orig.tar.xz" \
+        -C ../tar-package-work
+    cp -a debian "../tar-package-work/qore-tar-module-$version/"
+    cd "../tar-package-work/qore-tar-module-$version"
+    dpkg-buildpackage -S -us -uc
+
+Extract the .dsc with dpkg-source -x into a fresh directory. Install build
+dependencies and run unprivileged with networking disabled:
+
+    dpkg-buildpackage -b -us -uc
+
+Architecture-only builds (-B) omit documentation and do not need Doxygen.
+Architecture-independent builds (-A) produce documentation. The nodoc build
+option suppresses HTML generation; the nodoc profile also omits the doc
+package. Do not use nocheck for qualification.
+
+Qualification and publication
+-----------------------------
+
+Run all three upstream suites with the freshly built modules. Installed tests
+copy only scripts into a temporary directory, explicitly preload the installed
+provider qmod and use /usr/bin/qtar. They cover native archives, compression,
+encryption, provider actions and CLI behavior without external services.
+Tests select C.UTF-8 so Unicode pathname checks execute rather than skip.
+The compiler test performs an archive round trip with named arguments and
+loads the provider factory in a fresh executable.
+
+Check source/binary Lintian, hardening, matching debug symbols, AOT trailers,
+all installed catalogs and resources, a runtime-only install without the SDK,
+docs/debug coinstallation, dpkg -V, purge/reinstall, and reproducibility from
+two distinct build directories. Retain hashes, dependency inventories and logs.
+Testing-PPA publication is separate from approval for a final general release.

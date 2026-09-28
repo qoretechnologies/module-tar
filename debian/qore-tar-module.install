@@ -1,0 +1,6 @@
+usr/bin/qtar
+usr/lib/*/qore-modules/*.qmod
+usr/lib/*/qore-modules/TarDataProvider/
+usr/share/qore-modules/TarDataProvider/
+usr/share/qore/metadata/tar/*.meta.json
+usr/share/qore/i18n/

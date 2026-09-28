@@ -1,0 +1,64 @@
+.\" Copyright (C) 2026 David Nichols
+.\" SPDX-License-Identifier: MIT
+.TH QTAR 1 "September 2026" "Qore tar 1.0.0" "User Commands"
+.SH NAME
+qtar \- create, inspect and extract archives with Qore
+.SH SYNOPSIS
+.B qtar
+.I command
+.RI [ options ]
+.I archive
+.RI [ files ...]
+.SH DESCRIPTION
+.B qtar
+provides archive operations using Qore's tar module and libarchive.
+Compression is detected from the archive extension when creating an archive,
+unless selected explicitly. Supported methods include gzip, bzip2, xz,
+zstd and lz4. OpenSSL supplies the encryption implementation.
+.SH COMMANDS
+.TP
+.B create (c)
+Create an archive from files or directories.
+.TP
+.B extract (x)
+Extract archive contents. Use \-C to select the destination directory.
+.TP
+.B list (t)
+List archive contents. Use \-l for the detailed listing.
+.TP
+.B add (a)
+Add files to an existing archive.
+.TP
+.B info (i)
+Show archive metadata.
+.TP
+.B encrypt (e), decrypt (d)
+Encrypt or decrypt an archive using AES-256-CBC.
+.TP
+.B cat
+Write one archive entry to standard output.
+.TP
+.B verify
+Verify archive integrity.
+.TP
+.B diff
+Compare an archive with a directory or another archive.
+.SH OPTIONS
+.TP
+.B \-h, \-\-help
+Show help. After a command, show its specific options.
+.TP
+.B \-V, \-\-version
+Show the version.
+.SH EXAMPLES
+.nf
+qtar create backup.tar.gz project/
+qtar extract backup.tar.gz \-C restore/
+qtar list \-l backup.tar.gz
+qtar cat backup.tar.gz project/README
+.fi
+.SH SEE ALSO
+.BR qore (1),
+.BR tar (1)
+.PP
+The qore-tar-module-doc package provides the complete API references.

@@ -1,0 +1,26 @@
+#!/bin/sh
+# Copyright (C) 2026 David Nichols
+# SPDX-License-Identifier: MIT
+set -eu
+unset QORE_MODULE_DIR QORE_MODULE_DIR_ONLY QORE_INCLUDE_DIR LD_LIBRARY_PATH LD_PRELOAD
+cd "$AUTOPKGTEST_TMP"
+cat > tar-smoke.q <<'EOF'
+%modern
+%requires tar
+%requires TarDataProvider
+%requires DataProvider
+int sub main() {
+    TarFile archive("smoke.tar", "w");
+    on_exit archive.close();
+    archive.add(name: "hello.txt", text: "package test");
+    archive.close();
+    TarFile input("smoke.tar", "r");
+    on_exit input.close();
+    binary value = input.read(name: "hello.txt");
+    AbstractDataProviderFactory factory = DataProvider::getFactory("tar");
+    return (value != "package test".toBinary() || factory.getInfo().name != "tar") ? 1 : 0;
+}
+exit(main());
+EOF
+/usr/bin/qcc -o tar-smoke tar-smoke.q
+./tar-smoke

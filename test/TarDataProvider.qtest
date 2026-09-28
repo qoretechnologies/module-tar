@@ -26,14 +26,13 @@
 */
 
 %modern
+%prepend-module-path "${SCRIPT_DIR}/../qlib"
 
 %requires QUnit
 %requires Util
 %requires DataProvider
 %requires tar
-%try-module TarDataProvider
-%define NoTarDataProvider
-%endtry
+%requires TarDataProvider
 
 %exec-class TarDataProviderTest
 
@@ -45,7 +44,6 @@ public class TarDataProviderTest inherits QUnit::Test {
     constructor() : Test("TarDataProviderTest", "1.0") {
         testDir = tmp_location() + "/tar_dp_test_" + string(getpid());
 
-%ifndef NoTarDataProvider
         addTestCase("Factory tests", \factoryTest());
         addTestCase("Provider hierarchy tests", \providerHierarchyTest());
         addTestCase("Create archive action tests", \createArchiveActionTest());
@@ -68,7 +66,6 @@ public class TarDataProviderTest inherits QUnit::Test {
         addTestCase("Assert error condition tests", \assertErrorConditionTest());
         addTestCase("Allowed values validation tests", \allowedValuesTest());
         addTestCase("Location input tests", \locationInputTest());
-%endif
 
         set_return_value(main());
     }
@@ -84,7 +81,6 @@ public class TarDataProviderTest inherits QUnit::Test {
         }
     }
 
-%ifndef NoTarDataProvider
     # Test factory
     factoryTest() {
         # Test that factory is registered
@@ -1670,5 +1666,4 @@ public class TarDataProviderTest inherits QUnit::Test {
         });
         assertEq(1, verify_response.count, "output_location archive has 1 entry");
     }
-%endif
 }

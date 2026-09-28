@@ -1,0 +1,7 @@
+qore-tar-module (1.0.0~git20260928.1-0qore1~ubuntu26.04) resolute; urgency=medium
+
+  * Package tar, TarDataProvider, qtar and all provider translations.
+  * Preserve AOT metadata and ship API documentation and debug symbols.
+  * Test installed archives, encryption, CLI and compiler integration.
+
+ -- David Nichols <david@qore.org>  Mon, 28 Sep 2026 21:27:27 +0000
