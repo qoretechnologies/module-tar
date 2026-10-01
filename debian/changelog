@@ -1,5 +1,6 @@
 qore-tar-module (1.0.0~git20260928.1-0qore2~ubuntu26.04) UNRELEASED; urgency=medium
 
+  * Fix qcc code generation to one partition for reproducible AOT modules.
   * Allow valid Qore source-fallback diagnostics in compiler autopkgtests
     when additional optional modules are installed.
 

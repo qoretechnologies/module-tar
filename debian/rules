@@ -8,6 +8,10 @@ builddir = obj-$(DEB_HOST_GNU_TYPE)
 export DEB_BUILD_MAINT_OPTIONS = hardening=+all
 export TZ = UTC
 export LC_ALL = C.UTF-8
+# Fixed qcc partitions keep output independent of jobserver load and CPU count.
+# Debhelper still builds independent targets in parallel.
+export QCC_JOBS = 1
+unexport QCC_SPLIT_THRESHOLD
 export QORE_QTAR_BINARY = $(CURDIR)/bin/qtar
 unexport CMAKE_PREFIX_PATH
 unexport LD_LIBRARY_PATH
