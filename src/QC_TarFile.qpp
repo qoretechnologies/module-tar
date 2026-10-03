@@ -35,6 +35,7 @@
     These constants define the compression methods available for TAR archives.
 */
 ///@{
+namespace Qore::Tar;
 //! No compression (.tar)
 const TAR_CM_NONE = 0;
 
@@ -58,6 +59,7 @@ const TAR_CM_LZ4 = 5;
     These constants define compression levels for TAR archives.
 */
 ///@{
+namespace Qore::Tar;
 //! Default compression level
 const TAR_COMPRESSION_DEFAULT = -1;
 
@@ -72,6 +74,7 @@ const TAR_COMPRESSION_BEST = 9;
     These constants define the TAR archive formats.
 */
 ///@{
+namespace Qore::Tar;
 //! POSIX.1-1988 ustar format
 const TAR_FORMAT_USTAR = 0;
 
@@ -385,7 +388,8 @@ TarFile::constructor(Qore::InputStream[InputStream] input) [flags=NAMED_ARGS] {
 }
 
 //! Creates a TarFile object for writing to an OutputStream
-/** @param output the output stream to write archive data to
+/** @anchor tar_output_stream_constructor
+ @param output the output stream to write archive data to
     @param options optional @ref TarCreateOptions for compression and format settings
 
     @throw TAR-ERROR error opening the archive for writing
@@ -712,6 +716,7 @@ TarOutputStream TarFile::getOutputStream(string name, *hash<TarAddOptions> optio
     These functions provide name lookups for TAR constants.
 */
 ///@{
+namespace Qore::Tar;
 
 //! Returns the human-readable name of a compression method constant
 /** @param method one of @ref tar_compression_methods (e.g. @ref TAR_CM_GZIP)
