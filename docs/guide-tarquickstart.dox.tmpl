@@ -1,0 +1,185 @@
+/* Copyright (C) 2026 Qore Technologies, s.r.o. */
+
+/** @page tarquickstartguide Quick Start
+
+    @tableofcontents
+
+    @section tarcreate Creating a TAR Archive
+
+    @code{.py}
+#!/usr/bin/qore
+
+%requires tar
+
+# Create a new uncompressed archive
+TarFile tar("archive.tar", "w");
+tar.add("readme.txt", "Hello, World!");
+tar.addFile("document.pdf", "/path/to/document.pdf");
+tar.addDirectory("images/");
+tar.addFile("images/logo.png", "/path/to/logo.png");
+tar.close();
+
+# Create a gzip-compressed archive
+TarFile tarGz("archive.tar.gz", "w", <TarCreateOptions>{"compression_method": TAR_CM_GZIP});
+tarGz.add("data.txt", "Compressed content");
+tarGz.close();
+    @endcode
+
+    @section tarread Reading a TAR Archive
+
+    @code{.py}
+TarFile tar("archive.tar", "r");
+foreach hash<Qore::Tar::TarEntryInfo> entry in (tar.entries()) {
+    printf("Entry: %s, Size: %d bytes, Type: %s\n", entry.name, entry.size, entry.type);
+    if (!entry.is_directory) {
+        binary data = tar.read(entry.name);
+    }
+}
+tar.close();
+    @endcode
+
+    @section tarextract Extracting a TAR Archive
+
+    @code{.py}
+TarFile tar("archive.tar.gz", "r");
+tar.extractAll(<TarExtractOptions>{
+    "destination": "/destination/path",
+    "overwrite": True,
+    "preserve_permissions": True,
+    "preserve_times": True,
+});
+tar.close();
+
+# Extract a single file
+TarFile tar2("archive.tar", "r");
+tar2.extractTo("readme.txt", "/path/to/extracted/readme.txt");
+tar2.close();
+    @endcode
+
+    @section tarfilters Extraction Filters and Path Stripping
+
+    @code{.py}
+TarFile tar("archive.tar.gz", "r");
+
+# Extract only .txt files, excluding anything in tmp/
+list<string> extracted = tar.extractAll(<TarExtractOptions>{
+    "destination": "/output",
+    "include": ("*.txt",),
+    "exclude": ("tmp/*",),
+});
+tar.close();
+printf("Extracted %d files\n", extracted.size());
+
+# Strip leading path components (e.g., "project/src/main.c" -> "src/main.c")
+TarFile tar2("project.tar", "r");
+tar2.extractAll(<TarExtractOptions>{
+    "destination": "/output",
+    "strip_count": 1,
+});
+tar2.close();
+    @endcode
+
+    Glob wildcards supported by include/exclude filters:
+    - \c * matches any characters (including \c /)
+    - \c ? matches any single character
+    - \c [abc] matches one character from the set
+
+    @section tarprogress Progress Callbacks
+
+    @code{.py}
+TarFile tar("large-archive.tar.gz", "r");
+list<string> extracted = tar.extractAll(
+    <TarExtractOptions>{"destination": "/output"},
+    sub (string name, int current, int total) {
+        printf("[%d/%d] %s\n", current, total, name);
+    },
+);
+tar.close();
+    @endcode
+
+    The callback receives \c (string entry_name, int current, int total) after each
+    entry is extracted. If the callback throws an exception, extraction is aborted cleanly.
+
+    @section tarmemory In-Memory Archives
+
+    @code{.py}
+# Create an in-memory archive
+TarFile tar();
+tar.add("data.json", make_json({"key": "value"}));
+binary archive_data = tar.toData();
+# archive_data can be sent over network, stored in DB, etc.
+
+# Read from binary data
+TarFile readTar(archive_data);
+string content = readTar.readText("data.json");
+readTar.close();
+
+# Create compressed in-memory archive
+TarFile compressedTar(<TarCreateOptions>{"compression_method": TAR_CM_GZIP});
+compressedTar.add("file.txt", "Compressed content");
+binary compressedData = compressedTar.toData();
+    @endcode
+
+    @section tarsymlinks Working with Symlinks and Hardlinks
+
+    @code{.py}
+TarFile tar("links.tar", "w", <TarCreateOptions>{"format": TAR_FORMAT_PAX});
+tar.add("original.txt", "Original file content");
+tar.addSymlink("symlink.txt", "original.txt");
+tar.addHardlink("hardlink.txt", "original.txt");
+tar.close();
+
+# Reading link information
+TarFile readTar("links.tar", "r");
+hash<Qore::Tar::TarEntryInfo> entry = readTar.getEntry("symlink.txt");
+if (entry.is_symlink) {
+    printf("Symlink points to: %s\n", entry.link_target);
+}
+readTar.close();
+    @endcode
+
+    @section tarstreaming Streaming API
+
+    @code{.py}
+# Streaming write for large files
+TarFile tar("large.tar", "w");
+TarOutputStream os = tar.getOutputStream("bigfile.bin");
+# Write data in chunks
+os.write(chunk1);
+os.write(chunk2);
+os.write(chunk3);
+os.close();
+tar.close();
+
+# Streaming read for large files
+TarFile readTar("large.tar", "r");
+TarInputStream is = readTar.getInputStream("bigfile.bin");
+while (*binary chunk = is.read(4096)) {
+    # Process chunk
+}
+readTar.close();
+    @endcode
+
+    @section tarstreamctors Stream-Based Constructors
+
+    TarFile can be constructed from Qore InputStream and OutputStream objects for
+    piping archive data through streams:
+
+    @code{.py}
+# Write archive to an OutputStream
+FileOutputStream fos("archive.tar.gz");
+TarFile tar(fos, <TarCreateOptions>{"compression_method": TAR_CM_GZIP});
+tar.add("file.txt", "content");
+tar.close();
+
+# Read archive from an InputStream
+FileInputStream fis("archive.tar.gz");
+TarFile tar2(fis);
+list<hash<TarEntryInfo>> entries = tar2.entries();
+tar2.close();
+    @endcode
+
+    @note Operations that re-read the archive (e.g., calling entries() then read()) will
+    buffer the stream into memory on first use, since streams are not seekable. For large
+    archives where memory is a concern, use the file-path constructor instead.
+*/

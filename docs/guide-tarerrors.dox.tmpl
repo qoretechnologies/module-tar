@@ -1,0 +1,31 @@
+/* Copyright (C) 2026 Qore Technologies, s.r.o. */
+
+/** @page tarerrorsguide Error Handling
+
+    @tableofcontents
+
+    All TAR operations throw exceptions of type \c "TAR-ERROR" when errors occur:
+
+    @code{.py}
+try {
+    TarFile tar("nonexistent.tar", "r");
+} catch (hash<ExceptionInfo> ex) {
+    if (ex.err == "TAR-ERROR") {
+        printf("TAR error: %s\n", ex.desc);
+    }
+}
+    @endcode
+
+    Path traversal attacks are detected and rejected with \c "TAR-SECURITY-ERROR":
+
+    @code{.py}
+# Archives containing paths like "../../../etc/passwd" are rejected
+try {
+    tar.extractAll(<TarExtractOptions>{"destination": "/safe/dir"});
+} catch (hash<ExceptionInfo> ex) {
+    if (ex.err == "TAR-SECURITY-ERROR") {
+        printf("Blocked path traversal: %s\n", ex.desc);
+    }
+}
+    @endcode
+*/

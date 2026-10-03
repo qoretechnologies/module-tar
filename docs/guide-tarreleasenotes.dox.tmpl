@@ -1,0 +1,48 @@
+/* Copyright (C) 2026 Qore Technologies, s.r.o. */
+
+/** @page tarreleasenotesguide Release Notes
+
+    @tableofcontents
+
+    @section tar_1_1 tar Module Version 1.1
+
+    <b>New Features:</b>
+    - Include/exclude glob-style filters for @ref Qore::Tar::TarFile::extractAll() "extractAll()"
+      (\c include, \c exclude fields in @ref Qore::Tar::TarExtractOptions "TarExtractOptions")
+    - Path component stripping during extraction (\c strip_count in
+      @ref Qore::Tar::TarExtractOptions "TarExtractOptions")
+    - Progress callbacks for @ref Qore::Tar::TarFile::extractAll() "extractAll()" with
+      \c code parameter overload
+    - Stream-based constructors: @ref Qore::Tar::TarFile::constructor(Qore::InputStream) "TarFile(InputStream)"
+      and @ref tar_output_stream_constructor "TarFile(OutputStream)"
+    - @ref Qore::Tar::get_compression_name() "get_compression_name()" and
+      @ref Qore::Tar::get_format_name() "get_format_name()" utility functions
+    - @ref Qore::Tar::TarFile::extractAll() "extractAll()" returns list of extracted entry names
+    - \c qtar command-line tool with create, extract, list, add, info, cat, encrypt, decrypt,
+      verify, and diff commands
+
+    <b>Data Provider Improvements:</b>
+    - All action registrations include \c options and \c output_type for full UI support
+    - \c AllowedValueInfo with \c display_name for all enumerated values
+    - New providers: TarVerifyArchiveDataProvider, TarArchiveDirectoryDataProvider,
+      TarStreamExtractDataProvider, TarDeleteEntryDataProvider,
+      TarEncryptArchiveDataProvider, TarDecryptArchiveDataProvider,
+      TarSplitArchiveDataProvider, TarJoinArchiveDataProvider
+
+    <b>Bug Fixes:</b>
+    - Fixed use-after-free in extractAll() where entry_name pointer was used after
+      archive_entry_set_pathname() invalidated the libarchive internal buffer
+    - Removed non-functional fields from TarAddOptions (compression_method,
+      compression_level, format were declared but never parsed)
+    - Removed non-functional strip_components bool from TarExtractOptions
+      (replaced by working strip_count int)
+
+    @section tar_1_0 tar Module Version 1.0
+    - Initial release
+    - Multiple compression methods (gzip, bzip2, xz, zstd, lz4)
+    - Multiple TAR formats (USTAR, PAX, GNU, V7)
+    - Streaming API for large files
+    - In-memory archive operations
+    - Symlink and hardlink support
+    - Data provider module with registered actions
+*/

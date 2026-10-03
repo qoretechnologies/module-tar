@@ -1,0 +1,21 @@
+/* Copyright (C) 2026 Qore Technologies, s.r.o. */
+
+/** @page tarformatsguide TAR Formats
+
+    @tableofcontents
+
+    The module supports multiple TAR formats:
+
+    |!Constant|!Description
+    |@ref Qore::Tar::TAR_FORMAT_USTAR|POSIX.1-1988 ustar format (100-char filename limit)
+    |@ref Qore::Tar::TAR_FORMAT_PAX|POSIX.1-2001 pax format (recommended, no practical limits)
+    |@ref Qore::Tar::TAR_FORMAT_GNU|GNU tar format (extended attributes support)
+    |@ref Qore::Tar::TAR_FORMAT_V7|Original V7 Unix tar format (legacy)
+
+    The PAX format is recommended for new archives as it supports:
+    - Unlimited filename length
+    - Unlimited file size
+    - Unicode filenames
+    - Extended attributes
+    - Nanosecond timestamps
+*/

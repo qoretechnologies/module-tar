@@ -1,0 +1,56 @@
+/* Copyright (C) 2026 Qore Technologies, s.r.o. */
+
+/** @page tarqtarguide qtar Command-Line Tool
+
+    @tableofcontents
+
+    The module includes \c qtar, a command-line tool for TAR archive operations:
+
+    @verbatim
+qtar - Qore TAR archive tool
+
+Commands:
+  c  create   Create a new archive
+  x  extract  Extract archive contents
+  t  list     List archive contents
+  a  add      Add files to an existing archive
+  i  info     Show archive metadata
+  e  encrypt  Encrypt an archive (AES-256-CBC)
+  d  decrypt  Decrypt an encrypted archive
+     cat      Read a single entry to stdout
+     verify   Verify archive integrity
+     diff     Compare archive vs filesystem
+    @endverbatim
+
+    @section tarqtarexamples qtar Examples
+
+    @code{.sh}
+# Create a gzip-compressed archive (compression auto-detected from extension)
+qtar create backup.tar.gz /path/to/project
+
+# Extract with glob filters
+qtar extract backup.tar.gz -C /tmp/output --include='*.txt' --exclude='tmp/*'
+
+# Extract with path stripping
+qtar extract project.tar.gz -C /output --strip=1
+
+# List contents in long format
+qtar list -l archive.tar
+
+# Read a single file to stdout
+qtar cat archive.tar.gz path/to/file.txt > output.txt
+
+# Show archive metadata
+qtar info archive.tar.gz
+
+# Encrypt/decrypt
+qtar encrypt archive.tar archive.tar.enc --gen-key
+qtar decrypt archive.tar.enc archive.tar -k <hex-key>
+
+# Verify archive integrity
+qtar verify backup.tar.gz
+
+# Compare archive against filesystem
+qtar diff backup.tar.gz /path/to/project
+    @endcode
+*/

@@ -1,0 +1,30 @@
+/* Copyright (C) 2026 Qore Technologies, s.r.o. */
+
+/** @page tarentryinfoguide Entry Information
+
+    @tableofcontents
+
+    Each entry in a TAR archive has associated metadata:
+
+    @code{.py}
+hashdecl Qore::Tar::TarEntryInfo {
+    string name;              # Entry path/name
+    int size;                 # Uncompressed size
+    date modified;            # Modification time
+    date accessed;            # Access time (if available)
+    date created;             # Creation time (if available)
+    int mode;                 # Unix permissions
+    int uid;                  # User ID
+    int gid;                  # Group ID
+    *string uname;            # User name
+    *string gname;            # Group name
+    string type;              # "file", "directory", "symlink", "hardlink", etc.
+    *string link_target;      # Target for symlinks/hardlinks
+    bool is_directory;        # Convenience flag
+    bool is_symlink;          # Convenience flag
+    bool is_hardlink;         # Convenience flag
+    *int devmajor;            # Device major number (for device nodes)
+    *int devminor;            # Device minor number (for device nodes)
+}
+    @endcode
+*/

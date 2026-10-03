@@ -1,0 +1,23 @@
+/* Copyright (C) 2026 Qore Technologies, s.r.o. */
+
+/** @page tarcompressionguide Compression Methods
+
+    @tableofcontents
+
+    The module supports multiple compression methods:
+
+    |!Constant|!Extension|!Description
+    |@ref Qore::Tar::TAR_CM_NONE|.tar|No compression (plain tar)
+    |@ref Qore::Tar::TAR_CM_GZIP|.tar.gz, .tgz|Gzip compression (most common)
+    |@ref Qore::Tar::TAR_CM_BZIP2|.tar.bz2|Bzip2 compression (better ratio, slower)
+    |@ref Qore::Tar::TAR_CM_XZ|.tar.xz|XZ/LZMA2 compression (best ratio, slowest)
+    |@ref Qore::Tar::TAR_CM_ZSTD|.tar.zst|Zstandard compression (fast, good ratio)
+    |@ref Qore::Tar::TAR_CM_LZ4|.tar.lz4|LZ4 compression (fastest, lower ratio)
+
+    Compression levels range from 1 (fastest) to 9 (best):
+
+    |!Constant|!Description
+    |@ref Qore::Tar::TAR_COMPRESSION_DEFAULT|Default compression level
+    |@ref Qore::Tar::TAR_COMPRESSION_FASTEST|Fastest compression (level 1)
+    |@ref Qore::Tar::TAR_COMPRESSION_BEST|Best compression (level 9)
+*/

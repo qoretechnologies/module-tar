@@ -1,0 +1,93 @@
+/* Copyright (C) 2026 Qore Technologies, s.r.o. */
+
+/** @page tardataproviderguide Data Provider API
+
+    @tableofcontents
+
+    The \c TarDataProvider module provides integration with Qore's data provider framework.
+    See the TarDataProvider module documentation for details:
+    @htmlonly
+    @ref tardataproviderintro "TarDataProvider module documentation"
+    @endhtmlonly
+
+    @code{.py}
+%requires TarDataProvider
+
+# Get the data provider factory
+AbstractDataProviderFactory factory = DataProvider::getFactoryEx("tar");
+AbstractDataProvider provider = factory.create();
+
+# Navigate to the create-archive action
+AbstractDataProvider createAction = provider.getChildProviderEx("archive").getChildProviderEx("create");
+
+# Or use the shorthand path navigation
+AbstractDataProvider dp = DataProvider::getFactoryObjectFromStringEx("tar{}/archive/create");
+    @endcode
+
+    @section tardpactions Available Data Provider Actions
+
+    |!Path|!Action|!Description
+    |/archive/create|create-archive|Create a new tar archive
+    |/archive/extract|extract-archive|Extract files with optional include/exclude filters
+    |/archive/list|list-archive|List archive contents with metadata
+    |/archive/info|get-archive-info|Get archive metadata and statistics
+    |/archive/add|add-files|Add files to an existing archive
+    |/archive/verify|verify-archive|Verify archive integrity without extracting
+    |/archive/encrypt|encrypt-archive|Encrypt archive with AES-256-CBC
+    |/archive/decrypt|decrypt-archive|Decrypt an AES-256-CBC encrypted archive
+    |/archive/split|split-archive|Split archive into fixed-size chunks
+    |/archive/join|join-archive|Join chunks back into single archive
+    |/file/extract|extract-file|Extract a single file from archive
+    |/file/read|read-file|Read file content without extracting to disk
+    |/data/compress|compress-data|Compress data to tar format (in-memory)
+    |/data/decompress|decompress-data|Decompress tar data (in-memory)
+    |/directory/archive|archive-directory|Archive a directory tree recursively
+    |/stream/extract|stream-extract|Stream extract large files
+    |/entry/delete|delete-entry|Delete entry from archive
+
+    @section tardpexamples Data Provider Examples
+
+    @code{.py}
+%requires TarDataProvider
+%requires DataProvider
+
+auto provider = DataProvider::getFactory("tar").create();
+
+# Create an archive with files
+auto createProvider = provider.getChildProvider("archive").getChildProvider("create");
+hash<auto> result = createProvider.doRequest({
+    "archive_path": "/tmp/backup.tar.gz",
+    "compression": "gzip",
+    "files": (
+        {"name": "readme.txt", "text": "Hello World"},
+        {"name": "data.bin", "data": binary("binary content")},
+    ),
+});
+
+# Extract with filters
+auto extractProvider = provider.getChildProvider("archive").getChildProvider("extract");
+hash<auto> ext_result = extractProvider.doRequest({
+    "archive_path": "/tmp/backup.tar.gz",
+    "destination": "/tmp/output",
+    "include": ("*.txt",),
+    "overwrite": True,
+});
+printf("Extracted %d entries\n", ext_result.extracted_count);
+
+# Encrypt an archive
+auto encryptProvider = provider.getChildProvider("archive").getChildProvider("encrypt");
+hash<auto> enc_result = encryptProvider.doRequest({
+    "archive_path": "/tmp/backup.tar.gz",
+    "key": get_random_bytes(32),
+});
+# enc_result.encrypted_data contains [IV + ciphertext]
+
+# Split into 1MB chunks
+auto splitProvider = provider.getChildProvider("archive").getChildProvider("split");
+hash<auto> split_result = splitProvider.doRequest({
+    "archive_path": "/tmp/backup.tar.gz",
+    "chunk_size": 1048576,
+});
+printf("Split into %d chunks\n", split_result.chunk_count);
+    @endcode
+*/

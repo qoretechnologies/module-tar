@@ -71,6 +71,15 @@ set(QMOD
 
 set(QORE_DOX_TMPL_SRC
   docs/mainpage.dox.tmpl
+    docs/guide-tarcompression.dox.tmpl
+    docs/guide-tardataprovider.dox.tmpl
+    docs/guide-tarentryinfo.dox.tmpl
+    docs/guide-tarerrors.dox.tmpl
+    docs/guide-tarformats.dox.tmpl
+    docs/guide-tarqtar.dox.tmpl
+    docs/guide-tarquickstart.dox.tmpl
+    docs/guide-tarreleasenotes.dox.tmpl
+    docs/guide-tarutilityfunctions.dox.tmpl
 )
 
 add_library(${module_name} MODULE ${CPP_SRC} ${QPP_SOURCES})
@@ -109,7 +118,20 @@ file(WRITE
     "${CMAKE_BINARY_DIR}/doxygen/qlib/TarDataProvider/tar-logo.svg.dox.h"
     "/** @file tar-logo.svg.dox.h\n    @brief TAR DataProvider logo file.\n*/\n"
 )
-set(MODULE_DOX_INPUT ${CMAKE_BINARY_DIR})
+list(APPEND MODULE_DOX_INPUT
+    ${CMAKE_CURRENT_BINARY_DIR}/guide-tarcompression.dox
+    ${CMAKE_CURRENT_BINARY_DIR}/guide-tardataprovider.dox
+    ${CMAKE_CURRENT_BINARY_DIR}/guide-tarentryinfo.dox
+    ${CMAKE_CURRENT_BINARY_DIR}/guide-tarerrors.dox
+    ${CMAKE_CURRENT_BINARY_DIR}/guide-tarformats.dox
+    ${CMAKE_CURRENT_BINARY_DIR}/guide-tarqtar.dox
+    ${CMAKE_CURRENT_BINARY_DIR}/guide-tarquickstart.dox
+    ${CMAKE_CURRENT_BINARY_DIR}/guide-tarreleasenotes.dox
+    ${CMAKE_CURRENT_BINARY_DIR}/guide-tarutilityfunctions.dox
+)
+set(QORE_DOXYGEN_IMAGES
+    "${CMAKE_SOURCE_DIR}/qlib/TarDataProvider/tar-logo.svg"
+)
 qore_external_binary_module(${module_name} ${PROJECT_VERSION})
 
 qore_dist(${PROJECT_VERSION})
@@ -149,4 +171,9 @@ if (DOXYGEN_FOUND)
     qore_wrap_dox(QORE_DOX_SRC ${QORE_DOX_TMPL_SRC})
     add_custom_target(QORE_MOD_DOX_FILES DEPENDS ${QORE_DOX_SRC})
     add_dependencies(docs-module QORE_MOD_DOX_FILES)
+endif()
+
+# Resolve links between the native API and all companion user modules.
+if (DOXYGEN_FOUND)
+    qore_binary_module_two_phase_docs(${module_name} "TarDataProvider")
 endif()
