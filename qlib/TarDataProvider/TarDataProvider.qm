@@ -374,6 +374,8 @@ module TarDataProvider {
 
     @section tardataproviderintro Introduction to the TarDataProvider Module
 
+    <img src="tar-logo.svg" width="96" alt="TarDataProvider module logo"/>
+
     The %TarDataProvider module provides a data provider API for TAR archives through the
     DataProvider API. It exposes archive creation, extraction,
     listing, and streaming operations with optional compression and encryption support.
