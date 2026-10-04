@@ -377,7 +377,7 @@ TarFile::constructor(*hash<TarCreateOptions> options) [flags=NAMED_ARGS] {
     read()) will buffer the entire stream into memory on first use, since streams are not seekable.
     For truly large archives where memory is a concern, use the file-path constructor instead.
 
-    @since %tar 1.1
+    @since %tar 1.0
 */
 TarFile::constructor(Qore::InputStream[InputStream] input) [flags=NAMED_ARGS] {
     ReferenceHolder<QoreTarFile> holder(new QoreTarFile(*input, xsink), xsink);
@@ -396,7 +396,7 @@ TarFile::constructor(Qore::InputStream[InputStream] input) [flags=NAMED_ARGS] {
 
     @note The output stream must remain valid for the lifetime of the TarFile object.
 
-    @since %tar 1.1
+    @since %tar 1.0
 */
 TarFile::constructor(Qore::OutputStream[OutputStream] output, *hash<TarCreateOptions> options)
         [flags=NAMED_ARGS] {
@@ -612,7 +612,7 @@ tar.extractAll(opts, sub (string name, int cur, int total) {
 });
     @endcode
 
-    @since %tar 1.1
+    @since %tar 1.0
 */
 list<string> TarFile::extractAll(*hash<TarExtractOptions> options, code progress) [dom=FILESYSTEM] {
     std::string dest = ".";
@@ -728,7 +728,7 @@ namespace Qore::Tar;
     string name = get_compression_name(TAR_CM_GZIP);  # returns "gzip"
     @endcode
 
-    @since %tar 1.1
+    @since %tar 1.0
 */
 string get_compression_name(int method) [flags=CONSTANT,NAMED_ARGS] {
     switch (method) {
@@ -752,7 +752,7 @@ string get_compression_name(int method) [flags=CONSTANT,NAMED_ARGS] {
     string name = get_format_name(TAR_FORMAT_PAX);  # returns "pax"
     @endcode
 
-    @since %tar 1.1
+    @since %tar 1.0
 */
 string get_format_name(int format) [flags=CONSTANT,NAMED_ARGS] {
     switch (format) {
