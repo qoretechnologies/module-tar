@@ -58,6 +58,7 @@ module TarDataProvider {
         # Register actions
         DataProviderActionCatalog::registerAction(<DataProviderActionInfo>{
             "app": TarDataProvider::AppName,
+            "cls": "TarDataProvider::TarDataProvider",
             "path": "/archive/create",
             "action": "create-archive",
             "display_name": "Create Archive",
@@ -79,6 +80,7 @@ module TarDataProvider {
 
         DataProviderActionCatalog::registerAction(<DataProviderActionInfo>{
             "app": TarDataProvider::AppName,
+            "cls": "TarDataProvider::TarDataProvider",
             "path": "/archive/extract",
             "action": "extract-archive",
             "display_name": "Extract Archive",
@@ -105,6 +107,7 @@ module TarDataProvider {
 
         DataProviderActionCatalog::registerAction(<DataProviderActionInfo>{
             "app": TarDataProvider::AppName,
+            "cls": "TarDataProvider::TarDataProvider",
             "path": "/archive/list",
             "action": "list-archive",
             "display_name": "List Archive Contents",
@@ -121,6 +124,7 @@ module TarDataProvider {
 
         DataProviderActionCatalog::registerAction(<DataProviderActionInfo>{
             "app": TarDataProvider::AppName,
+            "cls": "TarDataProvider::TarDataProvider",
             "path": "/archive/info",
             "action": "get-archive-info",
             "display_name": "Get Archive Info",
@@ -138,6 +142,7 @@ module TarDataProvider {
 
         DataProviderActionCatalog::registerAction(<DataProviderActionInfo>{
             "app": TarDataProvider::AppName,
+            "cls": "TarDataProvider::TarDataProvider",
             "path": "/archive/add",
             "action": "add-files",
             "display_name": "Add Files to Archive",
@@ -156,6 +161,7 @@ module TarDataProvider {
 
         DataProviderActionCatalog::registerAction(<DataProviderActionInfo>{
             "app": TarDataProvider::AppName,
+            "cls": "TarDataProvider::TarDataProvider",
             "path": "/file/extract",
             "action": "extract-file",
             "display_name": "Extract Single File",
@@ -172,6 +178,7 @@ module TarDataProvider {
 
         DataProviderActionCatalog::registerAction(<DataProviderActionInfo>{
             "app": TarDataProvider::AppName,
+            "cls": "TarDataProvider::TarDataProvider",
             "path": "/file/read",
             "action": "read-file",
             "display_name": "Read File Content",
@@ -191,6 +198,7 @@ module TarDataProvider {
 
         DataProviderActionCatalog::registerAction(<DataProviderActionInfo>{
             "app": TarDataProvider::AppName,
+            "cls": "TarDataProvider::TarDataProvider",
             "path": "/data/compress",
             "action": "compress-data",
             "display_name": "Compress Data",
@@ -209,6 +217,7 @@ module TarDataProvider {
 
         DataProviderActionCatalog::registerAction(<DataProviderActionInfo>{
             "app": TarDataProvider::AppName,
+            "cls": "TarDataProvider::TarDataProvider",
             "path": "/data/decompress",
             "action": "decompress-data",
             "display_name": "Decompress Data",
@@ -225,6 +234,7 @@ module TarDataProvider {
 
         DataProviderActionCatalog::registerAction(<DataProviderActionInfo>{
             "app": TarDataProvider::AppName,
+            "cls": "TarDataProvider::TarDataProvider",
             "path": "/directory/archive",
             "action": "archive-directory",
             "display_name": "Archive Directory",
@@ -246,6 +256,7 @@ module TarDataProvider {
 
         DataProviderActionCatalog::registerAction(<DataProviderActionInfo>{
             "app": TarDataProvider::AppName,
+            "cls": "TarDataProvider::TarDataProvider",
             "path": "/stream/extract",
             "action": "stream-extract",
             "display_name": "Stream Extract",
@@ -263,6 +274,7 @@ module TarDataProvider {
 
         DataProviderActionCatalog::registerAction(<DataProviderActionInfo>{
             "app": TarDataProvider::AppName,
+            "cls": "TarDataProvider::TarDataProvider",
             "path": "/entry/delete",
             "action": "delete-entry",
             "display_name": "Delete Entry",
@@ -284,6 +296,7 @@ module TarDataProvider {
 
         DataProviderActionCatalog::registerAction(<DataProviderActionInfo>{
             "app": TarDataProvider::AppName,
+            "cls": "TarDataProvider::TarDataProvider",
             "path": "/archive/verify",
             "action": "verify-archive",
             "display_name": "Verify Archive",
@@ -301,6 +314,7 @@ module TarDataProvider {
 
         DataProviderActionCatalog::registerAction(<DataProviderActionInfo>{
             "app": TarDataProvider::AppName,
+            "cls": "TarDataProvider::TarDataProvider",
             "path": "/archive/encrypt",
             "action": "encrypt-archive",
             "display_name": "Encrypt Archive",
@@ -318,6 +332,7 @@ module TarDataProvider {
 
         DataProviderActionCatalog::registerAction(<DataProviderActionInfo>{
             "app": TarDataProvider::AppName,
+            "cls": "TarDataProvider::TarDataProvider",
             "path": "/archive/decrypt",
             "action": "decrypt-archive",
             "display_name": "Decrypt Archive",
@@ -335,6 +350,7 @@ module TarDataProvider {
 
         DataProviderActionCatalog::registerAction(<DataProviderActionInfo>{
             "app": TarDataProvider::AppName,
+            "cls": "TarDataProvider::TarDataProvider",
             "path": "/archive/split",
             "action": "split-archive",
             "display_name": "Split Archive",
@@ -352,6 +368,7 @@ module TarDataProvider {
 
         DataProviderActionCatalog::registerAction(<DataProviderActionInfo>{
             "app": TarDataProvider::AppName,
+            "cls": "TarDataProvider::TarDataProvider",
             "path": "/archive/join",
             "action": "join-archive",
             "display_name": "Join Archive Chunks",
