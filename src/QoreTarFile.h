@@ -191,6 +191,11 @@ private:
     //! Reopen archive for reading from beginning
     DLLLOCAL void reopenRead(ExceptionSink* xsink);
 
+    //! Reads the next entry header of the open read archive
+    /** @return true when an entry was read; false at the end of the archive or after raising an exception
+    */
+    DLLLOCAL bool nextHeader(struct archive_entry*& entry, ExceptionSink* xsink);
+
     //! Setup compression filter for writing
     DLLLOCAL void setupCompressionFilter(ExceptionSink* xsink);
 

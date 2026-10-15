@@ -470,7 +470,7 @@ void QoreTarFile::copyEntries(ExceptionSink* xsink) {
     struct archive_entry* entry;
     char buffer[TAR_BUFFER_SIZE];
 
-    while (archive_read_next_header(read_archive, &entry) == ARCHIVE_OK) {
+    while (nextHeader(entry, xsink)) {
         // check for interrupt during entry copy
         if (qore_check_cancel(xsink, "tar archive copy")) {
             return;
@@ -561,6 +561,40 @@ void QoreTarFile::setupCompressionFilter(ExceptionSink* xsink) {
 }
 
 // Reopen archive for reading
+// Reads the next entry header of the open read archive
+/* libarchive reports a header it could only partly read (for example, a name it cannot convert) as
+   ARCHIVE_WARN, a damaged header it skipped while looking for the next one as ARCHIVE_RETRY, and a damaged
+   archive as ARCHIVE_FAILED or ARCHIVE_FATAL.  Stopping at such a header without an error silently truncated
+   entry listings, lookups and extraction: an archive with an unreadable entry looked complete without it.
+   An entry read with a warning is used only when its name is readable; every other result except the end of
+   the archive raises an exception.
+*/
+bool QoreTarFile::nextHeader(struct archive_entry*& entry, ExceptionSink* xsink) {
+    int r = archive_read_next_header(read_archive, &entry);
+    switch (r) {
+        case ARCHIVE_OK:
+            return true;
+        case ARCHIVE_EOF:
+            return false;
+        case ARCHIVE_WARN: {
+            const char* name = tar_entry_pathname(entry);
+            if (name && *name) {
+                return true;
+            }
+            xsink->raiseException("TAR-ERROR", "cannot read the name of an archive entry: %s",
+                                  get_archive_error(read_archive));
+            return false;
+        }
+        case ARCHIVE_RETRY:
+            xsink->raiseException("TAR-ERROR", "damaged archive entry header: %s", get_archive_error(read_archive));
+            return false;
+        default:
+            xsink->raiseException("TAR-ERROR", "cannot read an archive entry header: %s",
+                                  get_archive_error(read_archive));
+            return false;
+    }
+}
+
 void QoreTarFile::reopenRead(ExceptionSink* xsink) {
     TarUtf8LocaleHelper utf8_locale;
     // For stream-based reading: buffer the entire stream into memory on first pass
@@ -629,25 +663,26 @@ QoreListNode* QoreTarFile::entries(ExceptionSink* xsink) {
         return nullptr;
     }
 
-    QoreListNode* list = new QoreListNode(hashdeclTarEntryInfo->getTypeInfo());
+    ReferenceHolder<QoreListNode> list(new QoreListNode(hashdeclTarEntryInfo->getTypeInfo()), xsink);
 
     struct archive_entry* entry;
-    while (archive_read_next_header(read_archive, &entry) == ARCHIVE_OK) {
+    while (nextHeader(entry, xsink)) {
         // check for interrupt during entry enumeration
         if (qore_check_cancel(xsink, "tar archive entry enumeration")) {
-            list->deref(xsink);
             return nullptr;
         }
         QoreHashNode* info = createEntryInfo(entry, xsink);
         if (*xsink) {
-            list->deref(xsink);
             return nullptr;
         }
         list->push(info, xsink);
         archive_read_data_skip(read_archive);
     }
 
-    return list;
+    if (*xsink) {
+        return nullptr;
+    }
+    return list.release();
 }
 
 // Get number of entries
@@ -664,12 +699,12 @@ int64 QoreTarFile::count(ExceptionSink* xsink) {
 
     int64 count = 0;
     struct archive_entry* entry;
-    while (archive_read_next_header(read_archive, &entry) == ARCHIVE_OK) {
+    while (nextHeader(entry, xsink)) {
         count++;
         archive_read_data_skip(read_archive);
     }
 
-    return count;
+    return *xsink ? -1 : count;
 }
 
 // Check if entry exists
@@ -685,7 +720,7 @@ bool QoreTarFile::hasEntry(const char* name, ExceptionSink* xsink) {
     }
 
     struct archive_entry* entry;
-    while (archive_read_next_header(read_archive, &entry) == ARCHIVE_OK) {
+    while (nextHeader(entry, xsink)) {
         if (entryNameEquals(tar_entry_pathname(entry), name)) {
             return true;
         }
@@ -708,7 +743,7 @@ QoreHashNode* QoreTarFile::getEntry(const char* name, ExceptionSink* xsink) {
     }
 
     struct archive_entry* entry;
-    while (archive_read_next_header(read_archive, &entry) == ARCHIVE_OK) {
+    while (nextHeader(entry, xsink)) {
         if (entryNameEquals(tar_entry_pathname(entry), name)) {
             return createEntryInfo(entry, xsink);
         }
@@ -731,7 +766,7 @@ BinaryNode* QoreTarFile::read(const char* name, ExceptionSink* xsink) {
     }
 
     struct archive_entry* entry;
-    while (archive_read_next_header(read_archive, &entry) == ARCHIVE_OK) {
+    while (nextHeader(entry, xsink)) {
         if (entryNameEquals(tar_entry_pathname(entry), name)) {
             int64 size = archive_entry_size(entry);
             if (size <= 0) {
@@ -762,7 +797,9 @@ BinaryNode* QoreTarFile::read(const char* name, ExceptionSink* xsink) {
         archive_read_data_skip(read_archive);
     }
 
-    xsink->raiseException("TAR-ERROR", "entry '%s' not found", name);
+    if (!*xsink) {
+        xsink->raiseException("TAR-ERROR", "entry '%s' not found", name);
+    }
     return nullptr;
 }
 
@@ -1153,7 +1190,7 @@ QoreListNode* QoreTarFile::extractAll(const char* destPath, const QoreHashNode* 
     archive_write_disk_set_standard_lookup(disk);
 
     struct archive_entry* entry;
-    while (archive_read_next_header(read_archive, &entry) == ARCHIVE_OK) {
+    while (nextHeader(entry, xsink)) {
         // check for interrupt during extraction
         if (qore_check_cancel(xsink, "tar archive extraction")) {
             break;
@@ -1266,6 +1303,9 @@ QoreListNode* QoreTarFile::extractAll(const char* destPath, const QoreHashNode* 
     archive_write_close(disk);
     archive_write_free(disk);
 
+    if (*xsink) {
+        return nullptr;
+    }
     return extracted_names.release();
 }
 
@@ -1296,7 +1336,7 @@ void QoreTarFile::extractTo(const char* name, const char* destination, Exception
     }
 
     struct archive_entry* entry;
-    while (archive_read_next_header(read_archive, &entry) == ARCHIVE_OK) {
+    while (nextHeader(entry, xsink)) {
         if (entryNameEquals(tar_entry_pathname(entry), name)) {
             // Found the entry, write to file
             FILE* fp = fopen(destination, "wb");
@@ -1327,7 +1367,9 @@ void QoreTarFile::extractTo(const char* name, const char* destination, Exception
         archive_read_data_skip(read_archive);
     }
 
-    xsink->raiseException("TAR-ERROR", "entry '%s' not found", name);
+    if (!*xsink) {
+        xsink->raiseException("TAR-ERROR", "entry '%s' not found", name);
+    }
 }
 
 // Get archive path
@@ -1552,7 +1594,7 @@ QoreObject* QoreTarFile::openInputStream(const char* name, ExceptionSink* xsink)
     }
 
     struct archive_entry* entry;
-    while (archive_read_next_header(read_archive, &entry) == ARCHIVE_OK) {
+    while (nextHeader(entry, xsink)) {
         if (entryNameEquals(tar_entry_pathname(entry), name)) {
             TarInputStream* is = new TarInputStream(read_archive, entry, xsink);
             if (*xsink) {
@@ -1564,7 +1606,9 @@ QoreObject* QoreTarFile::openInputStream(const char* name, ExceptionSink* xsink)
         archive_read_data_skip(read_archive);
     }
 
-    xsink->raiseException("TAR-ERROR", "entry '%s' not found", name);
+    if (!*xsink) {
+        xsink->raiseException("TAR-ERROR", "entry '%s' not found", name);
+    }
     return nullptr;
 }
 

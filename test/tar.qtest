@@ -62,6 +62,7 @@ public class TarTest inherits QUnit::Test {
         addTestCase("Error handling tests", \errorHandlingTest());
         addTestCase("Corner case tests", \cornerCaseTest());
         addTestCase("Unicode filename tests", \unicodeFilenameTest());
+        addTestCase("Damaged archive tests", \damagedArchiveTest());
         addTestCase("Streaming API tests", \streamingApiTest());
         addTestCase("Stream constructor tests", \streamConstructorTest());
         addTestCase("Metadata tests", \metadataTest());
@@ -1277,6 +1278,41 @@ public class TarTest inherits QUnit::Test {
         assertEq("<p>注文</p>", memRead.readText("注文.html"));
         assertEq("streamed", memRead.readText("ストリーム.txt"));
         memRead.close();
+    }
+
+    # A damaged entry header raises an error from every read path; the listing, lookups and extraction
+    # stopped at it without one, so an archive looked complete without the entries after it
+    damagedArchiveTest() {
+        TarFile tar(<TarCreateOptions>{"format": TAR_FORMAT_USTAR});
+        tar.add("first.txt", "first content");
+        tar.add("second.txt", "second content");
+        binary data = tar.toData();
+        tar.close();
+        # a ustar header and the first entry's one data block precede the second header; its checksum
+        # field is 8 bytes at offset 148
+        assertEq("second.txt", data.substr(1024, 10).toString());
+        binary bad = data.substr(0, 1024 + 148) + binary("9999999\0") + data.substr(1024 + 156);
+        # the undamaged archive is listed completely
+        TarFile good(data);
+        assertEq(("first.txt", "second.txt"), map $1.name, good.entries());
+        good.close();
+
+        TarFile damaged(bad);
+        string msg = "damaged archive entry header";
+        assertThrows("TAR-ERROR", msg, \damaged.entries(), NOTHING, "the listing is not truncated");
+        assertThrows("TAR-ERROR", msg, \damaged.entryCount(), NOTHING, "the count is not truncated");
+        assertThrows("TAR-ERROR", msg, \damaged.read(), ("second.txt",), "an entry after it is not reported missing");
+        assertThrows("TAR-ERROR", msg, \damaged.hasEntry(), ("second.txt",));
+        assertThrows("TAR-ERROR", msg, \damaged.getEntry(), ("second.txt",));
+        assertThrows("TAR-ERROR", msg, \damaged.getInputStream(), ("second.txt",));
+        # an entry before the damage is still found
+        assertEq("first content", damaged.readText("first.txt"));
+        string dest = testDir + "/damaged_extract";
+        mkdir(dest);
+        assertThrows("TAR-ERROR", msg, \damaged.extractAll(), (<TarExtractOptions>{"destination": dest},),
+            "extraction does not stop silently");
+        assertThrows("TAR-ERROR", msg, \damaged.extractTo(), ("second.txt", dest + "/second.txt"));
+        damaged.close();
     }
 
     # Test streaming API

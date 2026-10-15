@@ -16,6 +16,11 @@ try {
 }
     @endcode
 
+    An archive entry header that cannot be read completely also raises \c "TAR-ERROR", from every operation
+    that reads past it (entries(), entryCount(), lookups, reads, streams and extraction): a damaged header, or
+    an entry whose name cannot be read.  An archive is never silently treated as ending at such an entry, so
+    a listing or an extraction is either complete or fails.
+
     Path traversal attacks are detected and rejected with \c "TAR-SECURITY-ERROR":
 
     @code{.py}
