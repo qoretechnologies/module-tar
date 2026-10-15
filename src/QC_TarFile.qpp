@@ -471,7 +471,12 @@ int TarFile::entryCount() {
     @throw TAR-ERROR error reading archive
 */
 bool TarFile::hasEntry(string name) [flags=NAMED_ARGS] {
-    return tf->hasEntry(name->c_str(), xsink);
+    // entry names are stored and compared in UTF-8
+    TempEncodingHelper entry_name(name, QCS_UTF8, xsink);
+    if (*xsink) {
+        return QoreValue();
+    }
+    return tf->hasEntry(entry_name->c_str(), xsink);
 }
 
 //! Reads an entry from the archive as binary data
@@ -482,7 +487,12 @@ bool TarFile::hasEntry(string name) [flags=NAMED_ARGS] {
     @throw TAR-ERROR error reading entry or entry not found
 */
 binary TarFile::read(string name) [flags=NAMED_ARGS] {
-    return tf->read(name->c_str(), xsink);
+    // entry names are stored and compared in UTF-8
+    TempEncodingHelper entry_name(name, QCS_UTF8, xsink);
+    if (*xsink) {
+        return QoreValue();
+    }
+    return tf->read(entry_name->c_str(), xsink);
 }
 
 //! Reads an entry from the archive as text
@@ -494,7 +504,12 @@ binary TarFile::read(string name) [flags=NAMED_ARGS] {
     @throw TAR-ERROR error reading entry or entry not found
 */
 string TarFile::readText(string name, *string encoding) [flags=NAMED_ARGS] {
-    return tf->readText(name->c_str(), encoding ? encoding->c_str() : nullptr, xsink);
+    // entry names are stored and compared in UTF-8
+    TempEncodingHelper entry_name(name, QCS_UTF8, xsink);
+    if (*xsink) {
+        return QoreValue();
+    }
+    return tf->readText(entry_name->c_str(), encoding ? encoding->c_str() : nullptr, xsink);
 }
 
 //! Gets information about a specific entry
@@ -503,7 +518,12 @@ string TarFile::readText(string name, *string encoding) [flags=NAMED_ARGS] {
     @return a @ref TarEntryInfo hash describing the entry, or NOTHING if not found
 */
 *hash<TarEntryInfo> TarFile::getEntry(string name) [flags=NAMED_ARGS] {
-    return tf->getEntry(name->c_str(), xsink);
+    // entry names are stored and compared in UTF-8
+    TempEncodingHelper entry_name(name, QCS_UTF8, xsink);
+    if (*xsink) {
+        return QoreValue();
+    }
+    return tf->getEntry(entry_name->c_str(), xsink);
 }
 
 //! Adds binary data as an entry to the archive
@@ -514,7 +534,12 @@ string TarFile::readText(string name, *string encoding) [flags=NAMED_ARGS] {
     @throw TAR-ERROR error adding entry or archive not open for writing
 */
 nothing TarFile::add(string name, binary data, *hash<TarAddOptions> options) [flags=NAMED_ARGS] {
-    tf->add(name->c_str(), data, options, xsink);
+    // entry names are stored and compared in UTF-8
+    TempEncodingHelper entry_name(name, QCS_UTF8, xsink);
+    if (*xsink) {
+        return QoreValue();
+    }
+    tf->add(entry_name->c_str(), data, options, xsink);
 }
 
 //! Adds text as an entry to the archive
@@ -527,7 +552,12 @@ nothing TarFile::add(string name, binary data, *hash<TarAddOptions> options) [fl
 */
 nothing TarFile::add(string name, string text, *string encoding, *hash<TarAddOptions> options)
         [flags=NAMED_ARGS] {
-    tf->addText(name->c_str(), text, encoding ? encoding->c_str() : nullptr, options, xsink);
+    // entry names are stored and compared in UTF-8
+    TempEncodingHelper entry_name(name, QCS_UTF8, xsink);
+    if (*xsink) {
+        return QoreValue();
+    }
+    tf->addText(entry_name->c_str(), text, encoding ? encoding->c_str() : nullptr, options, xsink);
 }
 
 //! Adds a file from the filesystem to the archive
@@ -539,7 +569,12 @@ nothing TarFile::add(string name, string text, *string encoding, *hash<TarAddOpt
 */
 nothing TarFile::addFile(string archive_name, string source_path, *hash<TarAddOptions> options)
         [dom=FILESYSTEM;flags=NAMED_ARGS] {
-    tf->addFile(archive_name->c_str(), source_path->c_str(), options, xsink);
+    // entry names are stored and compared in UTF-8
+    TempEncodingHelper entry_name(archive_name, QCS_UTF8, xsink);
+    if (*xsink) {
+        return QoreValue();
+    }
+    tf->addFile(entry_name->c_str(), source_path->c_str(), options, xsink);
 }
 
 //! Adds a directory entry to the archive
@@ -549,7 +584,12 @@ nothing TarFile::addFile(string archive_name, string source_path, *hash<TarAddOp
     @throw TAR-ERROR error adding directory or archive not open for writing
 */
 nothing TarFile::addDirectory(string name, *hash<TarAddOptions> options) [flags=NAMED_ARGS] {
-    tf->addDirectory(name->c_str(), options, xsink);
+    // entry names are stored and compared in UTF-8
+    TempEncodingHelper entry_name(name, QCS_UTF8, xsink);
+    if (*xsink) {
+        return QoreValue();
+    }
+    tf->addDirectory(entry_name->c_str(), options, xsink);
 }
 
 //! Adds a symbolic link entry to the archive
@@ -560,7 +600,16 @@ nothing TarFile::addDirectory(string name, *hash<TarAddOptions> options) [flags=
     @throw TAR-ERROR error adding symlink or archive not open for writing
 */
 nothing TarFile::addSymlink(string name, string target, *hash<TarAddOptions> options) [flags=NAMED_ARGS] {
-    tf->addSymlink(name->c_str(), target->c_str(), options, xsink);
+    // entry names are stored and compared in UTF-8
+    TempEncodingHelper entry_name(name, QCS_UTF8, xsink);
+    if (*xsink) {
+        return QoreValue();
+    }
+    TempEncodingHelper link_target(target, QCS_UTF8, xsink);
+    if (*xsink) {
+        return QoreValue();
+    }
+    tf->addSymlink(entry_name->c_str(), link_target->c_str(), options, xsink);
 }
 
 //! Adds a hard link entry to the archive
@@ -571,7 +620,16 @@ nothing TarFile::addSymlink(string name, string target, *hash<TarAddOptions> opt
     @throw TAR-ERROR error adding hardlink or archive not open for writing
 */
 nothing TarFile::addHardlink(string name, string target, *hash<TarAddOptions> options) [flags=NAMED_ARGS] {
-    tf->addHardlink(name->c_str(), target->c_str(), options, xsink);
+    // entry names are stored and compared in UTF-8
+    TempEncodingHelper entry_name(name, QCS_UTF8, xsink);
+    if (*xsink) {
+        return QoreValue();
+    }
+    TempEncodingHelper link_target(target, QCS_UTF8, xsink);
+    if (*xsink) {
+        return QoreValue();
+    }
+    tf->addHardlink(entry_name->c_str(), link_target->c_str(), options, xsink);
 }
 
 //! Extracts all entries to a destination directory
@@ -647,7 +705,12 @@ nothing TarFile::extract(string name, *hash<TarExtractOptions> options) [dom=FIL
             dest.assign(str->c_str(), str->size());
         }
     }
-    tf->extractEntry(name->c_str(), dest.c_str(), xsink);
+    // entry names are stored and compared in UTF-8
+    TempEncodingHelper entry_name(name, QCS_UTF8, xsink);
+    if (*xsink) {
+        return QoreValue();
+    }
+    tf->extractEntry(entry_name->c_str(), dest.c_str(), xsink);
 }
 
 //! Extracts a single entry to a specific file path
@@ -657,7 +720,12 @@ nothing TarFile::extract(string name, *hash<TarExtractOptions> options) [dom=FIL
     @throw TAR-ERROR error extracting entry or entry not found
 */
 nothing TarFile::extractTo(string name, string destination) [dom=FILESYSTEM;flags=NAMED_ARGS] {
-    tf->extractTo(name->c_str(), destination->c_str(), xsink);
+    // entry names are stored and compared in UTF-8
+    TempEncodingHelper entry_name(name, QCS_UTF8, xsink);
+    if (*xsink) {
+        return QoreValue();
+    }
+    tf->extractTo(entry_name->c_str(), destination->c_str(), xsink);
 }
 
 //! Returns the archive file path (if opened from a file)
@@ -697,7 +765,12 @@ nothing TarFile::extractTo(string name, string destination) [dom=FILESYSTEM;flag
     @throw TAR-ERROR error opening stream or entry not found
 */
 TarInputStream TarFile::getInputStream(string name) [flags=NAMED_ARGS] {
-    return tf->openInputStream(name->c_str(), xsink);
+    // entry names are stored and compared in UTF-8
+    TempEncodingHelper entry_name(name, QCS_UTF8, xsink);
+    if (*xsink) {
+        return QoreValue();
+    }
+    return tf->openInputStream(entry_name->c_str(), xsink);
 }
 
 //! Opens an output stream for writing an entry
@@ -709,7 +782,12 @@ TarInputStream TarFile::getInputStream(string name) [flags=NAMED_ARGS] {
     @throw TAR-ERROR error opening stream or archive not open for writing
 */
 TarOutputStream TarFile::getOutputStream(string name, *hash<TarAddOptions> options) [flags=NAMED_ARGS] {
-    return tf->openOutputStream(name->c_str(), options, xsink);
+    // entry names are stored and compared in UTF-8
+    TempEncodingHelper entry_name(name, QCS_UTF8, xsink);
+    if (*xsink) {
+        return QoreValue();
+    }
+    return tf->openOutputStream(entry_name->c_str(), options, xsink);
 }
 
 /** @defgroup tar_utility_functions Tar Utility Functions

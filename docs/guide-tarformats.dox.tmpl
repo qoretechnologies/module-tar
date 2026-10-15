@@ -18,4 +18,14 @@
     - Unicode filenames
     - Extended attributes
     - Nanosecond timestamps
+
+    @section tarformatsnames Entry Names
+
+    Entry names and link targets are UTF-8 strings: names passed to the module in another encoding are
+    converted to UTF-8, and names read from an archive are returned as UTF-8 strings.  This does not depend on
+    the process locale: the module runs libarchive under a UTF-8 character type locale on the calling thread
+    for the duration of each call, so non-ASCII names such as \c 日本語.txt are written, read, looked up and
+    extracted exactly even in the \c "C" locale.  The process locale is never changed, and callbacks, such as
+    an extraction progress callback, run under the thread's own locale.  A host without any UTF-8 locale
+    keeps the locale-dependent behavior.
 */

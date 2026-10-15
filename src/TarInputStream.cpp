@@ -28,14 +28,17 @@
 
 TarInputStream::TarInputStream(struct archive* a, struct archive_entry* entry, ExceptionSink* xsink)
     : archive(a), entry(entry), bytes_read(0), closed(false), peek_byte(-1), has_peek(false) {
+    TarUtf8LocaleHelper utf8_locale;
     entry_size = archive_entry_size(entry);
 }
 
 TarInputStream::~TarInputStream() {
+    TarUtf8LocaleHelper utf8_locale;
     closed = true;
 }
 
 int64 TarInputStream::read(void* ptr, int64 limit, ExceptionSink* xsink) {
+    TarUtf8LocaleHelper utf8_locale;
     if (closed) {
         xsink->raiseException("STREAM-CLOSED-ERROR", "stream is closed");
         return -1;
@@ -72,6 +75,7 @@ int64 TarInputStream::read(void* ptr, int64 limit, ExceptionSink* xsink) {
 }
 
 int64 TarInputStream::peek(ExceptionSink* xsink) {
+    TarUtf8LocaleHelper utf8_locale;
     if (closed) {
         xsink->raiseException("STREAM-CLOSED-ERROR", "stream is closed");
         return -1;
@@ -102,13 +106,14 @@ int64 TarInputStream::peek(ExceptionSink* xsink) {
 }
 
 QoreHashNode* TarInputStream::getEntryInfo(ExceptionSink* xsink) {
+    TarUtf8LocaleHelper utf8_locale;
     if (!entry) {
         return nullptr;
     }
 
     ReferenceHolder<QoreHashNode> info(new QoreHashNode(hashdeclTarEntryInfo, xsink), xsink);
 
-    info->setKeyValue("name", new QoreStringNode(archive_entry_pathname(entry)), xsink);
+    info->setKeyValue("name", new QoreStringNode(tar_entry_pathname(entry), QCS_UTF8), xsink);
     info->setKeyValue("size", entry_size, xsink);
 
     if (archive_entry_mtime_is_set(entry)) {

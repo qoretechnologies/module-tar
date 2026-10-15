@@ -1202,47 +1202,81 @@ public class TarTest inherits QUnit::Test {
     }
 
     # Test Unicode filenames
+    # Unicode names must work whatever the process locale is: the module runs libarchive under a UTF-8
+    # locale on the calling thread (in the "C" locale, non-ASCII names could neither be written nor read)
     unicodeFilenameTest() {
         string tarPath = testDir + "/unicode.tar";
-
-        # Test various Unicode filenames
-        # Skip if system doesn't support UTF-8 encoding (some CI environments)
-        try {
+        hash<string, string> files = {
+            "日本語.txt": "Japanese content",
+            "中文.txt": "Chinese content",
+            "한국어.txt": "Korean content",
+            "émojis_🎉.txt": "Emoji content",
+            "Ελληνικά.txt": "Greek content",
+            "العربية.txt": "Arabic content",
+            "注文/řádky/položka.html": "nested content",
+        };
+        {
             TarFile tar(tarPath, "w", <TarCreateOptions>{"format": TAR_FORMAT_PAX});
-            tar.add("日本語.txt", "Japanese content");
-            tar.add("中文.txt", "Chinese content");
-            tar.add("한국어.txt", "Korean content");
-            tar.add("émojis_🎉.txt", "Emoji content");
-            tar.add("Ελληνικά.txt", "Greek content");
-            tar.add("العربية.txt", "Arabic content");
-            tar.close();
-        } catch (hash<ExceptionInfo> ex) {
-            if (ex.err == "TAR-ERROR" && ex.desc =~ /Can't translate/) {
-                testSkip("System doesn't support UTF-8 pathname encoding");
-                return;
+            foreach hash<auto> i in (files.pairIterator()) {
+                tar.add(i.key, i.value);
             }
-            rethrow;
+            tar.addDirectory("目录");
+            tar.addSymlink("リンク.txt", "日本語.txt");
+            tar.addHardlink("硬链接.txt", "中文.txt");
+            tar.close();
         }
 
-        # Read back and verify
+        # names read back exactly, and lookups by name find the entries
         {
             TarFile readTar(tarPath, "r");
-            assertEq(6, readTar.entryCount(), "all unicode files added");
-
-            string japContent = readTar.readText("日本語.txt");
-            assertEq("Japanese content", japContent, "Japanese filename works");
-
-            string chiContent = readTar.readText("中文.txt");
-            assertEq("Chinese content", chiContent, "Chinese filename works");
-
-            string korContent = readTar.readText("한국어.txt");
-            assertEq("Korean content", korContent, "Korean filename works");
-
-            string emojiContent = readTar.readText("émojis_🎉.txt");
-            assertEq("Emoji content", emojiContent, "Emoji filename works");
-
+            hash<string, hash<TarEntryInfo>> entries = map {$1.name: $1}, readTar.entries();
+            assertEq(sort(keys files + ("目录/", "リンク.txt", "硬链接.txt")), sort(keys entries),
+                "every name is read back exactly");
+            foreach hash<auto> i in (files.pairIterator()) {
+                assertEq(i.value, readTar.readText(i.key), sprintf("read %y by name", i.key));
+                assertTrue(readTar.hasEntry(i.key), sprintf("%y is found", i.key));
+                assertEq(i.value.size(), readTar.getEntry(i.key).size);
+            }
+            assertEq("日本語.txt", entries."リンク.txt".link_target, "a symbolic link target is read back exactly");
+            assertEq("中文.txt", entries."硬链接.txt".link_target, "a hard link target is read back exactly");
+            {
+                TarInputStream is = readTar.getInputStream("注文/řádky/položka.html");
+                assertEq("nested content", is.read(100).toString("UTF-8"), "a stream opens by a non-ASCII name");
+            }
             readTar.close();
         }
+
+        # extraction creates the exact file names
+        string dest = testDir + "/unicode_extract";
+        mkdir(dest);
+        {
+            TarFile readTar(tarPath, "r");
+            readTar.extractAll(<TarExtractOptions>{"destination": dest});
+            readTar.close();
+        }
+        foreach hash<auto> i in (files.pairIterator()) {
+            assertEq(i.value, ReadOnlyFile::readTextFile(dest + "/" + i.key), sprintf("extracted %y", i.key));
+        }
+        assertEq("日本語.txt", readlink(dest + "/リンク.txt"), "the extracted symbolic link keeps its target");
+        assertEq("Chinese content", ReadOnlyFile::readTextFile(dest + "/硬链接.txt"),
+            "the extracted hard link names its target");
+        assertTrue(is_dir(dest + "/目录"));
+
+        # an in-memory xz archive and the streaming writer use the same names
+        TarFile mem(<TarCreateOptions>{"compression_method": TAR_CM_XZ});
+        mem.add("注文.html", binary("<p>注文</p>"));
+        {
+            TarOutputStream os = mem.getOutputStream("ストリーム.txt");
+            os.write(binary("streamed"));
+            os.close();
+        }
+        binary data = mem.toData();
+        mem.close();
+        TarFile memRead(data);
+        assertEq(("注文.html", "ストリーム.txt"), map $1.name, memRead.entries());
+        assertEq("<p>注文</p>", memRead.readText("注文.html"));
+        assertEq("streamed", memRead.readText("ストリーム.txt"));
+        memRead.close();
     }
 
     # Test streaming API

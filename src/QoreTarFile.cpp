@@ -157,6 +157,7 @@ QoreTarFile::QoreTarFile(const char* path, TarMode mode, int compression_method,
     : filepath(path), mode(mode), read_archive(nullptr), write_archive(nullptr),
       compression_method(compression_method), compression_level(-1), format(format), in_memory(false), closed(false),
       memory_pos(0), input_stream(nullptr), output_stream(nullptr) {
+    TarUtf8LocaleHelper utf8_locale;
 
     // Auto-detect compression from filename if not specified
     if (compression_method < 0) {
@@ -177,6 +178,7 @@ QoreTarFile::QoreTarFile(const BinaryNode* data, ExceptionSink* xsink)
     : mode(TAR_MODE_READ), read_archive(nullptr), write_archive(nullptr),
       compression_method(TAR_CM_NONE), compression_level(-1), format(TAR_FORMAT_PAX), in_memory(true), closed(false),
       memory_pos(0), input_stream(nullptr), output_stream(nullptr) {
+    TarUtf8LocaleHelper utf8_locale;
 
     if (data && data->size() > 0) {
         memory_buffer.resize(data->size());
@@ -191,6 +193,7 @@ QoreTarFile::QoreTarFile(int compression_method, int format, ExceptionSink* xsin
       compression_method(compression_method >= 0 ? compression_method : TAR_CM_NONE),
       compression_level(-1), format(format >= 0 ? format : TAR_FORMAT_PAX), in_memory(true), closed(false),
       memory_pos(0), input_stream(nullptr), output_stream(nullptr) {
+    TarUtf8LocaleHelper utf8_locale;
 
     openWrite(xsink);
 }
@@ -200,6 +203,7 @@ QoreTarFile::QoreTarFile(InputStream* input, ExceptionSink* xsink)
     : mode(TAR_MODE_READ), read_archive(nullptr), write_archive(nullptr),
       compression_method(TAR_CM_NONE), compression_level(-1), format(TAR_FORMAT_PAX), in_memory(false), closed(false),
       memory_pos(0), input_stream(input), output_stream(nullptr) {
+    TarUtf8LocaleHelper utf8_locale;
 
     if (input) {
         input->ref();
@@ -215,6 +219,7 @@ QoreTarFile::QoreTarFile(OutputStream* output, int compression_method, int forma
       compression_method(compression_method >= 0 ? compression_method : TAR_CM_NONE),
       compression_level(-1), format(format >= 0 ? format : TAR_FORMAT_PAX), in_memory(false), closed(false),
       memory_pos(0), input_stream(nullptr), output_stream(output) {
+    TarUtf8LocaleHelper utf8_locale;
 
     if (output) {
         output->ref();
@@ -224,6 +229,7 @@ QoreTarFile::QoreTarFile(OutputStream* output, int compression_method, int forma
 
 // Destructor
 QoreTarFile::~QoreTarFile() {
+    TarUtf8LocaleHelper utf8_locale;
     ExceptionSink xsink;
     if (!closed) {
         close(&xsink);
@@ -238,6 +244,7 @@ QoreTarFile::~QoreTarFile() {
 
 // Close the archive
 void QoreTarFile::close(ExceptionSink* xsink) {
+    TarUtf8LocaleHelper utf8_locale;
     if (closed) {
         return;
     }
@@ -259,6 +266,7 @@ void QoreTarFile::close(ExceptionSink* xsink) {
 
 // Get archive as binary data
 BinaryNode* QoreTarFile::toData(ExceptionSink* xsink) {
+    TarUtf8LocaleHelper utf8_locale;
     if (!in_memory) {
         xsink->raiseException("TAR-ERROR", "cannot get binary data from file-based archive");
         return nullptr;
@@ -283,6 +291,7 @@ BinaryNode* QoreTarFile::toData(ExceptionSink* xsink) {
 
 // Open for reading
 void QoreTarFile::openRead(ExceptionSink* xsink) {
+    TarUtf8LocaleHelper utf8_locale;
     // check filesystem sandbox access before opening file for reading
     if (!in_memory && !input_stream && !filepath.empty()) {
         QoreSandboxManagerHelper smh;
@@ -324,6 +333,7 @@ void QoreTarFile::openRead(ExceptionSink* xsink) {
 
 // Open for writing
 void QoreTarFile::openWrite(ExceptionSink* xsink) {
+    TarUtf8LocaleHelper utf8_locale;
     // check filesystem sandbox access before opening file for writing
     if (!in_memory && !output_stream && !filepath.empty()) {
         QoreSandboxManagerHelper smh;
@@ -375,6 +385,7 @@ void QoreTarFile::openWrite(ExceptionSink* xsink) {
 
 // Open for appending - reads existing archive and prepares for writing new entries
 void QoreTarFile::openAppend(ExceptionSink* xsink) {
+    TarUtf8LocaleHelper utf8_locale;
     // For append mode, we need to:
     // 1. Read the existing archive
     // 2. Create a temporary write archive
@@ -451,6 +462,7 @@ void QoreTarFile::openAppend(ExceptionSink* xsink) {
 
 // Copy entries from read archive to write archive
 void QoreTarFile::copyEntries(ExceptionSink* xsink) {
+    TarUtf8LocaleHelper utf8_locale;
     if (!read_archive || !write_archive) {
         return;
     }
@@ -493,6 +505,7 @@ void QoreTarFile::copyEntries(ExceptionSink* xsink) {
 
 // Setup compression filter
 void QoreTarFile::setupCompressionFilter(ExceptionSink* xsink) {
+    TarUtf8LocaleHelper utf8_locale;
     int r = ARCHIVE_OK;
 
     switch (compression_method) {
@@ -549,6 +562,7 @@ void QoreTarFile::setupCompressionFilter(ExceptionSink* xsink) {
 
 // Reopen archive for reading
 void QoreTarFile::reopenRead(ExceptionSink* xsink) {
+    TarUtf8LocaleHelper utf8_locale;
     // For stream-based reading: buffer the entire stream into memory on first pass
     // so subsequent reopenRead calls can re-read from the buffer (streams are not seekable)
     if (input_stream && memory_buffer.empty()) {
@@ -581,6 +595,7 @@ void QoreTarFile::reopenRead(ExceptionSink* xsink) {
 
 // Check archive is open
 bool QoreTarFile::checkOpen(ExceptionSink* xsink, bool forWrite) {
+    TarUtf8LocaleHelper utf8_locale;
     if (closed) {
         xsink->raiseException("TAR-ERROR", "archive is closed");
         return false;
@@ -603,6 +618,7 @@ bool QoreTarFile::checkOpen(ExceptionSink* xsink, bool forWrite) {
 
 // Get list of all entries
 QoreListNode* QoreTarFile::entries(ExceptionSink* xsink) {
+    TarUtf8LocaleHelper utf8_locale;
     if (!checkOpen(xsink, false)) {
         return nullptr;
     }
@@ -636,6 +652,7 @@ QoreListNode* QoreTarFile::entries(ExceptionSink* xsink) {
 
 // Get number of entries
 int64 QoreTarFile::count(ExceptionSink* xsink) {
+    TarUtf8LocaleHelper utf8_locale;
     if (!checkOpen(xsink, false)) {
         return -1;
     }
@@ -657,6 +674,7 @@ int64 QoreTarFile::count(ExceptionSink* xsink) {
 
 // Check if entry exists
 bool QoreTarFile::hasEntry(const char* name, ExceptionSink* xsink) {
+    TarUtf8LocaleHelper utf8_locale;
     if (!checkOpen(xsink, false)) {
         return false;
     }
@@ -668,7 +686,7 @@ bool QoreTarFile::hasEntry(const char* name, ExceptionSink* xsink) {
 
     struct archive_entry* entry;
     while (archive_read_next_header(read_archive, &entry) == ARCHIVE_OK) {
-        if (entryNameEquals(archive_entry_pathname(entry), name)) {
+        if (entryNameEquals(tar_entry_pathname(entry), name)) {
             return true;
         }
         archive_read_data_skip(read_archive);
@@ -679,6 +697,7 @@ bool QoreTarFile::hasEntry(const char* name, ExceptionSink* xsink) {
 
 // Get entry info
 QoreHashNode* QoreTarFile::getEntry(const char* name, ExceptionSink* xsink) {
+    TarUtf8LocaleHelper utf8_locale;
     if (!checkOpen(xsink, false)) {
         return nullptr;
     }
@@ -690,7 +709,7 @@ QoreHashNode* QoreTarFile::getEntry(const char* name, ExceptionSink* xsink) {
 
     struct archive_entry* entry;
     while (archive_read_next_header(read_archive, &entry) == ARCHIVE_OK) {
-        if (entryNameEquals(archive_entry_pathname(entry), name)) {
+        if (entryNameEquals(tar_entry_pathname(entry), name)) {
             return createEntryInfo(entry, xsink);
         }
         archive_read_data_skip(read_archive);
@@ -701,6 +720,7 @@ QoreHashNode* QoreTarFile::getEntry(const char* name, ExceptionSink* xsink) {
 
 // Read entry as binary data
 BinaryNode* QoreTarFile::read(const char* name, ExceptionSink* xsink) {
+    TarUtf8LocaleHelper utf8_locale;
     if (!checkOpen(xsink, false)) {
         return nullptr;
     }
@@ -712,7 +732,7 @@ BinaryNode* QoreTarFile::read(const char* name, ExceptionSink* xsink) {
 
     struct archive_entry* entry;
     while (archive_read_next_header(read_archive, &entry) == ARCHIVE_OK) {
-        if (entryNameEquals(archive_entry_pathname(entry), name)) {
+        if (entryNameEquals(tar_entry_pathname(entry), name)) {
             int64 size = archive_entry_size(entry);
             if (size <= 0) {
                 return new BinaryNode();
@@ -748,6 +768,7 @@ BinaryNode* QoreTarFile::read(const char* name, ExceptionSink* xsink) {
 
 // Read entry as text
 QoreStringNode* QoreTarFile::readText(const char* name, const char* encoding, ExceptionSink* xsink) {
+    TarUtf8LocaleHelper utf8_locale;
     SimpleRefHolder<BinaryNode> data(read(name, xsink));
     if (*xsink || !data) {
         return nullptr;
@@ -759,9 +780,10 @@ QoreStringNode* QoreTarFile::readText(const char* name, const char* encoding, Ex
 
 // Create TarEntryInfo hash from archive_entry
 QoreHashNode* QoreTarFile::createEntryInfo(struct archive_entry* entry, ExceptionSink* xsink) const {
+    TarUtf8LocaleHelper utf8_locale;
     ReferenceHolder<QoreHashNode> info(new QoreHashNode(hashdeclTarEntryInfo, xsink), xsink);
 
-    info->setKeyValue("name", new QoreStringNode(archive_entry_pathname(entry)), xsink);
+    info->setKeyValue("name", new QoreStringNode(tar_entry_pathname(entry), QCS_UTF8), xsink);
     info->setKeyValue("size", archive_entry_size(entry), xsink);
 
     // Timestamps
@@ -791,7 +813,7 @@ QoreHashNode* QoreTarFile::createEntryInfo(struct archive_entry* entry, Exceptio
 
     // Determine type - check for hardlink first (hardlinks can have any filetype)
     int filetype = archive_entry_filetype(entry);
-    const char* hardlink_target = archive_entry_hardlink(entry);
+    const char* hardlink_target = tar_entry_hardlink(entry);
     const char* type_str;
     if (hardlink_target && *hardlink_target) {
         type_str = "hardlink";
@@ -810,18 +832,18 @@ QoreHashNode* QoreTarFile::createEntryInfo(struct archive_entry* entry, Exceptio
     info->setKeyValue("type", new QoreStringNode(type_str), xsink);
 
     // Link target
-    const char* link = archive_entry_symlink(entry);
+    const char* link = tar_entry_symlink(entry);
     if (!link) {
-        link = archive_entry_hardlink(entry);
+        link = tar_entry_hardlink(entry);
     }
     if (link) {
-        info->setKeyValue("link_target", new QoreStringNode(link), xsink);
+        info->setKeyValue("link_target", new QoreStringNode(link, QCS_UTF8), xsink);
     }
 
     // Convenience flags
     info->setKeyValue("is_directory", filetype == AE_IFDIR, xsink);
     info->setKeyValue("is_symlink", filetype == AE_IFLNK, xsink);
-    info->setKeyValue("is_hardlink", archive_entry_hardlink(entry) != nullptr, xsink);
+    info->setKeyValue("is_hardlink", tar_entry_hardlink(entry) != nullptr, xsink);
 
     // Device numbers
     if (filetype == AE_IFCHR || filetype == AE_IFBLK) {
@@ -834,6 +856,7 @@ QoreHashNode* QoreTarFile::createEntryInfo(struct archive_entry* entry, Exceptio
 
 // Add binary data as entry
 void QoreTarFile::add(const char* name, const BinaryNode* data, const QoreHashNode* opts, ExceptionSink* xsink) {
+    TarUtf8LocaleHelper utf8_locale;
     if (!checkOpen(xsink, true)) {
         return;
     }
@@ -905,6 +928,7 @@ void QoreTarFile::add(const char* name, const BinaryNode* data, const QoreHashNo
 // Add text as entry
 void QoreTarFile::addText(const char* name, const QoreStringNode* text, const char* encoding,
                           const QoreHashNode* opts, ExceptionSink* xsink) {
+    TarUtf8LocaleHelper utf8_locale;
     TempEncodingHelper str(text, QCS_UTF8, xsink);
     if (*xsink) {
         return;
@@ -918,6 +942,7 @@ void QoreTarFile::addText(const char* name, const QoreStringNode* text, const ch
 
 // Add file from filesystem
 void QoreTarFile::addFile(const char* name, const char* filepath, const QoreHashNode* opts, ExceptionSink* xsink) {
+    TarUtf8LocaleHelper utf8_locale;
     if (!checkOpen(xsink, true)) {
         return;
     }
@@ -976,6 +1001,7 @@ void QoreTarFile::addFile(const char* name, const char* filepath, const QoreHash
 
 // Add directory entry
 void QoreTarFile::addDirectory(const char* name, const QoreHashNode* opts, ExceptionSink* xsink) {
+    TarUtf8LocaleHelper utf8_locale;
     if (!checkOpen(xsink, true)) {
         return;
     }
@@ -1008,6 +1034,7 @@ void QoreTarFile::addDirectory(const char* name, const QoreHashNode* opts, Excep
 
 // Add symlink entry
 void QoreTarFile::addSymlink(const char* name, const char* target, const QoreHashNode* opts, ExceptionSink* xsink) {
+    TarUtf8LocaleHelper utf8_locale;
     if (!checkOpen(xsink, true)) {
         return;
     }
@@ -1035,6 +1062,7 @@ void QoreTarFile::addSymlink(const char* name, const char* target, const QoreHas
 
 // Add hardlink entry
 void QoreTarFile::addHardlink(const char* name, const char* target, const QoreHashNode* opts, ExceptionSink* xsink) {
+    TarUtf8LocaleHelper utf8_locale;
     if (!checkOpen(xsink, true)) {
         return;
     }
@@ -1063,6 +1091,7 @@ QoreListNode* QoreTarFile::extractAll(const char* destPath, const QoreHashNode* 
                                        ExceptionSink* xsink,
                                        ResolvedCallReferenceNode* progress_callback,
                                        int64 total_entries) {
+    TarUtf8LocaleHelper utf8_locale;
     if (!checkOpen(xsink, false)) {
         return nullptr;
     }
@@ -1131,7 +1160,7 @@ QoreListNode* QoreTarFile::extractAll(const char* destPath, const QoreHashNode* 
         }
 
         // Build destination path; save name before archive_entry_set_pathname invalidates the pointer
-        const char* raw_name = archive_entry_pathname(entry);
+        const char* raw_name = tar_entry_pathname(entry);
         std::string entry_name(raw_name ? raw_name : "");
 
         // Security check: prevent path traversal attacks
@@ -1160,7 +1189,7 @@ QoreListNode* QoreTarFile::extractAll(const char* destPath, const QoreHashNode* 
         archive_entry_set_pathname(entry, dest_path.c_str());
 
         // Update hardlink target path if this is a hardlink
-        const char* hardlink_target = archive_entry_hardlink(entry);
+        const char* hardlink_target = tar_entry_hardlink(entry);
         if (hardlink_target && *hardlink_target) {
             // Also check hardlink target for path traversal
             if (!isPathSafe(hardlink_target)) {
@@ -1182,7 +1211,7 @@ QoreListNode* QoreTarFile::extractAll(const char* destPath, const QoreHashNode* 
         }
 
         // Also check symlink targets
-        const char* symlink_target = archive_entry_symlink(entry);
+        const char* symlink_target = tar_entry_symlink(entry);
         if (symlink_target && *symlink_target) {
             if (!isPathSafe(symlink_target)) {
                 xsink->raiseException("TAR-SECURITY-ERROR",
@@ -1226,6 +1255,7 @@ QoreListNode* QoreTarFile::extractAll(const char* destPath, const QoreHashNode* 
             args->push(new QoreStringNode(effective_name), xsink);
             args->push(current, xsink);
             args->push(total_entries, xsink);
+            TarUtf8LocaleHelper::Suspend own_locale;
             progress_callback->execValue(*args, xsink);
             if (*xsink) {
                 break;
@@ -1241,11 +1271,13 @@ QoreListNode* QoreTarFile::extractAll(const char* destPath, const QoreHashNode* 
 
 // Extract single entry
 void QoreTarFile::extractEntry(const char* name, const char* destPath, ExceptionSink* xsink) {
+    TarUtf8LocaleHelper utf8_locale;
     extractTo(name, destPath, xsink);
 }
 
 // Extract entry to destination
 void QoreTarFile::extractTo(const char* name, const char* destination, ExceptionSink* xsink) {
+    TarUtf8LocaleHelper utf8_locale;
     if (!checkOpen(xsink, false)) {
         return;
     }
@@ -1265,7 +1297,7 @@ void QoreTarFile::extractTo(const char* name, const char* destination, Exception
 
     struct archive_entry* entry;
     while (archive_read_next_header(read_archive, &entry) == ARCHIVE_OK) {
-        if (entryNameEquals(archive_entry_pathname(entry), name)) {
+        if (entryNameEquals(tar_entry_pathname(entry), name)) {
             // Found the entry, write to file
             FILE* fp = fopen(destination, "wb");
             if (!fp) {
@@ -1300,6 +1332,7 @@ void QoreTarFile::extractTo(const char* name, const char* destination, Exception
 
 // Get archive path
 QoreStringNode* QoreTarFile::getPath() const {
+    TarUtf8LocaleHelper utf8_locale;
     if (filepath.empty()) {
         return nullptr;
     }
@@ -1311,6 +1344,7 @@ void QoreTarFile::parseAddOptions(const QoreHashNode* opts, int& mode, int& uid,
                                   std::string& uname, std::string& gname, int64& modified_time,
                                   bool& preserve_permissions, bool& dereference_symlinks,
                                   ExceptionSink* xsink) const {
+    TarUtf8LocaleHelper utf8_locale;
     if (!opts) {
         return;
     }
@@ -1365,6 +1399,7 @@ void QoreTarFile::parseExtractOptions(const QoreHashNode* opts, std::string& des
                                        int& strip_count, std::vector<std::string>& include_patterns,
                                        std::vector<std::string>& exclude_patterns,
                                        ExceptionSink* xsink) const {
+    TarUtf8LocaleHelper utf8_locale;
     if (!opts) {
         return;
     }
@@ -1433,6 +1468,7 @@ void QoreTarFile::parseExtractOptions(const QoreHashNode* opts, std::string& des
 bool QoreTarFile::matchesFilters(const char* name,
                                   const std::vector<std::string>& include_patterns,
                                   const std::vector<std::string>& exclude_patterns) {
+    TarUtf8LocaleHelper utf8_locale;
     // If include patterns are specified, the entry must match at least one
     if (!include_patterns.empty()) {
         bool matched = false;
@@ -1458,6 +1494,7 @@ bool QoreTarFile::matchesFilters(const char* name,
 }
 
 std::string QoreTarFile::stripPathComponents(const std::string& path, int count) {
+    TarUtf8LocaleHelper utf8_locale;
     if (count <= 0 || path.empty()) {
         return path;
     }
@@ -1504,6 +1541,7 @@ std::string QoreTarFile::stripPathComponents(const std::string& path, int count)
 
 // Open an input stream for reading an entry
 QoreObject* QoreTarFile::openInputStream(const char* name, ExceptionSink* xsink) {
+    TarUtf8LocaleHelper utf8_locale;
     if (!checkOpen(xsink, false)) {
         return nullptr;
     }
@@ -1515,7 +1553,7 @@ QoreObject* QoreTarFile::openInputStream(const char* name, ExceptionSink* xsink)
 
     struct archive_entry* entry;
     while (archive_read_next_header(read_archive, &entry) == ARCHIVE_OK) {
-        if (entryNameEquals(archive_entry_pathname(entry), name)) {
+        if (entryNameEquals(tar_entry_pathname(entry), name)) {
             TarInputStream* is = new TarInputStream(read_archive, entry, xsink);
             if (*xsink) {
                 delete is;
@@ -1532,6 +1570,7 @@ QoreObject* QoreTarFile::openInputStream(const char* name, ExceptionSink* xsink)
 
 // Open an output stream for writing an entry
 QoreObject* QoreTarFile::openOutputStream(const char* name, const QoreHashNode* opts, ExceptionSink* xsink) {
+    TarUtf8LocaleHelper utf8_locale;
     if (!checkOpen(xsink, true)) {
         return nullptr;
     }
@@ -1561,6 +1600,7 @@ QoreObject* QoreTarFile::openOutputStream(const char* name, const QoreHashNode* 
 
 // Memory read callback for libarchive
 la_ssize_t QoreTarFile::memory_read_callback(struct archive*, void* client_data, const void** buffer) {
+    TarUtf8LocaleHelper utf8_locale;
     QoreTarFile* self = static_cast<QoreTarFile*>(client_data);
 
     if (self->memory_pos >= self->memory_buffer.size()) {
@@ -1579,11 +1619,13 @@ la_ssize_t QoreTarFile::memory_read_callback(struct archive*, void* client_data,
 
 // Memory close callback
 int QoreTarFile::memory_close_callback(struct archive*, void* client_data) {
+    TarUtf8LocaleHelper utf8_locale;
     return ARCHIVE_OK;
 }
 
 // Memory write callback
 la_ssize_t QoreTarFile::memory_write_callback(struct archive*, void* client_data, const void* buffer, size_t length) {
+    TarUtf8LocaleHelper utf8_locale;
     QoreTarFile* self = static_cast<QoreTarFile*>(client_data);
 
     size_t old_size = self->memory_buffer.size();
@@ -1595,6 +1637,7 @@ la_ssize_t QoreTarFile::memory_write_callback(struct archive*, void* client_data
 
 // Stream read callback
 la_ssize_t QoreTarFile::stream_read_callback(struct archive*, void* client_data, const void** buffer) {
+    TarUtf8LocaleHelper utf8_locale;
     QoreTarFile* self = static_cast<QoreTarFile*>(client_data);
     // Lazy allocation: only allocate buffer when first used by this thread
     static thread_local std::unique_ptr<char[]> read_buffer;
@@ -1618,6 +1661,7 @@ la_ssize_t QoreTarFile::stream_read_callback(struct archive*, void* client_data,
 
 // Stream write callback
 la_ssize_t QoreTarFile::stream_write_callback(struct archive*, void* client_data, const void* buffer, size_t length) {
+    TarUtf8LocaleHelper utf8_locale;
     QoreTarFile* self = static_cast<QoreTarFile*>(client_data);
 
     if (!self->output_stream) {
@@ -1635,6 +1679,7 @@ la_ssize_t QoreTarFile::stream_write_callback(struct archive*, void* client_data
 
 // Stream close callback
 int QoreTarFile::stream_close_callback(struct archive*, void* client_data) {
+    TarUtf8LocaleHelper utf8_locale;
     return ARCHIVE_OK;
 }
 

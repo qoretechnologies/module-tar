@@ -30,9 +30,11 @@
 
 TarOutputStream::TarOutputStream(struct archive* a, const char* entry_name, int mode, ExceptionSink* xsink)
     : archive(a), entry_name(entry_name), mode(mode), closed(false), header_written(false) {
+    TarUtf8LocaleHelper utf8_locale;
 }
 
 TarOutputStream::~TarOutputStream() {
+    TarUtf8LocaleHelper utf8_locale;
     if (!closed) {
         ExceptionSink xsink;
         close(&xsink);
@@ -40,6 +42,7 @@ TarOutputStream::~TarOutputStream() {
 }
 
 void TarOutputStream::write(const void* ptr, int64 count, ExceptionSink* xsink) {
+    TarUtf8LocaleHelper utf8_locale;
     if (closed) {
         xsink->raiseException("STREAM-CLOSED-ERROR", "stream is closed");
         return;
@@ -56,6 +59,7 @@ void TarOutputStream::write(const void* ptr, int64 count, ExceptionSink* xsink) 
 }
 
 void TarOutputStream::close(ExceptionSink* xsink) {
+    TarUtf8LocaleHelper utf8_locale;
     if (closed) {
         return;
     }
