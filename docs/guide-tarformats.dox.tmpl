@@ -28,4 +28,25 @@
     extracted exactly even in the \c "C" locale.  The process locale is never changed, and callbacks, such as
     an extraction progress callback, run under the thread's own locale.  A host without any UTF-8 locale
     keeps the locale-dependent behavior.
+
+    @subsection tarformatsnamesnfc Unicode Normalization of Names
+
+    The same text can be written in Unicode with different code points: \c ř is one precomposed character in
+    normalization form C (NFC), and \c r followed by a combining caron in normalization form D (NFD).  libarchive
+    normalizes the UTF-8 names of pax headers when it reads them, to NFD on macOS and to NFC on other platforms,
+    so a name cannot be read back exactly as it is stored.  The module therefore presents names in NFC on every
+    platform:
+    - entry names (@ref Qore::Tar::TarEntryInfo "TarEntryInfo" \c name, the names returned by extraction, and
+      the files that extraction creates), link targets (\c link_target, and the targets of extracted links) and
+      owner names (\c uname, \c gname) are in NFC, in archives of any format; an NFD name in a ustar or GNU
+      header, which libarchive reads as it is stored, is presented in NFC as well
+    - a name passed to a lookup (@ref Qore::Tar::TarFile::hasEntry() "hasEntry()",
+      @ref Qore::Tar::TarFile::getEntry() "getEntry()", @ref Qore::Tar::TarFile::read() "read()",
+      @ref Qore::Tar::TarFile::readText() "readText()", @ref Qore::Tar::TarFile::getInputStream() "getInputStream()",
+      @ref Qore::Tar::TarFile::extract() "extract()", @ref Qore::Tar::TarFile::extractTo() "extractTo()") and the
+      \c include and \c exclude patterns of extraction are compared in NFC, so a name can be given in either form
+    - names are written exactly as they are given; entries copied when an archive is appended to are written with
+      their names in NFC, as they are presented
+
+    ASCII names are the same in every normalization form and are not affected.
 */

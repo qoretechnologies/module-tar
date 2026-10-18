@@ -62,6 +62,7 @@ public class TarTest inherits QUnit::Test {
         addTestCase("Error handling tests", \errorHandlingTest());
         addTestCase("Corner case tests", \cornerCaseTest());
         addTestCase("Unicode filename tests", \unicodeFilenameTest());
+        addTestCase("Unicode normalization tests", \unicodeNormalizationTest());
         addTestCase("Damaged archive tests", \damagedArchiveTest());
         addTestCase("Streaming API tests", \streamingApiTest());
         addTestCase("Stream constructor tests", \streamConstructorTest());
@@ -1278,6 +1279,162 @@ public class TarTest inherits QUnit::Test {
         assertEq("<p>注文</p>", memRead.readText("注文.html"));
         assertEq("streamed", memRead.readText("ストリーム.txt"));
         memRead.close();
+    }
+
+    # Names in NFC and NFD (Unicode canonical composition and decomposition) of the same text
+    const NfcName = "\u0159\u00e1dky.txt";
+    const NfdName = "r\u030ca\u0301dky.txt";
+    const HangulNfc = "\ud55c\uad6d\uc5b4.txt";
+    const HangulNfd = "\u1112\u1161\u11ab\u1100\u116e\u11a8\u110b\u1165.txt";
+    #! A pax archive written by Python's tarfile module (gzip, base64): "\u0159\u00e1dky.txt" in NFC,
+    #! "p\u0159\u00edli\u0161.txt" and Hangul in NFD, and a symbolic link "odkaz.txt" whose target is the NFD name
+    const PythonPaxArchive =
+        "H4sIAAAAAAAC/+2YQUrDQBSGZ+0pcoJ0ZjLJ4ELi0qVXGExtQ0INaQLRlULSjV25c9mFIAheQtzlEnMTWyIIraUgZCKd/9vM"
+        + "EAKzePx87z135I7OL1V1MVbROCe9QDv2nZRy8XPffGeUM0acihignBcqXz9P7IRTJ1PF9Ozz+WMVJbduURUnBFhDGH5Xvcc3"
+        + "NqEOhNiff+oRJnwupKSiyz8NOHGoyfyXB/6bHGf9Z9dXCIHFuP/B/x7b8T+V8L8R//ud/7O8XcbtQxrP2yWaAHvI8jAO11UP"
+        + "e+wB/uD/QAr434z/I4QA/h/W/8Lfnf8F/G8CT3b+1/WTblZ68abre92868Wrrh9184Je4Njn/44+VwCH/R9s+58JCf+bYKpm"
+        + "kzJFDuD/Ief/X/zvwf9G5v9TJ41nCXYAlnITJepu8P0/3fI/9wUnDjexnLDc/wAAAAAAwC6+AGwVEykAKAAA";
+
+    # Entry names, link targets and owner names are presented, and names are looked up, in NFC on every platform.
+    # libarchive normalizes the UTF-8 names of pax headers when it reads them, to NFD on macOS and to NFC on other
+    # platforms, so a name cannot be read back exactly as it is stored; an NFC name came back as NFD on macOS, and
+    # an NFD name could not be found by the name it was written with on Linux
+    unicodeNormalizationTest() {
+        assertTrue(NfcName != NfdName);
+        assertTrue(HangulNfc != HangulNfd);
+        string long_dir = strmul("dlouh\u00fd-adres\u00e1\u0159/", 12);
+        string long_nfc = long_dir + NfcName;
+        string long_nfd = replace(replace(replace(long_dir, "\u00fd", "y\u0301"), "\u00e1", "a\u0301"), "\u0159",
+            "r\u030c") + NfdName;
+        assertTrue(long_nfc.size() > 100, "a name that needs a pax header");
+        assertTrue(long_nfc != long_nfd);
+
+        hash<string, int> formats = {"pax": TAR_FORMAT_PAX, "ustar": TAR_FORMAT_USTAR, "gnu": TAR_FORMAT_GNU};
+        foreach hash<auto> fmt in (formats.pairIterator()) {
+            foreach string written in ((NfcName, NfdName)) {
+                string form = written == NfcName ? "NFC" : "NFD";
+                string label = sprintf("%s %s", fmt.key, form);
+                TarFile tar(<TarCreateOptions>{"format": fmt.value});
+                tar.add(written, "content");
+                tar.add("ascii-name.txt", "ascii");
+                tar.add(written == NfcName ? HangulNfc : HangulNfd, "hangul");
+                if (fmt.key != "ustar") {
+                    tar.add(written == NfcName ? long_nfc : long_nfd, "long");
+                }
+                tar.addSymlink("symlink.txt", written);
+                tar.addHardlink("hardlink.txt", written);
+                tar.add("owned.txt", "owned", NOTHING, <TarAddOptions>{
+                    "uname": written == NfcName ? "\u0159" : "r\u030c",
+                    "gname": written == NfcName ? "\u00e1" : "a\u0301",
+                });
+                binary data = tar.toData();
+                tar.close();
+                # the name is written exactly as given
+                assertTrue(data.find(binary(written)) >= 0, label + ": written as given");
+
+                TarFile rd(data);
+                hash<string, hash<TarEntryInfo>> entries = map {$1.name: $1}, rd.entries();
+                # names are read in NFC
+                assertTrue(entries.hasKey(NfcName), label + ": the name reads in NFC");
+                assertFalse(entries.hasKey(NfdName), label + ": not in NFD");
+                assertTrue(entries.hasKey(HangulNfc), label + ": Hangul reads in NFC");
+                assertTrue(entries.hasKey("ascii-name.txt"), label + ": an ASCII name is unchanged");
+                if (fmt.key != "ustar") {
+                    assertTrue(entries.hasKey(long_nfc), label + ": a long name reads in NFC");
+                }
+                assertEq(NfcName, entries."symlink.txt".link_target, label + ": a symbolic link target reads in NFC");
+                assertEq(NfcName, entries."hardlink.txt".link_target, label + ": a hard link target reads in NFC");
+                assertEq("\u0159", entries."owned.txt".uname, label + ": the user name reads in NFC");
+                assertEq("\u00e1", entries."owned.txt".gname, label + ": the group name reads in NFC");
+
+                # lookups find the entry by either form
+                foreach string key in ((NfcName, NfdName)) {
+                    string klabel = sprintf("%s, looked up in %s", label, key == NfcName ? "NFC" : "NFD");
+                    assertTrue(rd.hasEntry(key), klabel + ": hasEntry");
+                    assertEq(NfcName, rd.getEntry(key).name, klabel + ": getEntry");
+                    assertEq("content", rd.readText(key), klabel + ": readText");
+                    assertEq(binary("content"), rd.read(key), klabel + ": read");
+                    TarInputStream is = rd.getInputStream(key);
+                    assertEq(NfcName, is.getEntryInfo().name, klabel + ": the stream's entry");
+                    assertEq("content", is.read(100).toString("UTF-8"), klabel + ": the stream's data");
+                }
+                assertEq("hangul", rd.readText(HangulNfd), label + ": Hangul looked up in NFD");
+                if (fmt.key != "ustar") {
+                    assertEq("long", rd.readText(long_nfd), label + ": a long name looked up in NFD");
+                }
+                rd.close();
+            }
+        }
+
+        # extraction creates the files with their names in NFC, and include filters match in either form
+        {
+            TarFile tar(<TarCreateOptions>{"format": TAR_FORMAT_PAX});
+            tar.add(NfdName, "content");
+            tar.add(HangulNfc, "hangul");
+            tar.addSymlink("symlink.txt", NfdName);
+            binary data = tar.toData();
+            tar.close();
+
+            string dest = testDir + "/unicode_normalization_extract";
+            mkdir(dest);
+            TarFile rd(data);
+            list<string> extracted = rd.extractAll(<TarExtractOptions>{"destination": dest});
+            assertEq(sort((NfcName, HangulNfc, "symlink.txt")), sort(extracted), "the extracted names are in NFC");
+            Dir dir();
+            dir.chdir(dest);
+            assertEq(sort((NfcName, HangulNfc, "symlink.txt")), sort(dir.listFiles()),
+                "the files are created with names in NFC");
+            assertEq(NfcName, readlink(dest + "/symlink.txt"), "a symbolic link is created with its target in NFC");
+
+            string dest2 = testDir + "/unicode_normalization_filter";
+            mkdir(dest2);
+            assertEq((NfcName,), rd.extractAll(<TarExtractOptions>{"destination": dest2, "include": (NfdName,)}),
+                "an include pattern in NFD matches the name");
+            assertEq((HangulNfc, "symlink.txt"), rd.extractAll(<TarExtractOptions>{
+                "destination": testDir + "/unicode_normalization_exclude",
+                "exclude": (NfcName,),
+            }), "an exclude pattern in NFC matches the name");
+
+            string single = testDir + "/unicode_normalization_single.txt";
+            rd.extractTo(NfdName, single);
+            assertEq("content", ReadOnlyFile::readTextFile(single), "extractTo finds the entry by its NFD name");
+            rd.close();
+        }
+
+        # appending keeps the existing names in NFC
+        {
+            string tarPath = testDir + "/unicode_normalization_append.tar";
+            {
+                TarFile tar(tarPath, "w");
+                tar.add(NfcName, "content");
+                tar.close();
+            }
+            {
+                TarFile tar(tarPath, "a");
+                tar.add("added.txt", "added");
+                tar.close();
+            }
+            binary data = ReadOnlyFile::readBinaryFile(tarPath);
+            assertTrue(data.find(binary(NfcName)) >= 0,
+                "the existing name stays in NFC when an archive is appended to");
+            assertTrue(data.find(binary(NfdName)) < 0, "the existing name is not written in NFD");
+            TarFile rd(tarPath, "r");
+            assertEq((NfcName, "added.txt"), map $1.name, rd.entries());
+            rd.close();
+        }
+
+        # an archive written by another program (Python's tarfile module) reads in NFC
+        {
+            TarFile rd(parse_base64_string(PythonPaxArchive));
+            hash<string, hash<TarEntryInfo>> entries = map {$1.name: $1}, rd.entries();
+            assertEq(sort((NfcName, "p\u0159\u00edli\u0161.txt", HangulNfc, "odkaz.txt")), sort(keys entries),
+                "the names of an archive written by another program read in NFC");
+            assertEq("p\u0159\u00edli\u0161.txt", entries."odkaz.txt".link_target);
+            assertEq("nfd", rd.readText("pr\u030ci\u0301lis\u030c.txt"), "an NFD name is found by its NFD form");
+            assertEq("nfd", rd.readText("p\u0159\u00edli\u0161.txt"), "and by its NFC form");
+            assertEq("nfc", rd.readText(NfdName), "an NFC name is found by its NFD form");
+            rd.close();
+        }
     }
 
     # A damaged entry header raises an error from every read path; the listing, lookups and extraction

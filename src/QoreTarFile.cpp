@@ -36,56 +36,6 @@
 #include <memory>
 #include <fnmatch.h>
 
-#ifdef __APPLE__
-#include <CoreFoundation/CoreFoundation.h>
-#endif
-
-// Helper function to compare entry names with Unicode normalization support
-// On macOS, libarchive returns pathnames in NFD (decomposed) form, so we need
-// to normalize both strings before comparison
-static bool entryNameEquals(const char* archive_name, const char* lookup_name) {
-#ifdef __APPLE__
-    // On macOS, normalize both strings to NFD for comparison
-    CFStringRef archiveStr = CFStringCreateWithCString(kCFAllocatorDefault, archive_name, kCFStringEncodingUTF8);
-    CFStringRef lookupStr = CFStringCreateWithCString(kCFAllocatorDefault, lookup_name, kCFStringEncodingUTF8);
-
-    if (!archiveStr || !lookupStr) {
-        // Fallback to byte comparison if conversion fails
-        if (archiveStr) CFRelease(archiveStr);
-        if (lookupStr) CFRelease(lookupStr);
-        return strcmp(archive_name, lookup_name) == 0;
-    }
-
-    // Create mutable copies for normalization
-    CFMutableStringRef archiveMutable = CFStringCreateMutableCopy(kCFAllocatorDefault, 0, archiveStr);
-    CFMutableStringRef lookupMutable = CFStringCreateMutableCopy(kCFAllocatorDefault, 0, lookupStr);
-
-    CFRelease(archiveStr);
-    CFRelease(lookupStr);
-
-    if (!archiveMutable || !lookupMutable) {
-        if (archiveMutable) CFRelease(archiveMutable);
-        if (lookupMutable) CFRelease(lookupMutable);
-        return strcmp(archive_name, lookup_name) == 0;
-    }
-
-    // Normalize both to NFD (decomposed form)
-    CFStringNormalize(archiveMutable, kCFStringNormalizationFormD);
-    CFStringNormalize(lookupMutable, kCFStringNormalizationFormD);
-
-    // Compare
-    CFComparisonResult result = CFStringCompare(archiveMutable, lookupMutable, 0);
-
-    CFRelease(archiveMutable);
-    CFRelease(lookupMutable);
-
-    return result == kCFCompareEqualTo;
-#else
-    // On other platforms, use simple byte comparison
-    return strcmp(archive_name, lookup_name) == 0;
-#endif
-}
-
 // RAII wrapper for FILE*
 class FileHandle {
 public:
@@ -460,6 +410,45 @@ void QoreTarFile::openAppend(ExceptionSink* xsink) {
     // Mode stays as APPEND so we know we're in append mode
 }
 
+// Sets the names of an entry read from an archive to their NFC form, as they are presented
+static void setEntryNamesNfc(struct archive_entry* entry) {
+    const char* raw = tar_entry_pathname_raw(entry);
+    if (raw) {
+        std::string nfc = tar_nfc(raw);
+        if (nfc != raw) {
+            archive_entry_set_pathname(entry, nfc.c_str());
+        }
+    }
+    raw = tar_entry_symlink_raw(entry);
+    if (raw) {
+        std::string nfc = tar_nfc(raw);
+        if (nfc != raw) {
+            archive_entry_set_symlink(entry, nfc.c_str());
+        }
+    }
+    raw = tar_entry_hardlink_raw(entry);
+    if (raw) {
+        std::string nfc = tar_nfc(raw);
+        if (nfc != raw) {
+            archive_entry_set_hardlink(entry, nfc.c_str());
+        }
+    }
+    raw = archive_entry_uname_utf8(entry);
+    if (raw) {
+        std::string nfc = tar_nfc(raw);
+        if (nfc != raw) {
+            archive_entry_set_uname(entry, nfc.c_str());
+        }
+    }
+    raw = archive_entry_gname_utf8(entry);
+    if (raw) {
+        std::string nfc = tar_nfc(raw);
+        if (nfc != raw) {
+            archive_entry_set_gname(entry, nfc.c_str());
+        }
+    }
+}
+
 // Copy entries from read archive to write archive
 void QoreTarFile::copyEntries(ExceptionSink* xsink) {
     TarUtf8LocaleHelper utf8_locale;
@@ -475,6 +464,10 @@ void QoreTarFile::copyEntries(ExceptionSink* xsink) {
         if (qore_check_cancel(xsink, "tar archive copy")) {
             return;
         }
+
+        // The names are written as they are presented (in NFC); libarchive normalized the names of pax headers
+        // when it read them, to NFD on macOS
+        setEntryNamesNfc(entry);
 
         // Write header to new archive
         int r = archive_write_header(write_archive, entry);
@@ -577,7 +570,7 @@ bool QoreTarFile::nextHeader(struct archive_entry*& entry, ExceptionSink* xsink)
         case ARCHIVE_EOF:
             return false;
         case ARCHIVE_WARN: {
-            const char* name = tar_entry_pathname(entry);
+            const char* name = tar_entry_pathname_raw(entry);
             if (name && *name) {
                 return true;
             }
@@ -719,9 +712,11 @@ bool QoreTarFile::hasEntry(const char* name, ExceptionSink* xsink) {
         return false;
     }
 
+    // names are compared in NFC, so that a name can be looked up in either form
+    std::string key = tar_nfc(name);
     struct archive_entry* entry;
     while (nextHeader(entry, xsink)) {
-        if (entryNameEquals(tar_entry_pathname(entry), name)) {
+        if (tar_entry_pathname(entry) == key) {
             return true;
         }
         archive_read_data_skip(read_archive);
@@ -742,9 +737,11 @@ QoreHashNode* QoreTarFile::getEntry(const char* name, ExceptionSink* xsink) {
         return nullptr;
     }
 
+    // names are compared in NFC, so that a name can be looked up in either form
+    std::string key = tar_nfc(name);
     struct archive_entry* entry;
     while (nextHeader(entry, xsink)) {
-        if (entryNameEquals(tar_entry_pathname(entry), name)) {
+        if (tar_entry_pathname(entry) == key) {
             return createEntryInfo(entry, xsink);
         }
         archive_read_data_skip(read_archive);
@@ -765,9 +762,11 @@ BinaryNode* QoreTarFile::read(const char* name, ExceptionSink* xsink) {
         return nullptr;
     }
 
+    // names are compared in NFC, so that a name can be looked up in either form
+    std::string key = tar_nfc(name);
     struct archive_entry* entry;
     while (nextHeader(entry, xsink)) {
-        if (entryNameEquals(tar_entry_pathname(entry), name)) {
+        if (tar_entry_pathname(entry) == key) {
             int64 size = archive_entry_size(entry);
             if (size <= 0) {
                 return new BinaryNode();
@@ -838,19 +837,26 @@ QoreHashNode* QoreTarFile::createEntryInfo(struct archive_entry* entry, Exceptio
     info->setKeyValue("uid", (int64)archive_entry_uid(entry), xsink);
     info->setKeyValue("gid", (int64)archive_entry_gid(entry), xsink);
 
-    const char* uname = archive_entry_uname(entry);
+    // owner names are read like entry names: in UTF-8, in NFC
+    const char* uname = archive_entry_uname_utf8(entry);
+    if (!uname) {
+        uname = archive_entry_uname(entry);
+    }
     if (uname) {
-        info->setKeyValue("uname", new QoreStringNode(uname), xsink);
+        info->setKeyValue("uname", new QoreStringNode(tar_nfc(uname), QCS_UTF8), xsink);
     }
 
-    const char* gname = archive_entry_gname(entry);
+    const char* gname = archive_entry_gname_utf8(entry);
+    if (!gname) {
+        gname = archive_entry_gname(entry);
+    }
     if (gname) {
-        info->setKeyValue("gname", new QoreStringNode(gname), xsink);
+        info->setKeyValue("gname", new QoreStringNode(tar_nfc(gname), QCS_UTF8), xsink);
     }
 
     // Determine type - check for hardlink first (hardlinks can have any filetype)
     int filetype = archive_entry_filetype(entry);
-    const char* hardlink_target = tar_entry_hardlink(entry);
+    const char* hardlink_target = tar_entry_hardlink_raw(entry);
     const char* type_str;
     if (hardlink_target && *hardlink_target) {
         type_str = "hardlink";
@@ -868,19 +874,19 @@ QoreHashNode* QoreTarFile::createEntryInfo(struct archive_entry* entry, Exceptio
     }
     info->setKeyValue("type", new QoreStringNode(type_str), xsink);
 
-    // Link target
-    const char* link = tar_entry_symlink(entry);
+    // Link target, in NFC like entry names
+    const char* link = tar_entry_symlink_raw(entry);
     if (!link) {
-        link = tar_entry_hardlink(entry);
+        link = hardlink_target;
     }
     if (link) {
-        info->setKeyValue("link_target", new QoreStringNode(link, QCS_UTF8), xsink);
+        info->setKeyValue("link_target", new QoreStringNode(tar_nfc(link), QCS_UTF8), xsink);
     }
 
     // Convenience flags
     info->setKeyValue("is_directory", filetype == AE_IFDIR, xsink);
     info->setKeyValue("is_symlink", filetype == AE_IFLNK, xsink);
-    info->setKeyValue("is_hardlink", tar_entry_hardlink(entry) != nullptr, xsink);
+    info->setKeyValue("is_hardlink", hardlink_target != nullptr, xsink);
 
     // Device numbers
     if (filetype == AE_IFCHR || filetype == AE_IFBLK) {
@@ -1196,9 +1202,9 @@ QoreListNode* QoreTarFile::extractAll(const char* destPath, const QoreHashNode* 
             break;
         }
 
-        // Build destination path; save name before archive_entry_set_pathname invalidates the pointer
-        const char* raw_name = tar_entry_pathname(entry);
-        std::string entry_name(raw_name ? raw_name : "");
+        // Build destination path from the name in NFC, as the name is presented; it is copied before
+        // archive_entry_set_pathname invalidates libarchive's
+        std::string entry_name = tar_entry_pathname(entry);
 
         // Security check: prevent path traversal attacks
         if (!isPathSafe(entry_name.c_str())) {
@@ -1226,17 +1232,18 @@ QoreListNode* QoreTarFile::extractAll(const char* destPath, const QoreHashNode* 
         archive_entry_set_pathname(entry, dest_path.c_str());
 
         // Update hardlink target path if this is a hardlink
-        const char* hardlink_target = tar_entry_hardlink(entry);
-        if (hardlink_target && *hardlink_target) {
+        const char* raw_hardlink_target = tar_entry_hardlink_raw(entry);
+        if (raw_hardlink_target && *raw_hardlink_target) {
+            // the target is the name of another entry, in NFC like the names
+            std::string hl_target = tar_nfc(raw_hardlink_target);
             // Also check hardlink target for path traversal
-            if (!isPathSafe(hardlink_target)) {
+            if (!isPathSafe(hl_target.c_str())) {
                 xsink->raiseException("TAR-SECURITY-ERROR",
                     "refusing to extract hardlink with unsafe target: '%s'",
-                    hardlink_target);
+                    hl_target.c_str());
                 break;
             }
             // Strip hardlink target path the same way
-            std::string hl_target(hardlink_target);
             if (strip_count > 0) {
                 hl_target = stripPathComponents(hl_target, strip_count);
                 if (hl_target.empty()) {
@@ -1247,14 +1254,18 @@ QoreListNode* QoreTarFile::extractAll(const char* destPath, const QoreHashNode* 
             archive_entry_set_hardlink(entry, dest_link.c_str());
         }
 
-        // Also check symlink targets
-        const char* symlink_target = tar_entry_symlink(entry);
-        if (symlink_target && *symlink_target) {
-            if (!isPathSafe(symlink_target)) {
+        // Also check symlink targets; a target is created in NFC, as it is presented
+        const char* raw_symlink_target = tar_entry_symlink_raw(entry);
+        if (raw_symlink_target && *raw_symlink_target) {
+            std::string symlink_target = tar_nfc(raw_symlink_target);
+            if (!isPathSafe(symlink_target.c_str())) {
                 xsink->raiseException("TAR-SECURITY-ERROR",
                     "refusing to extract symlink with unsafe target: '%s'",
-                    symlink_target);
+                    symlink_target.c_str());
                 break;
+            }
+            if (symlink_target != raw_symlink_target) {
+                archive_entry_set_symlink(entry, symlink_target.c_str());
             }
         }
 
@@ -1335,9 +1346,11 @@ void QoreTarFile::extractTo(const char* name, const char* destination, Exception
         return;
     }
 
+    // names are compared in NFC, so that a name can be looked up in either form
+    std::string key = tar_nfc(name);
     struct archive_entry* entry;
     while (nextHeader(entry, xsink)) {
-        if (entryNameEquals(tar_entry_pathname(entry), name)) {
+        if (tar_entry_pathname(entry) == key) {
             // Found the entry, write to file
             FILE* fp = fopen(destination, "wb");
             if (!fp) {
@@ -1489,7 +1502,8 @@ void QoreTarFile::parseExtractOptions(const QoreHashNode* opts, std::string& des
             QoreValue elem = l->retrieveEntry(i);
             if (elem.getType() == NT_STRING) {
                 QoreStringValueHelper str(elem);
-                include_patterns.emplace_back(str->c_str(), str->size());
+                // patterns are matched against names in NFC
+                include_patterns.emplace_back(tar_nfc(str->c_str()));
             }
         }
     }
@@ -1501,7 +1515,7 @@ void QoreTarFile::parseExtractOptions(const QoreHashNode* opts, std::string& des
             QoreValue elem = l->retrieveEntry(i);
             if (elem.getType() == NT_STRING) {
                 QoreStringValueHelper str(elem);
-                exclude_patterns.emplace_back(str->c_str(), str->size());
+                exclude_patterns.emplace_back(tar_nfc(str->c_str()));
             }
         }
     }
@@ -1593,9 +1607,11 @@ QoreObject* QoreTarFile::openInputStream(const char* name, ExceptionSink* xsink)
         return nullptr;
     }
 
+    // names are compared in NFC, so that a name can be looked up in either form
+    std::string key = tar_nfc(name);
     struct archive_entry* entry;
     while (nextHeader(entry, xsink)) {
-        if (entryNameEquals(tar_entry_pathname(entry), name)) {
+        if (tar_entry_pathname(entry) == key) {
             TarInputStream* is = new TarInputStream(read_archive, entry, xsink);
             if (*xsink) {
                 delete is;

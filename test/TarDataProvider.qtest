@@ -1046,6 +1046,30 @@ public class TarDataProviderTest inherits QUnit::Test {
             assertEq(2, result.remaining_count, "2 entries remaining with compression");
         }
 
+        # an entry is deleted by its name in either Unicode normalization form; names are compared in NFC
+        {
+            string nfc = "\u0159\u00e1dky.txt";
+            string nfd = "r\u030ca\u0301dky.txt";
+            hash<auto> unicode_result = createProvider.doRequest({
+                "files": (
+                    {"name": nfc, "text": "Unicode file"},
+                    {"name": "other.txt", "text": "Other file"},
+                ),
+            });
+            foreach string key in ((nfc, nfd)) {
+                hash<auto> result = deleteProvider.doRequest({
+                    "archive_data": unicode_result.archive_data,
+                    "entry_name": key,
+                });
+                string label = key == nfc ? "NFC" : "NFD";
+                assertEq(True, result.deleted, label + ": deleted");
+                assertEq(1, result.remaining_count, label + ": 1 entry remaining");
+                assertEq(("other.txt",), (map $1.name, listProvider.doRequest({
+                    "archive_data": result.archive_data,
+                }).entries), label + ": only the other entry remains");
+            }
+        }
+
         # Test delete with empty entry_name
         assertThrows("ASSERTION-ERROR", sub() {
             deleteProvider.doRequest({

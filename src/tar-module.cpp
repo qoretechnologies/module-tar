@@ -32,6 +32,85 @@
 
 #include <cstring>
 #include <locale.h>
+#include <memory>
+#include <vector>
+
+#ifdef __APPLE__
+#include <CoreFoundation/CoreFoundation.h>
+
+namespace {
+//! Releases a CoreFoundation object when it goes out of scope
+class CfReleaser {
+public:
+    DLLLOCAL explicit CfReleaser(CFTypeRef obj) : obj(obj) {
+    }
+
+    DLLLOCAL ~CfReleaser() {
+        if (obj) {
+            CFRelease(obj);
+        }
+    }
+
+    CfReleaser(const CfReleaser&) = delete;
+    CfReleaser& operator=(const CfReleaser&) = delete;
+
+private:
+    CFTypeRef obj;
+};
+}
+#endif
+
+std::string tar_nfc(const char* str) {
+    if (!str) {
+        return std::string();
+    }
+    // an ASCII string is in every normalization form
+    const char* p = str;
+    while (*p && !(static_cast<unsigned char>(*p) & 0x80)) {
+        ++p;
+    }
+    if (!*p) {
+        return std::string(str);
+    }
+
+#ifdef __APPLE__
+    CFStringRef cfstr = CFStringCreateWithCString(kCFAllocatorDefault, str, kCFStringEncodingUTF8);
+    if (!cfstr) {
+        // not valid UTF-8
+        return std::string(str);
+    }
+    CfReleaser cfstr_holder(cfstr);
+    CFMutableStringRef normalized = CFStringCreateMutableCopy(kCFAllocatorDefault, 0, cfstr);
+    if (!normalized) {
+        return std::string(str);
+    }
+    CfReleaser normalized_holder(normalized);
+    CFStringNormalize(normalized, kCFStringNormalizationFormC);
+
+    CFRange range = CFRangeMake(0, CFStringGetLength(normalized));
+    CFIndex size = 0;
+    if (CFStringGetBytes(normalized, range, kCFStringEncodingUTF8, 0, false, nullptr, 0, &size) != range.length) {
+        return std::string(str);
+    }
+    std::vector<UInt8> buf(size);
+    if (CFStringGetBytes(normalized, range, kCFStringEncodingUTF8, 0, false, buf.data(), size, &size)
+            != range.length) {
+        return std::string(str);
+    }
+    return std::string(reinterpret_cast<const char*>(buf.data()), size);
+#else
+    // libarchive normalizes UTF-8 to NFC when it converts it to the character set of a UTF-8 locale, as it does
+    // with the names of pax headers
+    TarUtf8LocaleHelper utf8_locale;
+    std::unique_ptr<struct archive_entry, decltype(&archive_entry_free)> entry(archive_entry_new(),
+        archive_entry_free);
+    if (!entry || !archive_entry_update_pathname_utf8(entry.get(), str)) {
+        return std::string(str);
+    }
+    const char* normalized = archive_entry_pathname(entry.get());
+    return normalized ? std::string(normalized) : std::string(str);
+#endif
+}
 
 // Forward declaration for qpp-generated function initializer
 DLLLOCAL void init_TarFile_functions(QoreNamespace& ns);

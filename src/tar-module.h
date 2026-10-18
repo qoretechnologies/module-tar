@@ -37,6 +37,8 @@
 #include <xlocale.h>
 #endif
 
+#include <string>
+
 //! Runs libarchive on the calling thread under a UTF-8 character type locale
 /** Tar (pax) headers store names in UTF-8, and libarchive converts every name between UTF-8 and the
     character set of the current locale.  In the "C" locale, which Qore programs and services often run in,
@@ -91,26 +93,45 @@ private:
     }
 };
 
-//! Returns an entry's path name in UTF-8
+//! Returns a UTF-8 string in Unicode Normalization Form C (canonical composition)
+/** libarchive normalizes the UTF-8 names of pax headers when it reads them: to NFD on macOS, and to NFC on other
+    platforms; the names of ustar and GNU headers are read as they are stored.  A name can therefore not be read
+    exactly as it is stored, and the module presents entry names, link targets and owner names, and compares
+    names, in NFC on every platform.  On macOS the string is normalized with CoreFoundation; elsewhere with
+    libarchive's own normalization, which needs the UTF-8 locale of @ref TarUtf8LocaleHelper.
+
+    @param str the UTF-8 string, or nullptr
+
+    @return the string in NFC; a string that cannot be normalized, such as one that is not valid UTF-8, is returned
+    as it is, and nullptr gives an empty string
+*/
+DLLLOCAL std::string tar_nfc(const char* str);
+
+//! Returns an entry's path name as libarchive read it, in UTF-8, or nullptr
 /** The locale-dependent libarchive accessors cannot convert a non-ASCII name in the "C" locale, so a name
     such as a Japanese file name was unreadable; the raw name is the fallback for an archive written with an
     undeclared legacy encoding.
 */
-static inline const char* tar_entry_pathname(struct archive_entry* entry) {
+static inline const char* tar_entry_pathname_raw(struct archive_entry* entry) {
     const char* name = archive_entry_pathname_utf8(entry);
     return name ? name : archive_entry_pathname(entry);
 }
 
-//! Returns an entry's symbolic link target in UTF-8, or nullptr
-static inline const char* tar_entry_symlink(struct archive_entry* entry) {
+//! Returns an entry's symbolic link target as libarchive read it, in UTF-8, or nullptr
+static inline const char* tar_entry_symlink_raw(struct archive_entry* entry) {
     const char* target = archive_entry_symlink_utf8(entry);
     return target ? target : archive_entry_symlink(entry);
 }
 
-//! Returns an entry's hard link target in UTF-8, or nullptr
-static inline const char* tar_entry_hardlink(struct archive_entry* entry) {
+//! Returns an entry's hard link target as libarchive read it, in UTF-8, or nullptr
+static inline const char* tar_entry_hardlink_raw(struct archive_entry* entry) {
     const char* target = archive_entry_hardlink_utf8(entry);
     return target ? target : archive_entry_hardlink(entry);
+}
+
+//! Returns an entry's path name in NFC (see tar_nfc())
+static inline std::string tar_entry_pathname(struct archive_entry* entry) {
+    return tar_nfc(tar_entry_pathname_raw(entry));
 }
 
 // Forward declarations

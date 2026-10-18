@@ -107,6 +107,10 @@ public class TarDeleteEntryDataProvider inherits AbstractDataProvider {
             };
         }
 
+        # the entry's name as the archive presents it (in Unicode NFC); the name requested may be in another
+        # normalization form
+        string target = src.getEntry(entry_name).name;
+
         # Create new archive, copying all entries except the target
         *hash<TarCreateOptions> create_opts;
         if (req.compression) {
@@ -122,7 +126,7 @@ public class TarDeleteEntryDataProvider inherits AbstractDataProvider {
         int remaining = 0;
 
         foreach hash<TarEntryInfo> entry in (entries) {
-            if (entry.name == entry_name) {
+            if (entry.name == target) {
                 continue;
             }
 
