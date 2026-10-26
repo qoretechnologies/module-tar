@@ -1,0 +1,96 @@
+#!/usr/bin/env qore
+# -*- mode: qore; indent-tabs-mode: nil -*-
+# Copyright (C) 2026 Qore Technologies, s.r.o.
+
+# The file operations of the tar module are checked against the filesystem policy of the code that calls them;
+# code run with the system policy (SandboxManager::createSystemPolicyCall()) is checked against the system policy.
+
+%modern
+%no-child-restrictions
+%prepend-module-path "${SCRIPT_DIR}/../qlib"
+%requires QUnit
+%requires Util
+%requires FsUtil
+%requires tar
+
+%exec-class TarSandboxTest
+
+class TarSandboxTest inherits QUnit::Test {
+    private {
+        #! the test directory
+        string dir;
+    }
+
+    constructor() : QUnit::Test("tar sandbox", "1.0", \ARGV) {
+        addTestCase("file operations follow the sandbox of the caller and the system policy in a capability",
+            \testFiles());
+        set_return_value(main());
+    }
+
+    globalSetUp() {
+        dir = make_tmp_dir("qore-tar-sandbox-");
+    }
+
+    globalTearDown() {
+        remove_tree(dir);
+    }
+
+    #! returns a Program whose sandbox denies the filesystem
+    private Program getSandboxed() {
+        SandboxManager sm();
+        sm.setFilesystemDefaultPolicy(False);
+        Program p(PO_NEW_STYLE);
+        p.setSandboxManager(sm);
+        p.parse("auto sub through(code c) { return c(); }", "tar-sandbox");
+        return p;
+    }
+
+    #! runs an operation directly from the sandbox, where it is denied, then in a capability, where it runs
+    private auto check(Program p, string name, code op) {
+        assertThrows("FILESYSTEM-ACCESS-DENIED", \p.callFunction(), ("through", op),
+            name + " called directly from the sandbox is denied");
+        return p.callFunction("through", SandboxManager::createSystemPolicyCall(op));
+    }
+
+    testFiles() {
+        Program p = getSandboxed();
+        string archive = dir + DirSep + "archive.tar";
+        string source = dir + DirSep + "source.txt";
+        string target = dir + DirSep + "extracted";
+        {
+            File f();
+            f.open2(source, O_CREAT | O_WRONLY | O_TRUNC);
+            f.write("from a file");
+        }
+        mkdir(target);
+
+        check(p, "TarFile() for writing", sub () {
+            TarFile tar(archive, "w");
+            tar.add("hello.txt", "Hello, World!");
+            tar.close();
+        });
+        assertTrue(is_file(archive), "an archive is written in a system-policy capability");
+
+        assertEq(1, check(p, "TarFile() for reading", int sub () {
+            TarFile tar(archive, "r");
+            on_exit tar.close();
+            return tar.entryCount();
+        }), "an archive is read in a system-policy capability");
+
+        string second = dir + DirSep + "second.tar";
+        check(p, "TarFile::addFile()", sub () {
+            TarFile tar(second, "w");
+            tar.addFile("source.txt", source);
+            tar.close();
+        });
+        assertTrue(is_file(second), "a file is added in a system-policy capability");
+
+        check(p, "TarFile::extractTo()", sub () {
+            TarFile tar(archive, "r");
+            on_exit tar.close();
+            tar.extractTo("hello.txt", target + DirSep + "hello.txt");
+        });
+        assertEq("Hello, World!", ReadOnlyFile::readTextFile(target + DirSep + "hello.txt"),
+            "an entry is extracted in a system-policy capability");
+    }
+}
