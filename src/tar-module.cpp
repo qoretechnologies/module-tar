@@ -119,6 +119,9 @@ static void tar_module_init(QoreModuleInitContext& ctx, ExceptionSink& xsink);
 static void tar_module_ns_init(QoreNamespace* rns, QoreNamespace* qns, ExceptionSink& xsink);
 static void tar_module_delete();
 
+// the module's namespace; purged when the module is deleted (see QoreModuleInfo::ns)
+QoreNamespace TarNS("Qore::Tar");
+
 extern "C" DLLEXPORT void tar_qore_module_desc(QoreModuleInfo& mod_info) {
     mod_info.name = "tar";
     mod_info.version = "1.0.0";
@@ -130,6 +133,10 @@ extern "C" DLLEXPORT void tar_qore_module_desc(QoreModuleInfo& mod_info) {
     mod_info.init = tar_module_init;
     mod_info.ns_init = tar_module_ns_init;
     mod_info.del = tar_module_delete;
+#ifdef QORE_HAS_MODULE_NS_PURGE
+    // the namespace is purged when the module is deleted, before the types are freed (see QoreModuleInfo::ns)
+    mod_info.ns = &TarNS;
+#endif
     mod_info.license = QL_MIT;
     mod_info.license_str = "MIT";
 }
@@ -139,8 +146,6 @@ const TypedHashDecl* hashdeclTarEntryInfo = nullptr;
 const TypedHashDecl* hashdeclTarAddOptions = nullptr;
 const TypedHashDecl* hashdeclTarExtractOptions = nullptr;
 const TypedHashDecl* hashdeclTarCreateOptions = nullptr;
-
-QoreNamespace TarNS("Qore::Tar");
 
 static void tar_module_init(QoreModuleInitContext& ctx, ExceptionSink& xsink) {
     // Set locale to support UTF-8 filenames in archives
