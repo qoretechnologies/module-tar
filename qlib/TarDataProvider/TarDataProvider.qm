@@ -23,7 +23,7 @@
 */
 
 # minimum required Qore version
-%requires qore >= 2.0
+%requires qore >= 3.0
 
 %requires(reexport) DataProvider
 %requires FileLocationHandler
@@ -383,6 +383,9 @@ module TarDataProvider {
             "output_type": TarJoinArchiveDataProvider::ResponseType,
         });
     };
+    # PROCESS_CONTROL: its init registers data provider factory (process-wide registrations)
+    # (a Program restricted like a Qorus interface can load the module only when it declares them; Qore #5803)
+    domains = "PROCESS_CONTROL";
 }
 
 /** @mainpage TarDataProvider Module
