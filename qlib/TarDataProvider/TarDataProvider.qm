@@ -392,7 +392,7 @@ module TarDataProvider {
 
     @tableofcontents
 
-    @section tardataproviderintro Introduction to the TarDataProvider Module
+    @section tardataproviderintro TarDataProvider Module Introduction
 
     <img src="tar-logo.svg" width="96" alt="TarDataProvider module logo"/>
 
@@ -438,6 +438,14 @@ module TarDataProvider {
     @par API Example: Extract an Archive
     @verbatim qdp 'tar{}/archive/extract' path=archive.tar,destination=/tmp/extract,overwrite=true
     @endverbatim
+
+    @subpage tardataproviderreleasenotes
+*/
+
+/** @page tardataproviderreleasenotes TarDataProvider Release Notes
+
+    @section tardataproviderv10 TarDataProvider Module Version 1.0
+    - initial release
 */
 
 #! Contains all public definitions in the TarDataProvider module
