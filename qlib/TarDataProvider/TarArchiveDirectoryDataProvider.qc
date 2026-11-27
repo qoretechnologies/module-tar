@@ -64,6 +64,11 @@ public class TarArchiveDirectoryDataProvider inherits AbstractDataProvider {
     }
 
     private auto doRequestImpl(auto req, *hash<auto> request_options) {
+        # the paths and locations in the request are the caller's input, also for the code that a host-created
+        # provider was lent to: refused before anything is read or written if that code is restricted (issue #6)
+        tar_check_caller_path("directory_path", req.directory_path);
+        tar_check_caller_path("archive_path", req.archive_path);
+        tar_check_caller_location("output_location", req.output_location);
         string directory_path = req.directory_path;
         if (!is_dir(directory_path)) {
             throw "TAR-ERROR", sprintf("directory does not exist: %y", directory_path);

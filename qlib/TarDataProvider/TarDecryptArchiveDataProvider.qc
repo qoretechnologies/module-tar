@@ -67,6 +67,10 @@ public class TarDecryptArchiveDataProvider inherits AbstractDataProvider {
     }
 
     private auto doRequestImpl(auto req, *hash<auto> request_options) {
+        # the paths and locations in the request are the caller's input, also for the code that a host-created
+        # provider was lent to: refused before anything is read or written if that code is restricted (issue #6)
+        tar_check_caller_path("encrypted_path", req.encrypted_path);
+        tar_check_caller_location("encrypted_location", req.encrypted_location);
         *binary encrypted_data = req.encrypted_data;
         if (!encrypted_data && req.encrypted_location) {
             encrypted_data = FileLocationHandler::getBinaryFileFromLocation(req.encrypted_location);
