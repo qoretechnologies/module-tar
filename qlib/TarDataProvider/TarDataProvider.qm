@@ -27,6 +27,7 @@
 
 %requires(reexport) DataProvider
 %requires FileLocationHandler
+%requires Util
 %requires Mime
 %requires tar
 
@@ -419,6 +420,32 @@ module TarDataProvider {
     - @ref TarDataProvider::TarSplitArchiveDataProvider "TarSplitArchiveDataProvider"
     - @ref TarDataProvider::TarJoinArchiveDataProvider "TarJoinArchiveDataProvider"
 
+    @section tardataprovider_caller_paths Paths Given by Restricted Callers
+
+    The code of this module runs with its own %Program's options, so it decides with the restrictions of the code that
+    calls it before it uses a filesystem path or a location in a request: if that code is restricted from the
+    \c FILESYSTEM functional domain (for example with \c PO_NO_FILESYSTEM), the request is refused with
+    \c PERMISSION-DENIED before anything is read or written.  This also applies when the host created the provider
+    and gave it to restricted code (see @ref Qore::SandboxManager::isLentToRestricted()
+    "SandboxManager::isLentToRestricted()").  The file-system policy of a sandbox that governs the calling code
+    applies when a file is opened (\c FILESYSTEM-ACCESS-DENIED).  The checked fields are:
+    - \c archive/create: \c archive_path, \c output_location and the \c source_path of each file without
+      \c data or \c text
+    - \c archive/add: \c archive_path and the \c source_path of each file without \c data or \c text
+    - \c archive/extract and \c file/extract: \c archive_path, \c archive_location and \c destination; these
+      actions always write to the file system, so they are refused for restricted callers also when no
+      \c destination is given (the default is the current directory)
+    - \c archive/list, \c archive/info, \c archive/verify, \c archive/encrypt, \c archive/split, \c file/read,
+      \c data/decompress, \c stream/extract and \c entry/delete: \c archive_path and \c archive_location
+    - \c archive/decrypt: \c encrypted_path and \c encrypted_location
+    - \c directory/archive: \c directory_path, \c archive_path and \c output_location
+
+    A location is refused if the calling code is restricted from a functional domain that the handler of its scheme
+    uses for its caller (\c FILESYSTEM for \c file:// locations; see
+    @ref FileLocationHandler::AbstractFileLocationHandler::getCallerDomains()
+    "AbstractFileLocationHandler::getCallerDomains()").  Requests that give the archive or the files as data and
+    return the result as data work for restricted callers.
+
     @section tardataprovider_factory TarDataProvider Factory
 
     The name of the Tar data provider factory is <b><tt>tar</tt></b>.
@@ -446,6 +473,10 @@ module TarDataProvider {
 
     @section tardataproviderv10 TarDataProvider Module Version 1.0
     - initial release
+    - the paths and locations that the actions' requests give are refused with \c PERMISSION-DENIED before they are
+      used if the calling code is restricted from the file system, also when the host created the provider and gave
+      it to that code (see @ref tardataprovider_caller_paths,
+      <a href="https://github.com/qoretechnologies/module-tar/issues/6">issue 6</a>)
 */
 
 #! Contains all public definitions in the TarDataProvider module
@@ -543,5 +574,101 @@ public namespace TarDataProvider {
         }
         string fmt = string(val).lwr();
         return TarFormatMap{fmt} ?? TAR_FORMAT_PAX;
+    }
+
+    #! Refuses a filesystem path given in a request if the calling code is restricted from the file system
+    /** Library code runs with its own %Program's options, so a path that the calling code gives is refused before it
+        is used if that code is restricted from the \c FILESYSTEM functional domain (for example with
+        \c PO_NO_FILESYSTEM), also when the provider was lent to that code by the host (see
+        @ref Qore::SandboxManager::isLentToRestricted() "SandboxManager::isLentToRestricted()").
+
+        @param field the name of the request field, for the error message
+        @param path the path; no check is made if it is not set (any value that is set is checked, also one that
+        evaluates to @ref False, such as \c "0", which some actions use as a path)
+
+        @throw PERMISSION-DENIED the calling code is restricted from the \c FILESYSTEM functional domain
+    */
+    sub tar_check_caller_path(string field, auto path) {
+        if (exists path && SandboxManager::isLentToRestricted(DOM_FILESYSTEM)) {
+            throw "PERMISSION-DENIED", sprintf("the %y field of the request cannot be used: the calling code is "
+                "restricted from the FILESYSTEM functional domain", field);
+        }
+    }
+
+    #! Refuses the source paths of the files of a request if the calling code is restricted from the file system
+    /** @param field the name of the request field with the files, for the error message
+        @param files the files; the \c source_path of a file is a filesystem path that the actions read if the file
+        has no \c data or \c text
+
+        @throw PERMISSION-DENIED the calling code is restricted from the \c FILESYSTEM functional domain
+    */
+    sub tar_check_caller_source_paths(string field, auto files) {
+        if (files.typeCode() != NT_LIST) {
+            return;
+        }
+        foreach auto file in (files) {
+            if (file.typeCode() == NT_HASH && !file.data && !file.text) {
+                tar_check_caller_path(sprintf("%s[%d].source_path", field, $#), file.source_path);
+            }
+        }
+    }
+
+    #! Refuses a location given in a request if the calling code is restricted from a functional domain of its handler
+    /** The handler of the location's scheme decides the functional domains (see
+        @ref FileLocationHandler::AbstractFileLocationHandler::getCallerDomains()
+        "AbstractFileLocationHandler::getCallerDomains()"), as when the location is read or written; the calling code
+        is judged as by @ref Qore::SandboxManager::isLentToRestricted() "SandboxManager::isLentToRestricted()", so the
+        code that a host-created provider was lent to cannot give a location that it could not use itself.
+
+        @param field the name of the request field, for the error message
+        @param location the location; no check is made if it is not set
+
+        @throw LOCATION-ERROR the options of the location cannot be parsed
+        @throw PERMISSION-DENIED the calling code is restricted from a functional domain of the location's handler
+    */
+    sub tar_check_caller_location(string field, auto location) {
+        if (!exists location) {
+            return;
+        }
+        string loc = location;
+        string scheme = (loc =~ x/^(\w+):\/\//)[0] ?? "file";
+        AbstractFileLocationHandler handler;
+        try {
+            handler = FileLocationHandler::getHandler(scheme);
+        } catch (hash<ExceptionInfo> ex) {
+            if (ex.err == "SCHEME-ERROR") {
+                # an unknown scheme is refused when the location is used
+                return;
+            }
+            rethrow;
+        }
+        # the options at the end of the location, as FileLocationHandler takes them
+        *hash<auto> opts;
+        *string opt_str = (loc =~ x/((?:{).*(?:}))$/)[0];
+        if (opt_str) {
+            auto v = parse_to_qore_value(opt_str);
+            if (v.typeCode() == NT_HASH) {
+                opts = v;
+            } else if (v.strp()) {
+                opts = {v: True};
+            } else {
+                throw "LOCATION-ERROR", sprintf("the options of the location in the %y field of the request cannot be "
+                    "parsed", field);
+            }
+        }
+        int dom = handler.getCallerDomains(scheme, opts);
+        if (dom && SandboxManager::isLentToRestricted(dom)) {
+            throw "PERMISSION-DENIED", sprintf("the %y field of the request cannot be used: the calling code is "
+                "restricted from a functional domain of the handler of %y locations", field, scheme);
+        }
+        # a handler without domains of its own (such as that of conn locations) gives the options that the caller adds
+        # to the handler that it resolves the location to, which judges the calling code as
+        # SandboxManager::isCallerRestricted() does; for the code that a host-created provider was lent to, which that
+        # does not see, the options are refused here if that code is restricted from the file system or the network
+        if (!dom && opts && SandboxManager::isLentToRestricted(DOM_FILESYSTEM | DOM_NETWORK)
+                && !SandboxManager::isCallerRestricted(DOM_FILESYSTEM | DOM_NETWORK)) {
+            throw "PERMISSION-DENIED", sprintf("the options of the location in the %y field of the request cannot be "
+                "used: the calling code is restricted from the FILESYSTEM or NETWORK functional domain", field);
+        }
     }
 }
