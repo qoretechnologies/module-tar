@@ -102,8 +102,12 @@ public:
                                        ResolvedCallReferenceNode* progress_callback = nullptr,
                                        int64 total_entries = -1);
 
-    //! Extract single entry
-    DLLLOCAL void extractEntry(const char* name, const char* destPath, ExceptionSink* xsink);
+    //! Extract a single entry to a directory, as extractAll() extracts it
+    /** the entry's path below the directory is its name; the options are those of extractAll(), except that the
+        include and exclude patterns do not apply; raises TAR-ERROR if there is no entry with the name
+    */
+    DLLLOCAL void extractEntry(const char* name, const char* destPath, const QoreHashNode* opts,
+                               ExceptionSink* xsink);
 
     //! Extract entry to specific destination
     DLLLOCAL void extractTo(const char* name, const char* destination, ExceptionSink* xsink);
@@ -143,6 +147,12 @@ private:
     // For in-memory archives
     std::vector<char> memory_buffer;
     size_t memory_pos;
+
+    //! Extracts the entry with the given name (the first one), or all entries if it is null, to a directory
+    DLLLOCAL QoreListNode* extractEntries(const char* destPath, const QoreHashNode* opts, const char* only_name,
+                                          ExceptionSink* xsink,
+                                          ResolvedCallReferenceNode* progress_callback = nullptr,
+                                          int64 total_entries = -1);
 
     // For stream-based archives
     InputStream* input_stream;

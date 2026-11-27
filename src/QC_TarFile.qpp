@@ -186,13 +186,17 @@ hashdecl Qore::Tar::TarExtractOptions {
     //! Restore ownership (requires root, default: False)
     *bool preserve_ownership;
 
-    //! Restore modification times (default: True)
+    //! Restore modification times (default: True); if False, the extracted files have the time of the extraction
     *bool preserve_times;
 
     //! Overwrite existing files (default: True)
     *bool overwrite;
 
     //! Create parent directories (default: True)
+    /** If False, missing parent directories (also the destination directory) are not created (the directory entries
+        of the archive are still extracted), and an entry whose directory does not exist is not extracted: the
+        extraction stops with \c TAR-ERROR, and the entries extracted before it stay
+    */
     *bool create_directories;
 
     //! Patterns to include (glob-style)
@@ -692,9 +696,15 @@ list<string> TarFile::extractAll(*hash<TarExtractOptions> options, code progress
 
 //! Extracts a single entry to a destination directory
 /** @param name the name of the entry to extract
-    @param options optional @ref TarExtractOptions for extraction settings
+    @param options optional @ref TarExtractOptions for extraction settings; the entry is extracted below the
+    \c destination directory (default: the current directory) with its name as its path there, as extractAll()
+    extracts it, with the same checks of the entry's path and link targets; the \c include and \c exclude patterns
+    do not apply.  If the archive has more than one entry with the name, the first one is extracted, as by
+    extractTo() and read().  The target of a hard link entry is not extracted with it: it must exist below the
+    destination directory already
 
     @throw TAR-ERROR error extracting entry or entry not found
+    @throw TAR-SECURITY-ERROR the entry's path or link target is unsafe (absolute, or with \c ".." components)
 */
 nothing TarFile::extract(string name, *hash<TarExtractOptions> options) [dom=FILESYSTEM] {
     std::string dest = ".";
@@ -710,7 +720,7 @@ nothing TarFile::extract(string name, *hash<TarExtractOptions> options) [dom=FIL
     if (*xsink) {
         return QoreValue();
     }
-    tf->extractEntry(entry_name->c_str(), dest.c_str(), xsink);
+    tf->extractEntry(entry_name->c_str(), dest.c_str(), options, xsink);
 }
 
 //! Extracts a single entry to a specific file path

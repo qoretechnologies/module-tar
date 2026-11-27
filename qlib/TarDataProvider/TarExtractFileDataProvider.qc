@@ -95,11 +95,21 @@ public class TarExtractFileDataProvider inherits AbstractDataProvider {
         string entry_name = req.entry_name;
         string destination = req.destination ?? ".";
 
-        tar.extractTo(entry_name, destination);
+        # a directory receives the entry below it with its name as its path there, as archive/extract extracts it
+        # (with the same checks of the entry's path); any other destination is the file that the entry is written to
+        string extracted_to;
+        if (is_dir(destination)) {
+            # "extract" is an operator: the method is called by name
+            call_object_method(tar, "extract", entry_name, <TarExtractOptions>{"destination": destination});
+            extracted_to = destination + (destination =~ /[\/\\]$/ ? "" : DirSep) + entry_name;
+        } else {
+            tar.extractTo(entry_name, destination);
+            extracted_to = destination;
+        }
         tar.close();
 
         return {
-            "extracted_to": destination,
+            "extracted_to": extracted_to,
             "entry_name": entry_name,
         };
     }
