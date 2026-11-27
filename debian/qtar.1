@@ -1,6 +1,6 @@
 .\" Copyright (C) 2026 David Nichols
 .\" SPDX-License-Identifier: MIT
-.TH QTAR 1 "September 2026" "Qore tar 1.0.0" "User Commands"
+.TH QTAR 1 "November 2026" "Qore tar 1.0.0" "User Commands"
 .SH NAME
 qtar \- create, inspect and extract archives with Qore
 .SH SYNOPSIS
@@ -22,6 +22,10 @@ Create an archive from files or directories.
 .TP
 .B extract (x)
 Extract archive contents. Use \-C to select the destination directory.
+Missing directories (the destination and the parents of the entries) are
+created unless \-\-no\-create\-dirs is given; with it, the directory entries
+of the archive are still extracted, and the extraction stops with an error at
+the first entry whose directory does not exist.
 .TP
 .B list (t)
 List archive contents. Use \-l for the detailed listing.
@@ -54,6 +58,7 @@ Show the version.
 .nf
 qtar create backup.tar.gz project/
 qtar extract backup.tar.gz \-C restore/
+qtar extract backup.tar.gz \-C restore/ \-\-no\-create\-dirs
 qtar list \-l backup.tar.gz
 qtar cat backup.tar.gz project/README
 .fi

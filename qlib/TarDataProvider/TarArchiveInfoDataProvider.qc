@@ -117,20 +117,20 @@ public class TarArchiveInfoRequestDataType inherits HashDataType {
         const Fields = {
             "archive_path": {
                 "type": StringOrNothingType,
-                "display_name": "Archive Path",
+                "display_name": "Archive path",
                 "short_desc": "Path to the tar archive",
                 "desc": "The filesystem path to the tar archive",
                 "example_value": "/path/to/archive.tar.gz",
             },
             "archive_data": {
                 "type": BinaryOrNothingType,
-                "display_name": "Archive Data",
+                "display_name": "Archive data",
                 "short_desc": "Binary archive data",
                 "desc": "The tar archive as binary data (alternative to archive_path)",
             },
             "archive_location": {
                 "type": StringOrNothingType,
-                "display_name": "Archive Location",
+                "display_name": "Archive location",
                 "short_desc": "Archive location URL",
                 "desc": "A FileLocationHandler location URL for the tar archive (alternative to archive_path or archive_data)",
                 "example_value": "file:///path/to/archive.tar.gz",
@@ -150,31 +150,31 @@ public class TarArchiveInfoResponseDataType inherits HashDataType {
         const Fields = {
             "entry_count": {
                 "type": IntType,
-                "display_name": "Entry Count",
+                "display_name": "Entry count",
                 "short_desc": "Total number of entries",
                 "desc": "Total number of entries in the archive",
             },
             "file_count": {
                 "type": IntType,
-                "display_name": "File Count",
+                "display_name": "File count",
                 "short_desc": "Number of regular files",
                 "desc": "Number of regular file entries",
             },
             "directory_count": {
                 "type": IntType,
-                "display_name": "Directory Count",
+                "display_name": "Directory count",
                 "short_desc": "Number of directories",
                 "desc": "Number of directory entries",
             },
             "link_count": {
                 "type": IntType,
-                "display_name": "Link Count",
+                "display_name": "Link count",
                 "short_desc": "Number of links",
                 "desc": "Number of symlink and hardlink entries",
             },
             "total_uncompressed_size": {
                 "type": IntType,
-                "display_name": "Total Size",
+                "display_name": "Total size",
                 "short_desc": "Total uncompressed size",
                 "desc": "Total uncompressed size of all entries in bytes",
             },

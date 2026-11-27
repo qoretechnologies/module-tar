@@ -106,19 +106,19 @@ public class TarJoinArchiveResponseDataType inherits HashDataType {
         const Fields = {
             "archive_data": {
                 "type": BinaryType,
-                "display_name": "Archive Data",
+                "display_name": "Archive data",
                 "short_desc": "Reassembled archive binary",
                 "desc": "The reassembled tar archive as binary data",
             },
             "total_size": {
                 "type": IntType,
-                "display_name": "Total Size",
+                "display_name": "Total size",
                 "short_desc": "Archive size in bytes",
                 "desc": "The total size of the reassembled archive in bytes",
             },
             "chunk_count": {
                 "type": IntType,
-                "display_name": "Chunk Count",
+                "display_name": "Chunk count",
                 "short_desc": "Number of chunks joined",
                 "desc": "The number of chunks that were concatenated",
             },

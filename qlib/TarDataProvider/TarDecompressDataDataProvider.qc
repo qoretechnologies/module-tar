@@ -114,20 +114,20 @@ public class TarDecompressDataRequestDataType inherits HashDataType {
         const Fields = {
             "archive_data": {
                 "type": BinaryOrNothingType,
-                "display_name": "Archive Data",
+                "display_name": "Archive data",
                 "short_desc": "TAR archive binary data",
                 "desc": "The tar archive as binary data to decompress",
             },
             "archive_path": {
                 "type": StringOrNothingType,
-                "display_name": "Archive Path",
+                "display_name": "Archive path",
                 "short_desc": "Path to the tar archive",
                 "desc": "The filesystem path to the tar archive (alternative to archive_data)",
                 "example_value": "/path/to/archive.tar.gz",
             },
             "archive_location": {
                 "type": StringOrNothingType,
-                "display_name": "Archive Location",
+                "display_name": "Archive location",
                 "short_desc": "Archive location URL",
                 "desc": "A FileLocationHandler location URL for the tar archive (alternative to archive_data or archive_path)",
                 "example_value": "file:///path/to/archive.tar.gz",
@@ -153,13 +153,13 @@ public class TarDecompressDataResponseDataType inherits HashDataType {
             },
             "entry_count": {
                 "type": IntType,
-                "display_name": "Entry Count",
+                "display_name": "Entry count",
                 "short_desc": "Total entries",
                 "desc": "Total number of entries in the archive",
             },
             "file_count": {
                 "type": IntType,
-                "display_name": "File Count",
+                "display_name": "File count",
                 "short_desc": "Files extracted",
                 "desc": "Number of regular files extracted",
             },

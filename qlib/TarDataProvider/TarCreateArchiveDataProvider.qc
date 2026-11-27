@@ -166,21 +166,21 @@ public class TarCreateArchiveRequestDataType inherits HashDataType {
         const Fields = {
             "archive_path": {
                 "type": StringOrNothingType,
-                "display_name": "Archive Path",
+                "display_name": "Archive path",
                 "short_desc": "Output archive file path",
                 "desc": "The path where the tar archive will be created. If not specified, returns binary data.",
                 "example_value": "/tmp/backup.tar.gz",
             },
             "output_location": {
                 "type": StringOrNothingType,
-                "display_name": "Output Location",
+                "display_name": "Output location",
                 "short_desc": "Output location URL",
                 "desc": "A FileLocationHandler location URL where the archive will be written (alternative to archive_path)",
                 "example_value": "file:///tmp/backup.tar.gz",
             },
             "compression": {
                 "type": StringOrNothingType,
-                "display_name": "Compression Method",
+                "display_name": "Compression method",
                 "short_desc": "Archive compression type",
                 "desc": "The compression method to use",
                 "example_value": "gzip",
@@ -188,7 +188,7 @@ public class TarCreateArchiveRequestDataType inherits HashDataType {
             },
             "compression_level": {
                 "type": IntOrNothingType,
-                "display_name": "Compression Level",
+                "display_name": "Compression level",
                 "short_desc": "Compression strength (1-9)",
                 "desc": "Compression level from 1 (fastest, least compression) to 9 (slowest, best compression). "
                     "Use -1 or omit for the default level. Typical defaults: gzip=6, bzip2=9, xz=6, zstd=3, lz4=1",
@@ -196,7 +196,7 @@ public class TarCreateArchiveRequestDataType inherits HashDataType {
             },
             "format": {
                 "type": StringOrNothingType,
-                "display_name": "Archive Format",
+                "display_name": "Archive format",
                 "short_desc": "TAR format variant",
                 "desc": "The tar format to use",
                 "example_value": "pax",
@@ -218,7 +218,7 @@ public class TarCreateArchiveRequestDataType inherits HashDataType {
             },
             "require_entries": {
                 "type": SoftBoolOrNothingType,
-                "display_name": "Require Entries",
+                "display_name": "Require entries",
                 "short_desc": "Require at least one entry",
                 "desc": "If `true`, raises an error if the archive would be created with no entries. "
                     "Default is `false`, allowing empty archives",
@@ -238,25 +238,25 @@ public class TarCreateArchiveResponseDataType inherits HashDataType {
         const Fields = {
             "archive_path": {
                 "type": StringOrNothingType,
-                "display_name": "Archive Path",
+                "display_name": "Archive path",
                 "short_desc": "Path to created archive",
                 "desc": "The filesystem path where the archive was created",
             },
             "archive_data": {
                 "type": BinaryOrNothingType,
-                "display_name": "Archive Data",
+                "display_name": "Archive data",
                 "short_desc": "Archive binary data",
                 "desc": "The archive as binary data (when no path was specified)",
             },
             "output_location": {
                 "type": StringOrNothingType,
-                "display_name": "Output Location",
+                "display_name": "Output location",
                 "short_desc": "Output location URL",
                 "desc": "The location URL where the archive was written",
             },
             "entry_count": {
                 "type": IntType,
-                "display_name": "Entry Count",
+                "display_name": "Entry count",
                 "short_desc": "Number of entries added",
                 "desc": "Total number of entries added to the archive",
             },

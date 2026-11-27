@@ -176,6 +176,9 @@ string sub lent_request(AbstractDataProvider dp, hash<auto> req) {
             # a path that evaluates to False is a path too
             ("archive/add", "archive_path \"0\"", {"archive_path": "0", "files": files}),
             ("archive/extract", "destination \"0\"", {"archive_data": archive_data, "destination": "0"}),
+            # the create_directories option does not change the checks
+            ("archive/extract", "default destination without create_directories", {"archive_data": archive_data,
+                "create_directories": False}),
             ("archive/verify", "archive_path", {"archive_path": archive}),
             ("archive/verify", "archive_location", {"archive_location": "file://" + archive}),
             ("archive/encrypt", "archive_path", {"archive_path": archive, "password": "pw"}),
@@ -190,6 +193,10 @@ string sub lent_request(AbstractDataProvider dp, hash<auto> req) {
                 "destination": extracted}),
             ("file/extract", "destination", {"archive_data": archive_data, "entry_name": "a.txt",
                 "destination": extracted}),
+            ("file/extract", "file destination without create_directories", {"archive_data": archive_data,
+                "entry_name": "a.txt", "destination": extracted, "create_directories": False}),
+            ("file/extract", "default destination without create_directories", {"archive_data": archive_data,
+                "entry_name": "a.txt", "create_directories": False}),
             ("file/read", "archive_path", {"archive_path": archive, "entry_name": "a.txt"}),
             ("file/read", "archive_location", {"archive_location": "file://" + archive, "entry_name": "a.txt"}),
             ("data/decompress", "archive_path", {"archive_path": archive}),

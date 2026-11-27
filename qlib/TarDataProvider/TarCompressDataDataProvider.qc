@@ -142,19 +142,19 @@ public class TarCompressDataResponseDataType inherits HashDataType {
         const Fields = {
             "archive_data": {
                 "type": BinaryType,
-                "display_name": "Archive Data",
+                "display_name": "Archive data",
                 "short_desc": "Compressed archive data",
                 "desc": "The compressed tar archive as binary data",
             },
             "archive_size": {
                 "type": IntType,
-                "display_name": "Archive Size",
+                "display_name": "Archive size",
                 "short_desc": "Size in bytes",
                 "desc": "Size of the compressed archive in bytes",
             },
             "entry_count": {
                 "type": IntType,
-                "display_name": "Entry Count",
+                "display_name": "Entry count",
                 "short_desc": "Number of entries",
                 "desc": "Number of entries in the archive",
             },

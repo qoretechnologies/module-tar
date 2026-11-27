@@ -14,4 +14,7 @@
     - the \c preserve_times and \c create_directories options of @ref Qore::Tar::TarExtractOptions
       "TarExtractOptions" apply; they were ignored
       (<a href="https://github.com/qoretechnologies/module-tar/issues/9">issue 9</a>)
+    - \c qtar \c extract has a \c --no-create-dirs option that does not create missing directories (the destination
+      directory and the entries' parent directories); \c qtar always created them (see @ref tarqtarguide,
+      <a href="https://github.com/qoretechnologies/module-tar/issues/11">issue 11</a>)
 */

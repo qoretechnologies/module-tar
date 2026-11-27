@@ -96,7 +96,7 @@ public class TarExtractArchiveDataProvider inherits AbstractDataProvider {
             "preserve_permissions": req.preserve_permissions ?? True,
             "preserve_times": req.preserve_times ?? True,
             "overwrite": req.overwrite ?? False,
-            "create_directories": True,
+            "create_directories": req.create_directories ?? True,
         };
         if (req.include) {
             extract_opts.include = req.include;
@@ -148,20 +148,20 @@ public class TarExtractArchiveRequestDataType inherits HashDataType {
         const Fields = {
             "archive_path": {
                 "type": StringOrNothingType,
-                "display_name": "Archive Path",
+                "display_name": "Archive path",
                 "short_desc": "Path to the tar archive",
                 "desc": "The filesystem path to the tar archive to extract",
                 "example_value": "/path/to/archive.tar.gz",
             },
             "archive_data": {
                 "type": BinaryOrNothingType,
-                "display_name": "Archive Data",
+                "display_name": "Archive data",
                 "short_desc": "Binary archive data",
                 "desc": "The tar archive as binary data (alternative to archive_path)",
             },
             "archive_location": {
                 "type": StringOrNothingType,
-                "display_name": "Archive Location",
+                "display_name": "Archive location",
                 "short_desc": "Archive location URL",
                 "desc": "A FileLocationHandler location URL for the tar archive (alternative to archive_path or archive_data)",
                 "example_value": "file:///path/to/archive.tar.gz",
@@ -175,14 +175,14 @@ public class TarExtractArchiveRequestDataType inherits HashDataType {
             },
             "preserve_permissions": {
                 "type": SoftBoolType,
-                "display_name": "Preserve Permissions",
+                "display_name": "Preserve permissions",
                 "short_desc": "Restore file permissions",
                 "desc": "If `true`, restores original file permissions",
                 "default_value": True,
             },
             "preserve_times": {
                 "type": SoftBoolType,
-                "display_name": "Preserve Times",
+                "display_name": "Preserve times",
                 "short_desc": "Restore modification times",
                 "desc": "If `true`, restores original modification times",
                 "default_value": True,
@@ -194,9 +194,19 @@ public class TarExtractArchiveRequestDataType inherits HashDataType {
                 "desc": "If `true`, overwrites existing files",
                 "default_value": False,
             },
+            "create_directories": {
+                "type": SoftBoolType,
+                "display_name": "Create directories",
+                "short_desc": "Create missing directories",
+                "desc": "If `true`, creates the destination directory and the missing parent directories of the "
+                    "entries; if `false`, they are not created: the archive's directory entries are still "
+                    "extracted, and the extraction stops with an error at the first entry whose directory does not "
+                    "exist (the entries extracted before it stay)",
+                "default_value": True,
+            },
             "include": {
                 "type": new ListDataType("IncludePatternList", StringType, True),
-                "display_name": "Include Patterns",
+                "display_name": "Include patterns",
                 "short_desc": "Glob patterns for files to include",
                 "desc": "A list of glob-style patterns; only entries matching at least one pattern will be "
                     "extracted. If not provided, all entries are included by default.\n\n"
@@ -206,7 +216,7 @@ public class TarExtractArchiveRequestDataType inherits HashDataType {
             },
             "exclude": {
                 "type": new ListDataType("ExcludePatternList", StringType, True),
-                "display_name": "Exclude Patterns",
+                "display_name": "Exclude patterns",
                 "short_desc": "Glob patterns for files to exclude",
                 "desc": "A list of glob-style patterns; entries matching any pattern will be skipped. "
                     "Exclude patterns are applied after `include` patterns.\n\n"
@@ -216,7 +226,7 @@ public class TarExtractArchiveRequestDataType inherits HashDataType {
             },
             "strip_count": {
                 "type": IntOrNothingType,
-                "display_name": "Strip Components",
+                "display_name": "Strip components",
                 "short_desc": "Strip N leading path components",
                 "desc": "Number of leading path components to strip from entry names during "
                     "extraction. For example, with `strip_count` = `1`, the entry "
@@ -245,7 +255,7 @@ public class TarExtractArchiveResponseDataType inherits HashDataType {
             },
             "extracted_count": {
                 "type": IntType,
-                "display_name": "Extracted Count",
+                "display_name": "Extracted count",
                 "short_desc": "Number of entries extracted",
                 "desc": "Total number of entries that were extracted",
             },

@@ -124,20 +124,20 @@ public class TarVerifyArchiveRequestDataType inherits HashDataType {
         const Fields = {
             "archive_path": {
                 "type": StringOrNothingType,
-                "display_name": "Archive Path",
+                "display_name": "Archive path",
                 "short_desc": "Path to the tar archive",
                 "desc": "The filesystem path to the tar archive to verify",
                 "example_value": "/path/to/archive.tar.gz",
             },
             "archive_data": {
                 "type": BinaryOrNothingType,
-                "display_name": "Archive Data",
+                "display_name": "Archive data",
                 "short_desc": "TAR archive binary data",
                 "desc": "The tar archive as binary data (alternative to `archive_path`)",
             },
             "archive_location": {
                 "type": StringOrNothingType,
-                "display_name": "Archive Location",
+                "display_name": "Archive location",
                 "short_desc": "Archive location URL",
                 "desc": "A FileLocationHandler location URL for the tar archive "
                     "(alternative to `archive_path` or `archive_data`)",
@@ -158,13 +158,13 @@ public class TarVerifyArchiveResponseDataType inherits HashDataType {
         const Fields = {
             "entry_count": {
                 "type": IntType,
-                "display_name": "Entry Count",
+                "display_name": "Entry count",
                 "short_desc": "Total entries in archive",
                 "desc": "The number of entries in the archive",
             },
             "total_size": {
                 "type": IntType,
-                "display_name": "Total Size",
+                "display_name": "Total size",
                 "short_desc": "Total data size in bytes",
                 "desc": "The total size of all file data read during verification",
             },

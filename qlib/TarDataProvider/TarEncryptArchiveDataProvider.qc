@@ -144,20 +144,20 @@ public class TarEncryptArchiveRequestDataType inherits HashDataType {
         const Fields = {
             "archive_data": {
                 "type": BinaryOrNothingType,
-                "display_name": "Archive Data",
+                "display_name": "Archive data",
                 "short_desc": "TAR archive binary data",
                 "desc": "The tar archive as binary data to encrypt",
             },
             "archive_path": {
                 "type": StringOrNothingType,
-                "display_name": "Archive Path",
+                "display_name": "Archive path",
                 "short_desc": "Path to the tar archive",
                 "desc": "The filesystem path to the tar archive (alternative to `archive_data`)",
                 "example_value": "/path/to/archive.tar.gz",
             },
             "archive_location": {
                 "type": StringOrNothingType,
-                "display_name": "Archive Location",
+                "display_name": "Archive location",
                 "short_desc": "Archive location URL",
                 "desc": "A FileLocationHandler location URL for the tar archive "
                     "(alternative to `archive_data` or `archive_path`)",
@@ -165,7 +165,7 @@ public class TarEncryptArchiveRequestDataType inherits HashDataType {
             },
             "key": {
                 "type": BinaryOrNothingType,
-                "display_name": "Encryption Key",
+                "display_name": "Encryption key",
                 "short_desc": "AES-256 encryption key (32 bytes)",
                 "desc": "A `32`-byte binary key for AES-256-CBC encryption. "
                     "Provide either `key` or `password`, not both",
@@ -193,19 +193,19 @@ public class TarEncryptArchiveResponseDataType inherits HashDataType {
         const Fields = {
             "encrypted_data": {
                 "type": BinaryType,
-                "display_name": "Encrypted Data",
+                "display_name": "Encrypted data",
                 "short_desc": "Encrypted archive binary",
                 "desc": "The encrypted archive as binary data",
             },
             "encrypted_size": {
                 "type": IntType,
-                "display_name": "Encrypted Size",
+                "display_name": "Encrypted size",
                 "short_desc": "Encrypted data size in bytes",
                 "desc": "The total size of the encrypted output",
             },
             "original_size": {
                 "type": IntType,
-                "display_name": "Original Size",
+                "display_name": "Original size",
                 "short_desc": "Original archive size in bytes",
                 "desc": "The size of the original unencrypted archive",
             },

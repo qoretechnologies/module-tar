@@ -109,20 +109,20 @@ public class TarSplitArchiveRequestDataType inherits HashDataType {
         const Fields = {
             "archive_data": {
                 "type": BinaryOrNothingType,
-                "display_name": "Archive Data",
+                "display_name": "Archive data",
                 "short_desc": "TAR archive binary data",
                 "desc": "The tar archive as binary data to split",
             },
             "archive_path": {
                 "type": StringOrNothingType,
-                "display_name": "Archive Path",
+                "display_name": "Archive path",
                 "short_desc": "Path to the tar archive",
                 "desc": "The filesystem path to the tar archive (alternative to `archive_data`)",
                 "example_value": "/path/to/archive.tar.gz",
             },
             "archive_location": {
                 "type": StringOrNothingType,
-                "display_name": "Archive Location",
+                "display_name": "Archive location",
                 "short_desc": "Archive location URL",
                 "desc": "A FileLocationHandler location URL for the tar archive "
                     "(alternative to `archive_data` or `archive_path`)",
@@ -130,7 +130,7 @@ public class TarSplitArchiveRequestDataType inherits HashDataType {
             },
             "chunk_size": {
                 "type": IntType,
-                "display_name": "Chunk Size",
+                "display_name": "Chunk size",
                 "short_desc": "Maximum chunk size in bytes",
                 "desc": "The maximum size in bytes for each chunk. The last chunk may be smaller "
                     "if the archive size is not evenly divisible",
@@ -157,13 +157,13 @@ public class TarSplitArchiveResponseDataType inherits HashDataType {
             },
             "chunk_count": {
                 "type": IntType,
-                "display_name": "Chunk Count",
+                "display_name": "Chunk count",
                 "short_desc": "Number of chunks",
                 "desc": "The number of chunks the archive was split into",
             },
             "total_size": {
                 "type": IntType,
-                "display_name": "Total Size",
+                "display_name": "Total size",
                 "short_desc": "Original archive size in bytes",
                 "desc": "The total size of the original archive in bytes",
             },
