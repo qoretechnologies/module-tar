@@ -51,6 +51,9 @@ AbstractDataProvider dp = DataProvider::getFactoryObjectFromStringEx("tar{}/arch
     receives the entry below it with the entry's name as its path there, with the checks of \c /archive/extract, and
     \c extracted_to is that path; any other destination is the file that the entry is written to.
 
+    \c /archive/extract and \c /file/extract create missing directories unless their \c create_directories option is
+    \c false; see @ref tardataprovider_extract_directories "Creating Directories When Extracting".
+
     @section tardpexamples Data Provider Examples
 
     @code{.py}

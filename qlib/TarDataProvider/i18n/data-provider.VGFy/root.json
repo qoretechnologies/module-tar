@@ -283,6 +283,18 @@
           "source": "If `true`, overwrites existing files",
           "message": "If `true`, overwrites existing files"
         },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.Y3JlYXRlX2RpcmVjdG9yaWVz.display_name": {
+          "source": "Create directories",
+          "message": "Create directories"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.Y3JlYXRlX2RpcmVjdG9yaWVz.short_desc": {
+          "source": "Create missing directories",
+          "message": "Create missing directories"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.Y3JlYXRlX2RpcmVjdG9yaWVz.desc": {
+          "source": "If `true`, creates the destination directory and the missing parent directories of the entries; if `false`, they are not created: the archive's directory entries are still extracted, and the extraction stops with an error at the first entry whose directory does not exist (the entries extracted before it stay)",
+          "message": "If `true`, creates the destination directory and the missing parent directories of the entries; if `false`, they are not created: the archive's directory entries are still extracted, and the extraction stops with an error at the first entry whose directory does not exist (the entries extracted before it stay)"
+        },
         "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.c3RyaXBfY291bnQ.display_name": {
           "source": "Strip Components",
           "message": "Strip Components"
@@ -562,6 +574,18 @@
         "app.VGFy.action.ZXh0cmFjdC1maWxl.option.ZGVzdGluYXRpb24.desc": {
           "source": "Where to extract the file (default: current directory)",
           "message": "Where to extract the file (default: current directory)"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.Y3JlYXRlX2RpcmVjdG9yaWVz.display_name": {
+          "source": "Create directories",
+          "message": "Create directories"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.Y3JlYXRlX2RpcmVjdG9yaWVz.short_desc": {
+          "source": "Create missing directories",
+          "message": "Create missing directories"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.Y3JlYXRlX2RpcmVjdG9yaWVz.desc": {
+          "source": "If `true`, creates the missing parent directories of the entry below a destination directory; if `false`, they are not created, and an entry whose directory does not exist is not extracted (an error is raised). The directory of a destination file is never created",
+          "message": "If `true`, creates the missing parent directories of the entry below a destination directory; if `false`, they are not created, and an entry whose directory does not exist is not extracted (an error is raised). The directory of a destination file is never created"
         },
         "app.VGFy.action.cmVhZC1maWxl.display_name": {
           "source": "Read File Content",

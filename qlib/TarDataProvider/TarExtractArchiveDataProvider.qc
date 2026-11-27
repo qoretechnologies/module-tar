@@ -96,7 +96,7 @@ public class TarExtractArchiveDataProvider inherits AbstractDataProvider {
             "preserve_permissions": req.preserve_permissions ?? True,
             "preserve_times": req.preserve_times ?? True,
             "overwrite": req.overwrite ?? False,
-            "create_directories": True,
+            "create_directories": req.create_directories ?? True,
         };
         if (req.include) {
             extract_opts.include = req.include;
@@ -193,6 +193,16 @@ public class TarExtractArchiveRequestDataType inherits HashDataType {
                 "short_desc": "Overwrite existing files",
                 "desc": "If `true`, overwrites existing files",
                 "default_value": False,
+            },
+            "create_directories": {
+                "type": SoftBoolType,
+                "display_name": "Create directories",
+                "short_desc": "Create missing directories",
+                "desc": "If `true`, creates the destination directory and the missing parent directories of the "
+                    "entries; if `false`, they are not created: the archive's directory entries are still "
+                    "extracted, and the extraction stops with an error at the first entry whose directory does not "
+                    "exist (the entries extracted before it stay)",
+                "default_value": True,
             },
             "include": {
                 "type": new ListDataType("IncludePatternList", StringType, True),

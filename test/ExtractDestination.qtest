@@ -68,6 +68,14 @@ auto sub file_extract(hash<auto> req) {
     });
 }
 
+# makes an archive/extract request
+auto sub archive_extract(hash<auto> req) {
+    return run(auto sub () {
+        return (new TarDataProvider()).getChildProviderEx(\"archive\").getChildProviderEx(\"extract\")
+            .doRequest(req);
+    });
+}
+
 # calls TarFile::extract() for an archive in memory
 auto sub do_extract(binary data, string name, *hash<TarExtractOptions> opts) {
     return run(auto sub () {
@@ -175,6 +183,7 @@ auto sub do_extract_to(binary data, string name, string dest) {
             addTestCase("errors, " + m, sub () { testErrors(m); });
             addTestCase("links and duplicates, " + m, sub () { testLinks(m); });
             addTestCase("time and directory options, " + m, sub () { testTimeAndDirectoryOptions(m); });
+            addTestCase("create_directories action option, " + m, sub () { testCreateDirectoriesOption(m); });
         }
         set_return_value(main());
     }
@@ -404,6 +413,99 @@ auto sub do_extract_to(binary data, string name, string dest) {
         assertEq("ok", p.callFunction("do_extract", data, "sub/old.txt", <TarExtractOptions>{"destination": dest
             + "/dirs"}), "directories " + mode);
         assertEq("old", ReadOnlyFile::readTextFile(dest + "/dirs/sub/old.txt"), "directories content " + mode);
+    }
+
+    #! the create_directories option of the archive/extract and file/extract actions (module-tar#11)
+    /** The actions always created missing directories; the option is passed to the extraction, and its default
+        (True) keeps that behavior.
+    */
+    private testCreateDirectoriesOption(string mode) {
+        Program p = getProgram(mode);
+        # an archive with only an entry whose directory is not in the archive
+        binary nested_data;
+        {
+            TarFile tar();
+            tar.add("sub/x.txt", "x");
+            nested_data = tar.toData();
+        }
+        # an archive with the directory entry before the entry in it
+        binary with_dir;
+        {
+            TarFile tar();
+            tar.addDirectory("sub");
+            tar.add("sub/x.txt", "x");
+            with_dir = tar.toData();
+        }
+
+        # archive/extract: absent and True create the destination and the entry's directory
+        foreach auto opt in ((NOTHING, True)) {
+            string label = (exists opt ? "True " : "absent ") + mode;
+            string d = dest + "/archive-" + (exists opt ? "true" : "absent");
+            hash<auto> req = {"archive_data": nested_data, "destination": d};
+            if (exists opt) {
+                req.create_directories = opt;
+            }
+            auto rv = p.callFunction("archive_extract", req);
+            assertEq(1, rv.extracted_count, "archive/extract " + label);
+            assertEq("x", ReadOnlyFile::readTextFile(d + "/sub/x.txt"), "archive/extract content " + label);
+        }
+        # archive/extract: False does not create a missing destination
+        assertEq("TAR-ERROR", p.callFunction("archive_extract", {"archive_data": nested_data,
+            "destination": dest + "/archive-false", "create_directories": False}),
+            "archive/extract missing destination " + mode);
+        assertFalse(exists hstat(dest + "/archive-false"), "archive/extract no destination created " + mode);
+        # ... nor the missing directory of an entry below an existing destination, and nothing is written
+        mkdir(dest + "/archive-false");
+        assertEq("TAR-ERROR", p.callFunction("archive_extract", {"archive_data": nested_data,
+            "destination": dest + "/archive-false", "create_directories": False}),
+            "archive/extract missing parent directory " + mode);
+        assertEq((), listDir(dest + "/archive-false"), "archive/extract nothing written " + mode);
+        # ... and extracts the archive's directory entries
+        auto rv = p.callFunction("archive_extract", {"archive_data": with_dir, "destination": dest + "/archive-false",
+            "create_directories": False});
+        assertEq(2, rv.extracted_count, "archive/extract with a directory entry " + mode);
+        assertEq("x", ReadOnlyFile::readTextFile(dest + "/archive-false/sub/x.txt"),
+            "archive/extract directory entry content " + mode);
+
+        # file/extract to a directory: absent and True create the entry's directory
+        foreach auto opt in ((NOTHING, True)) {
+            string label = (exists opt ? "True " : "absent ") + mode;
+            string d = dest + "/file-" + (exists opt ? "true" : "absent");
+            mkdir(d);
+            hash<auto> req = {"archive_data": nested_data, "entry_name": "sub/x.txt", "destination": d};
+            if (exists opt) {
+                req.create_directories = opt;
+            }
+            rv = p.callFunction("file_extract", req);
+            assertEq(d + DirSep + "sub/x.txt", rv.extracted_to, "file/extract " + label);
+            assertEq("x", ReadOnlyFile::readTextFile(d + "/sub/x.txt"), "file/extract content " + label);
+        }
+        # file/extract to a directory: False does not create the entry's directory, and nothing is written
+        mkdir(dest + "/file-false");
+        assertEq("TAR-ERROR", p.callFunction("file_extract", {"archive_data": nested_data, "entry_name": "sub/x.txt",
+            "destination": dest + "/file-false", "create_directories": False}),
+            "file/extract missing parent directory " + mode);
+        assertEq((), listDir(dest + "/file-false"), "file/extract nothing written " + mode);
+        # ... and extracts an entry whose directory exists
+        rv = p.callFunction("file_extract", {"archive_data": archive_data, "entry_name": "hello.txt",
+            "destination": dest + "/file-false", "create_directories": False});
+        assertEq(dest + "/file-false" + DirSep + "hello.txt", rv.extracted_to, "file/extract existing directory "
+            + mode);
+        assertEq("hello", ReadOnlyFile::readTextFile(dest + "/file-false/hello.txt"),
+            "file/extract existing directory content " + mode);
+        # a file destination is written in its directory, which is never created
+        rv = p.callFunction("file_extract", {"archive_data": archive_data, "entry_name": "hello.txt",
+            "destination": dest + "/file-false/renamed.txt", "create_directories": False});
+        assertEq(dest + "/file-false/renamed.txt", rv.extracted_to, "file/extract file destination " + mode);
+        assertEq("hello", ReadOnlyFile::readTextFile(dest + "/file-false/renamed.txt"),
+            "file/extract file destination content " + mode);
+        foreach bool opt in ((True, False)) {
+            assertEq("TAR-ERROR", p.callFunction("file_extract", {"archive_data": archive_data,
+                "entry_name": "hello.txt", "destination": dest + "/missing/renamed.txt", "create_directories": opt}),
+                sprintf("file/extract file destination without its directory %y %s", opt, mode));
+            assertFalse(exists hstat(dest + "/missing"), sprintf("file/extract no directory created %y %s", opt,
+                mode));
+        }
     }
 
     #! errors for missing entries and destinations, and for sandboxed callers

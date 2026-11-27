@@ -35,6 +35,11 @@
 
 public class QtarCliTest inherits QUnit::Test {
     private {
+        #! the execution modes that qtar is run in by the extraction directory tests
+        const ExecModes = ("ast", "ir", "jit", "tiered");
+        #! the time limit of a qtar run in seconds: a run that does not end fails instead of hanging the test
+        const RunTimeout = 120;
+
         string testDir;
         string qtar;
         string modPath;
@@ -50,6 +55,10 @@ public class QtarCliTest inherits QUnit::Test {
         addTestCase("Help and version tests", \helpVersionTest());
         addTestCase("Create and list tests", \createListTest());
         addTestCase("Extract tests", \extractTest());
+        foreach string mode in (ExecModes) {
+            string m = mode;
+            addTestCase("Extract directory creation tests, " + m, sub () { extractCreateDirsTest(m); });
+        }
         addTestCase("Add tests", \addTest());
         addTestCase("Info tests", \infoTest());
         addTestCase("Cat tests", \catTest());
@@ -86,10 +95,12 @@ public class QtarCliTest inherits QUnit::Test {
         return "'" + replace(arg, "'", "'\\''") + "'";
     }
 
-    private hash<auto> run(string args) {
+    #! runs qtar with the given arguments, in the given execution mode if any, bounded by RunTimeout
+    private hash<auto> run(string args, *string exec_mode) {
         string outFile = testDir + "/cmd_output.txt";
-        string cmd = sprintf("QORE_MODULE_DIR=%s qore %s %s > %s 2>&1",
-            shellQuote(modPath), shellQuote(qtar), args, shellQuote(outFile));
+        string cmd = sprintf("QORE_MODULE_DIR=%s timeout %d qore %s%s %s > %s 2>&1",
+            shellQuote(modPath), RunTimeout, exec_mode ? "--exec-mode=" + exec_mode + " " : "", shellQuote(qtar),
+            args, shellQuote(outFile));
         int rc = system(cmd);
         string output = is_file(outFile) ? ReadOnlyFile::readTextFile(outFile) : "";
         return {"output": output, "rc": rc};
@@ -159,6 +170,49 @@ public class QtarCliTest inherits QUnit::Test {
         mkdir(dest2);
         r = run(sprintf("extract -v %s -C %s", archive, dest2));
         assertEq(0, r.rc, "extract -v exits 0");
+    }
+
+    #! --no-create-dirs passes create_directories: False to the extraction (module-tar#11)
+    extractCreateDirsTest(string mode) {
+        # an archive whose only entry has a directory that is not in the archive
+        string archive = testDir + "/nodirs_" + mode + ".tar";
+        hash<auto> r = run(sprintf("create %s -C %s src/main.txt", archive, testDir), mode);
+        assertEq(0, r.rc, "create " + mode);
+
+        r = run("extract -h", mode);
+        assertEq(0, r.rc, "extract -h " + mode);
+        assertEq(True, r.output.find("--no-create-dirs") >= 0, "extract -h shows --no-create-dirs " + mode);
+
+        # without the flag, the destination and the entry's directory are created
+        string dest = testDir + "/nodirs_default_" + mode;
+        r = run(sprintf("extract %s -C %s", archive, dest), mode);
+        assertEq(0, r.rc, "extract creates directories " + mode);
+        assertEq("main content", ReadOnlyFile::readTextFile(dest + "/src/main.txt"),
+            "extract creates directories content " + mode);
+
+        # with the flag, a missing destination is not created
+        dest = testDir + "/nodirs_flag_" + mode;
+        r = run(sprintf("extract --no-create-dirs %s -C %s", archive, dest), mode);
+        assertEq(1, r.rc, "--no-create-dirs missing destination exits 1 " + mode);
+        assertEq(True, r.output.find("TAR-ERROR") >= 0, "--no-create-dirs missing destination error " + mode);
+        assertEq(False, r.output.find("unhandled") >= 0, "--no-create-dirs missing destination handled " + mode);
+        assertEq(False, is_dir(dest), "--no-create-dirs no destination created " + mode);
+
+        # ... nor the missing directory of an entry, and nothing is written
+        mkdir(dest);
+        r = run(sprintf("extract --no-create-dirs %s -C %s", archive, dest), mode);
+        assertEq(1, r.rc, "--no-create-dirs missing directory exits 1 " + mode);
+        assertEq(True, r.output.find("TAR-ERROR") >= 0, "--no-create-dirs missing directory error " + mode);
+        Dir d();
+        d.chdir(dest);
+        assertEq((), d.list() ?? (), "--no-create-dirs nothing written " + mode);
+
+        # ... and an entry whose directory exists is extracted
+        mkdir(dest + "/src");
+        r = run(sprintf("extract --no-create-dirs %s -C %s", archive, dest), mode);
+        assertEq(0, r.rc, "--no-create-dirs existing directory exits 0 " + mode);
+        assertEq("main content", ReadOnlyFile::readTextFile(dest + "/src/main.txt"),
+            "--no-create-dirs existing directory content " + mode);
     }
 
     addTest() {

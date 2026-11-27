@@ -847,6 +847,18 @@
           "source": "Extract Archive",
           "message": "Extrahovať archív"
         },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.Y3JlYXRlX2RpcmVjdG9yaWVz.desc": {
+          "source": "If `true`, creates the destination directory and the missing parent directories of the entries; if `false`, they are not created: the archive's directory entries are still extracted, and the extraction stops with an error at the first entry whose directory does not exist (the entries extracted before it stay)",
+          "message": "Ak `true`, vytvorí cieľový adresár a chýbajúce nadradené adresáre položiek; ak `false`, nevytvoria sa: adresárové položky archívu sa aj tak rozbalia a rozbaľovanie sa zastaví s chybou pri prvej položke, ktorej adresár neexistuje (položky rozbalené pred ňou zostanú)"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.Y3JlYXRlX2RpcmVjdG9yaWVz.display_name": {
+          "source": "Create directories",
+          "message": "Vytvoriť adresáre"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.Y3JlYXRlX2RpcmVjdG9yaWVz.short_desc": {
+          "source": "Create missing directories",
+          "message": "Vytvoriť chýbajúce adresáre"
+        },
         "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.YXJjaGl2ZV9kYXRh.desc": {
           "source": "The tar archive as binary data (alternative to archive_path)",
           "message": "Archív tar ako binárne dáta (alternatíva k archive_path)"
@@ -978,6 +990,18 @@
         "app.VGFy.action.ZXh0cmFjdC1maWxl.display_name": {
           "source": "Extract Single File",
           "message": "Extrahovať jediný súbor"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.Y3JlYXRlX2RpcmVjdG9yaWVz.desc": {
+          "source": "If `true`, creates the missing parent directories of the entry below a destination directory; if `false`, they are not created, and an entry whose directory does not exist is not extracted (an error is raised). The directory of a destination file is never created",
+          "message": "Ak `true`, vytvorí chýbajúce nadradené adresáre položky v cieľovom adresári; ak `false`, nevytvoria sa a položka, ktorej adresár neexistuje, sa nerozbalí (vyvolá sa chyba). Adresár cieľového súboru sa nikdy nevytvára"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.Y3JlYXRlX2RpcmVjdG9yaWVz.display_name": {
+          "source": "Create directories",
+          "message": "Vytvoriť adresáre"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.Y3JlYXRlX2RpcmVjdG9yaWVz.short_desc": {
+          "source": "Create missing directories",
+          "message": "Vytvoriť chýbajúce adresáre"
         },
         "app.VGFy.action.ZXh0cmFjdC1maWxl.option.YXJjaGl2ZV9kYXRh.desc": {
           "source": "The tar archive as binary data",

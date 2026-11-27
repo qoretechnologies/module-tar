@@ -115,6 +115,21 @@ hash<auto> result = dp.doRequest({
 });
 ```
 
+The `archive/extract` and `file/extract` actions create missing directories unless their `create_directories`
+option is `false`.
+
+## qtar
+
+The module installs `qtar`, a command-line tool for archive operations (`qtar --help` lists the commands, and
+`qtar <command> --help` the options of a command):
+
+```bash
+qtar create backup.tar.gz project/
+qtar extract backup.tar.gz -C restore/
+# extract only into existing directories: neither restore/ nor missing parent directories are created
+qtar extract backup.tar.gz -C restore/ --no-create-dirs
+```
+
 ## License
 
 MIT License - see COPYING.MIT for details.

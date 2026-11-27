@@ -100,7 +100,10 @@ public class TarExtractFileDataProvider inherits AbstractDataProvider {
         string extracted_to;
         if (is_dir(destination)) {
             # "extract" is an operator: the method is called by name
-            call_object_method(tar, "extract", entry_name, <TarExtractOptions>{"destination": destination});
+            call_object_method(tar, "extract", entry_name, <TarExtractOptions>{
+                "destination": destination,
+                "create_directories": req.create_directories ?? True,
+            });
             extracted_to = destination + (destination =~ /[\/\\]$/ ? "" : DirSep) + entry_name;
         } else {
             tar.extractTo(entry_name, destination);
@@ -152,6 +155,15 @@ public class TarExtractFileRequestDataType inherits HashDataType {
                 "short_desc": "Destination path",
                 "desc": "Where to extract the file (default: current directory)",
                 "example_value": "/tmp/config.json",
+            },
+            "create_directories": {
+                "type": SoftBoolType,
+                "display_name": "Create directories",
+                "short_desc": "Create missing directories",
+                "desc": "If `true`, creates the missing parent directories of the entry below a destination "
+                    "directory; if `false`, they are not created, and an entry whose directory does not exist is "
+                    "not extracted (an error is raised). The directory of a destination file is never created",
+                "default_value": True,
             },
         };
     }

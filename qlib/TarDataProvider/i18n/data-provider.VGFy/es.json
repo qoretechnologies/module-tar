@@ -847,6 +847,18 @@
           "source": "Extract Archive",
           "message": "Extraer archivo"
         },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.Y3JlYXRlX2RpcmVjdG9yaWVz.desc": {
+          "source": "If `true`, creates the destination directory and the missing parent directories of the entries; if `false`, they are not created: the archive's directory entries are still extracted, and the extraction stops with an error at the first entry whose directory does not exist (the entries extracted before it stay)",
+          "message": "Si es `true`, crea el directorio de destino y los directorios padre que faltan de las entradas; si es `false`, no se crean: las entradas de directorio del archivo se extraen igualmente, y la extracción se detiene con un error en la primera entrada cuyo directorio no existe (las entradas extraídas antes permanecen)"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.Y3JlYXRlX2RpcmVjdG9yaWVz.display_name": {
+          "source": "Create directories",
+          "message": "Crear directorios"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.Y3JlYXRlX2RpcmVjdG9yaWVz.short_desc": {
+          "source": "Create missing directories",
+          "message": "Crear los directorios que faltan"
+        },
         "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.YXJjaGl2ZV9kYXRh.desc": {
           "source": "The tar archive as binary data (alternative to archive_path)",
           "message": "El archivo tar como datos binarios (alternativa a archive_path)"
@@ -978,6 +990,18 @@
         "app.VGFy.action.ZXh0cmFjdC1maWxl.display_name": {
           "source": "Extract Single File",
           "message": "Extraer un solo archivo"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.Y3JlYXRlX2RpcmVjdG9yaWVz.desc": {
+          "source": "If `true`, creates the missing parent directories of the entry below a destination directory; if `false`, they are not created, and an entry whose directory does not exist is not extracted (an error is raised). The directory of a destination file is never created",
+          "message": "Si es `true`, crea los directorios padre que faltan de la entrada dentro de un directorio de destino; si es `false`, no se crean, y una entrada cuyo directorio no existe no se extrae (se genera un error). El directorio de un archivo de destino nunca se crea"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.Y3JlYXRlX2RpcmVjdG9yaWVz.display_name": {
+          "source": "Create directories",
+          "message": "Crear directorios"
+        },
+        "app.VGFy.action.ZXh0cmFjdC1maWxl.option.Y3JlYXRlX2RpcmVjdG9yaWVz.short_desc": {
+          "source": "Create missing directories",
+          "message": "Crear los directorios que faltan"
         },
         "app.VGFy.action.ZXh0cmFjdC1maWxl.option.YXJjaGl2ZV9kYXRh.desc": {
           "source": "The tar archive as binary data",

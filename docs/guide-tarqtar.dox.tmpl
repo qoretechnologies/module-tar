@@ -22,6 +22,24 @@ Commands:
      diff     Compare archive vs filesystem
     @endverbatim
 
+    @section tarqtarextract qtar extract Options
+
+    @verbatim
+  -C, --directory=DIR  Extract to DIR (default: .)
+      --include=GLOB   Include only matching entries (repeatable)
+      --exclude=GLOB   Exclude matching entries (repeatable)
+      --strip=N        Strip N leading path components
+      --no-preserve    Do not preserve permissions
+      --no-overwrite   Do not overwrite existing files
+      --no-create-dirs Do not create missing directories (DIR and the entries' parents)
+  -v, --verbose        Verbose (list files as extracted)
+    @endverbatim
+
+    \c qtar \c extract creates the destination directory and the missing parent directories of the entries by
+    default.  With \c --no-create-dirs, it creates neither: the archive's directory entries are still extracted, and
+    the extraction stops with \c TAR-ERROR (exit code 1) at the first entry whose directory does not exist (the
+    entries extracted before it stay).
+
     @section tarqtarexamples qtar Examples
 
     @code{.sh}
@@ -33,6 +51,9 @@ qtar extract backup.tar.gz -C /tmp/output --include='*.txt' --exclude='tmp/*'
 
 # Extract with path stripping
 qtar extract project.tar.gz -C /output --strip=1
+
+# Extract only into existing directories: neither /output nor missing parent directories are created
+qtar extract project.tar.gz -C /output --no-create-dirs
 
 # List contents in long format
 qtar list -l archive.tar

@@ -73,6 +73,7 @@ class QTarApp {
             "no_preserve": "no-preserve",
             "overwrite": "o,overwrite",
             "no_overwrite": "no-overwrite",
+            "no_create_dirs": "no-create-dirs",
             "verbose": "v,verbose",
             "help": "h,help",
         };
@@ -274,7 +275,7 @@ class QTarApp {
             "preserve_permissions": opts.no_preserve ? False : True,
             "preserve_times": True,
             "overwrite": opts.no_overwrite ? False : True,
-            "create_directories": True,
+            "create_directories": opts.no_create_dirs ? False : True,
         };
         if (opts.include) {
             extract_opts.include = opts.include;
@@ -1105,13 +1106,14 @@ class QTarApp {
         printf("%s qtar extract [options] <archive>\n\n", tc.key("Usage:"));
         printf("%s\n", tc.key("Options:"));
         printf("  %s  Extract to DIR (default: .)\n", tc.dim("-C, --directory=DIR"));
-        printf("  %s   Include only matching entries (repeatable)\n",
-            tc.dim("    --include=GLOB"));
+        printf("  %s   Include only matching entries (repeatable)\n", tc.dim("    --include=GLOB"));
         printf("  %s   Exclude matching entries (repeatable)\n", tc.dim("    --exclude=GLOB"));
-        printf("  %s      Strip N leading path components\n", tc.dim("    --strip=N"));
+        printf("  %s        Strip N leading path components\n", tc.dim("    --strip=N"));
         printf("  %s    Do not preserve permissions\n", tc.dim("    --no-preserve"));
-        printf("  %s  Do not overwrite existing files\n", tc.dim("    --no-overwrite"));
-        printf("  %s       Verbose (list files as extracted)\n", tc.dim("-v, --verbose"));
+        printf("  %s   Do not overwrite existing files\n", tc.dim("    --no-overwrite"));
+        printf("  %s Do not create missing directories (DIR and the entries' parents)\n",
+            tc.dim("    --no-create-dirs"));
+        printf("  %s        Verbose (list files as extracted)\n", tc.dim("-v, --verbose"));
     }
 
     private usageList() {

@@ -450,6 +450,22 @@ module TarDataProvider {
     Requests that give the archive or the files as data and
     return the result as data work for restricted callers.
 
+    @section tardataprovider_extract_directories Creating Directories When Extracting
+
+    The \c archive/extract and \c file/extract actions create missing directories by default; their
+    \c create_directories option (\c true by default) is passed to the extraction as the \c create_directories
+    option of @ref Qore::Tar::TarExtractOptions "TarExtractOptions":
+    - \c archive/extract with \c false creates neither the \c destination directory nor the missing parent
+      directories of the entries: the archive's directory entries are still extracted, and the extraction stops
+      with \c TAR-ERROR at the first entry whose directory does not exist (the entries extracted before it stay)
+    - \c file/extract with \c false and a \c destination directory does not create the missing parent directories of
+      the entry below it: the entry is not extracted, and \c TAR-ERROR is raised; the directory of a destination
+      file is never created, whatever the option is
+
+    @par API Example: Extract an Archive Only Into Existing Directories
+    @verbatim qdp 'tar{}/archive/extract' archive_path=archive.tar,destination=/tmp/extract,create_directories=false
+    @endverbatim
+
     @section tardataprovider_factory TarDataProvider Factory
 
     The name of the Tar data provider factory is <b><tt>tar</tt></b>.
@@ -481,6 +497,9 @@ module TarDataProvider {
       used if the calling code is restricted from the file system, also when the host created the provider and gave
       it to that code (see @ref tardataprovider_caller_paths,
       <a href="https://github.com/qoretechnologies/module-tar/issues/6">issue 6</a>)
+    - the \c archive/extract and \c file/extract actions have a \c create_directories option (default \c true):
+      with \c false, missing directories are not created (see @ref tardataprovider_extract_directories,
+      <a href="https://github.com/qoretechnologies/module-tar/issues/11">issue 11</a>)
 */
 
 #! Contains all public definitions in the TarDataProvider module
