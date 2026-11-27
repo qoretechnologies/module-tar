@@ -1189,7 +1189,14 @@ QoreListNode* QoreTarFile::extractEntries(const char* destPath, const QoreHashNo
     // Track extracted entry names
     ReferenceHolder<QoreListNode> extracted_names(new QoreListNode(stringTypeInfo), xsink);
 
-    int flags = ARCHIVE_EXTRACT_TIME;
+    int flags = 0;
+    if (preserve_times) {
+        flags |= ARCHIVE_EXTRACT_TIME;
+    }
+    // libarchive creates missing parent directories unless told not to (module-tar#9)
+    if (!create_directories) {
+        flags |= ARCHIVE_EXTRACT_NO_AUTODIR;
+    }
     if (preserve_permissions) {
         flags |= ARCHIVE_EXTRACT_PERM;
     }

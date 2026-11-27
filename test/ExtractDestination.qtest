@@ -92,6 +92,15 @@ auto sub do_extract_file(string path, string name, *hash<TarExtractOptions> opts
     });
 }
 
+# calls TarFile::extractAll()
+auto sub do_extract_all(binary data, *hash<TarExtractOptions> opts) {
+    return run(auto sub () {
+        TarFile tar(data);
+        tar.extractAll(opts);
+        return \"ok\";
+    });
+}
+
 # calls TarFile::extractTo()
 auto sub do_extract_to(binary data, string name, string dest) {
     return run(auto sub () {
@@ -165,6 +174,7 @@ auto sub do_extract_to(binary data, string name, string dest) {
             addTestCase("unsafe entries, " + m, sub () { testUnsafe(m); });
             addTestCase("errors, " + m, sub () { testErrors(m); });
             addTestCase("links and duplicates, " + m, sub () { testLinks(m); });
+            addTestCase("time and directory options, " + m, sub () { testTimeAndDirectoryOptions(m); });
         }
         set_return_value(main());
     }
@@ -332,6 +342,68 @@ auto sub do_extract_to(binary data, string name, string dest) {
         auto rv = p.callFunction("file_extract", {"archive_data": links_data, "entry_name": "target.txt",
             "destination": dest + "/"});
         assertEq(dest + "/target.txt", rv.extracted_to, "trailing separator " + mode);
+    }
+
+    #! the preserve_times and create_directories options apply (module-tar#9)
+    private testTimeAndDirectoryOptions(string mode) {
+        Program p = getProgram(mode);
+        date mtime = 2001-02-03T04:05:06Z;
+        binary data;
+        {
+            TarFile tar();
+            tar.add("old.txt", "old", NOTHING, <TarAddOptions>{"modified": mtime});
+            tar.add("sub/old.txt", "old", NOTHING, <TarAddOptions>{"modified": mtime});
+            data = tar.toData();
+        }
+        # the archive's modification times are restored by default
+        assertEq("ok", p.callFunction("do_extract_all", data, <TarExtractOptions>{"destination": dest + "/times"}),
+            "times " + mode);
+        assertEq(mtime, hstat(dest + "/times/old.txt").mtime, "time restored " + mode);
+        assertEq("ok", p.callFunction("do_extract", data, "old.txt", <TarExtractOptions>{"destination": dest
+            + "/time"}), "time single " + mode);
+        assertEq(mtime, hstat(dest + "/time/old.txt").mtime, "time restored single " + mode);
+        # preserve_times: False leaves the time of the extraction
+        date before = now() - 2m;
+        assertEq("ok", p.callFunction("do_extract_all", data, <TarExtractOptions>{"destination": dest + "/notimes",
+            "preserve_times": False}), "no times " + mode);
+        assertTrue(hstat(dest + "/notimes/old.txt").mtime > before, "time not restored " + mode);
+        assertEq("ok", p.callFunction("do_extract", data, "old.txt", <TarExtractOptions>{"destination": dest
+            + "/notime", "preserve_times": False}), "no time single " + mode);
+        assertTrue(hstat(dest + "/notime/old.txt").mtime > before, "time not restored single " + mode);
+
+        # create_directories: False does not create missing parent directories
+        assertEq("TAR-ERROR", p.callFunction("do_extract", data, "sub/old.txt", <TarExtractOptions>{"destination": dest
+            + "/nodirs", "create_directories": False}), "no directories " + mode);
+        assertFalse(exists hstat(dest + "/nodirs"), "no destination created " + mode);
+        mkdir(dest + "/nodirs");
+        assertEq("TAR-ERROR", p.callFunction("do_extract", data, "sub/old.txt", <TarExtractOptions>{"destination": dest
+            + "/nodirs", "create_directories": False}), "no parent directory " + mode);
+        assertFalse(exists hstat(dest + "/nodirs/sub"), "no parent directory created " + mode);
+        # an entry whose directory exists is extracted
+        assertEq("ok", p.callFunction("do_extract", data, "old.txt", <TarExtractOptions>{"destination": dest
+            + "/nodirs", "create_directories": False}), "existing directory " + mode);
+        assertEq("old", ReadOnlyFile::readTextFile(dest + "/nodirs/old.txt"), "existing directory content " + mode);
+        # extractAll() extracts the directory entries of the archive, and stops at an entry without its directory
+        binary with_dir;
+        {
+            TarFile tar();
+            tar.addDirectory("sub");
+            tar.add("sub/x.txt", "x");
+            with_dir = tar.toData();
+        }
+        mkdir(dest + "/all");
+        assertEq("ok", p.callFunction("do_extract_all", with_dir, <TarExtractOptions>{"destination": dest + "/all",
+            "create_directories": False}), "extractAll() with a directory entry " + mode);
+        assertEq("x", ReadOnlyFile::readTextFile(dest + "/all/sub/x.txt"), "extractAll() directory entry " + mode);
+        mkdir(dest + "/all2");
+        assertEq("TAR-ERROR", p.callFunction("do_extract_all", data, <TarExtractOptions>{"destination": dest
+            + "/all2", "create_directories": False}), "extractAll() without a directory entry " + mode);
+        assertEq("old", ReadOnlyFile::readTextFile(dest + "/all2/old.txt"), "earlier entry stays " + mode);
+        assertFalse(exists hstat(dest + "/all2/sub"), "no parent directory created by extractAll() " + mode);
+        # the default creates them
+        assertEq("ok", p.callFunction("do_extract", data, "sub/old.txt", <TarExtractOptions>{"destination": dest
+            + "/dirs"}), "directories " + mode);
+        assertEq("old", ReadOnlyFile::readTextFile(dest + "/dirs/sub/old.txt"), "directories content " + mode);
     }
 
     #! errors for missing entries and destinations, and for sandboxed callers

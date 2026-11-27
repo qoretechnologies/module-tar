@@ -186,13 +186,17 @@ hashdecl Qore::Tar::TarExtractOptions {
     //! Restore ownership (requires root, default: False)
     *bool preserve_ownership;
 
-    //! Restore modification times (default: True)
+    //! Restore modification times (default: True); if False, the extracted files have the time of the extraction
     *bool preserve_times;
 
     //! Overwrite existing files (default: True)
     *bool overwrite;
 
     //! Create parent directories (default: True)
+    /** If False, missing parent directories (also the destination directory) are not created (the directory entries
+        of the archive are still extracted), and an entry whose directory does not exist is not extracted: the
+        extraction stops with \c TAR-ERROR, and the entries extracted before it stay
+    */
     *bool create_directories;
 
     //! Patterns to include (glob-style)
