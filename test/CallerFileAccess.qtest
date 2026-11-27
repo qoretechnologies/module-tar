@@ -193,7 +193,7 @@ string sub lent_request(AbstractDataProvider dp, hash<auto> req) {
                 "destination": extracted}),
             ("file/extract", "destination", {"archive_data": archive_data, "entry_name": "a.txt",
                 "destination": extracted}),
-            ("file/extract", "destination without create_directories", {"archive_data": archive_data,
+            ("file/extract", "file destination without create_directories", {"archive_data": archive_data,
                 "entry_name": "a.txt", "destination": extracted, "create_directories": False}),
             ("file/extract", "default destination without create_directories", {"archive_data": archive_data,
                 "entry_name": "a.txt", "create_directories": False}),

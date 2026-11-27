@@ -458,9 +458,10 @@ module TarDataProvider {
     - \c archive/extract with \c false creates neither the \c destination directory nor the missing parent
       directories of the entries: the archive's directory entries are still extracted, and the extraction stops
       with \c TAR-ERROR at the first entry whose directory does not exist (the entries extracted before it stay)
-    - \c file/extract with \c false and a \c destination directory does not create the missing parent directories of
-      the entry below it: the entry is not extracted, and \c TAR-ERROR is raised; the directory of a destination
-      file is never created, whatever the option is
+    - \c file/extract with \c false and a destination directory (also the current directory, the default when no
+      \c destination is given) does not create the missing parent directories of the entry below it: the entry is
+      not extracted, and \c TAR-ERROR is raised; the directory of a destination file is never created, whatever the
+      option is
 
     @par API Example: Extract an Archive Only Into Existing Directories
     @verbatim qdp 'tar{}/archive/extract' archive_path=archive.tar,destination=/tmp/extract,create_directories=false
