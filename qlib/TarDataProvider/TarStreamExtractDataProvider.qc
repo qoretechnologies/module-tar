@@ -113,20 +113,20 @@ public class TarStreamExtractRequestDataType inherits HashDataType {
         const Fields = {
             "archive_path": {
                 "type": StringOrNothingType,
-                "display_name": "Archive Path",
+                "display_name": "Archive path",
                 "short_desc": "Path to the tar archive",
                 "desc": "The filesystem path to the tar archive",
                 "example_value": "/path/to/archive.tar.gz",
             },
             "archive_data": {
                 "type": BinaryOrNothingType,
-                "display_name": "Archive Data",
+                "display_name": "Archive data",
                 "short_desc": "TAR archive binary data",
                 "desc": "The tar archive as binary data (alternative to `archive_path`)",
             },
             "archive_location": {
                 "type": StringOrNothingType,
-                "display_name": "Archive Location",
+                "display_name": "Archive location",
                 "short_desc": "Archive location URL",
                 "desc": "A FileLocationHandler location URL for the tar archive "
                     "(alternative to `archive_path` or `archive_data`)",
@@ -134,7 +134,7 @@ public class TarStreamExtractRequestDataType inherits HashDataType {
             },
             "entry_name": {
                 "type": StringType,
-                "display_name": "Entry Name",
+                "display_name": "Entry name",
                 "short_desc": "Name of entry to stream",
                 "desc": "The full path name of the entry to read from the archive",
                 "example_value": "data/large-file.bin",
@@ -154,14 +154,14 @@ public class TarStreamExtractResponseDataType inherits HashDataType {
         const Fields = {
             "stream": {
                 "type": AutoType,
-                "display_name": "Input Stream",
+                "display_name": "Input stream",
                 "short_desc": "TarInputStream for reading entry data",
                 "desc": "A `TarInputStream` object implementing the `InputStream` interface "
                     "for reading entry data in chunks",
             },
             "entry_name": {
                 "type": StringType,
-                "display_name": "Entry Name",
+                "display_name": "Entry name",
                 "short_desc": "Name of the entry",
                 "desc": "The name of the entry being streamed",
             },
@@ -173,7 +173,7 @@ public class TarStreamExtractResponseDataType inherits HashDataType {
             },
             "tar_file": {
                 "type": AutoType,
-                "display_name": "TAR File Handle",
+                "display_name": "TAR file handle",
                 "short_desc": "Archive handle (keep alive while streaming)",
                 "desc": "The `TarFile` object that owns the stream. **Must be kept alive** "
                     "while reading from the stream; releasing this reference invalidates "

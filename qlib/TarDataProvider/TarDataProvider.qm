@@ -62,7 +62,7 @@ module TarDataProvider {
             "cls": "TarDataProvider::TarDataProvider",
             "path": "/archive/create",
             "action": "create-archive",
-            "display_name": "Create Archive",
+            "display_name": "Create archive",
             "short_desc": "Create a new tar archive",
             "desc": "Create a new tar archive from files, directories, or binary data with optional "
                 "compression and format settings",
@@ -84,7 +84,7 @@ module TarDataProvider {
             "cls": "TarDataProvider::TarDataProvider",
             "path": "/archive/extract",
             "action": "extract-archive",
-            "display_name": "Extract Archive",
+            "display_name": "Extract archive",
             "short_desc": "Extract a tar archive with optional filters",
             "desc": "Extract contents of a tar archive to a destination directory with optional "
                 "`include`/`exclude` glob-style filename filters",
@@ -111,7 +111,7 @@ module TarDataProvider {
             "cls": "TarDataProvider::TarDataProvider",
             "path": "/archive/list",
             "action": "list-archive",
-            "display_name": "List Archive Contents",
+            "display_name": "List archive contents",
             "short_desc": "List files in a tar archive",
             "desc": "Get a list of all entries in a tar archive with metadata",
             "action_code": DPAT_API,
@@ -128,7 +128,7 @@ module TarDataProvider {
             "cls": "TarDataProvider::TarDataProvider",
             "path": "/archive/info",
             "action": "get-archive-info",
-            "display_name": "Get Archive Info",
+            "display_name": "Get archive info",
             "short_desc": "Get tar archive metadata",
             "desc": "Get metadata and statistics about a tar archive including entry counts, "
                 "compression method, and total size",
@@ -146,7 +146,7 @@ module TarDataProvider {
             "cls": "TarDataProvider::TarDataProvider",
             "path": "/archive/add",
             "action": "add-files",
-            "display_name": "Add Files to Archive",
+            "display_name": "Add files to archive",
             "short_desc": "Add files to an existing archive",
             "desc": "Add new files or update existing files in a tar archive",
             "action_code": DPAT_API,
@@ -165,7 +165,7 @@ module TarDataProvider {
             "cls": "TarDataProvider::TarDataProvider",
             "path": "/file/extract",
             "action": "extract-file",
-            "display_name": "Extract Single File",
+            "display_name": "Extract single file",
             "short_desc": "Extract one file from archive",
             "desc": "Extract a single file from a tar archive to a destination path on disk",
             "action_code": DPAT_API,
@@ -182,7 +182,7 @@ module TarDataProvider {
             "cls": "TarDataProvider::TarDataProvider",
             "path": "/file/read",
             "action": "read-file",
-            "display_name": "Read File Content",
+            "display_name": "Read file content",
             "short_desc": "Read file without extracting",
             "desc": "Read the contents of a file from a tar archive without extracting to disk",
             "action_code": DPAT_API,
@@ -202,7 +202,7 @@ module TarDataProvider {
             "cls": "TarDataProvider::TarDataProvider",
             "path": "/data/compress",
             "action": "compress-data",
-            "display_name": "Compress Data",
+            "display_name": "Compress data",
             "short_desc": "Compress data to tar format",
             "desc": "Compress binary data or files into an in-memory tar archive",
             "action_code": DPAT_API,
@@ -221,7 +221,7 @@ module TarDataProvider {
             "cls": "TarDataProvider::TarDataProvider",
             "path": "/data/decompress",
             "action": "decompress-data",
-            "display_name": "Decompress Data",
+            "display_name": "Decompress data",
             "short_desc": "Decompress tar data",
             "desc": "Decompress a tar archive and return file contents as in-memory data",
             "action_code": DPAT_API,
@@ -238,7 +238,7 @@ module TarDataProvider {
             "cls": "TarDataProvider::TarDataProvider",
             "path": "/directory/archive",
             "action": "archive-directory",
-            "display_name": "Archive Directory",
+            "display_name": "Archive directory",
             "short_desc": "Archive a directory tree",
             "desc": "Recursively archive a directory tree into a tar archive, preserving file "
                 "permissions and optionally following symlinks",
@@ -260,7 +260,7 @@ module TarDataProvider {
             "cls": "TarDataProvider::TarDataProvider",
             "path": "/stream/extract",
             "action": "stream-extract",
-            "display_name": "Stream Extract",
+            "display_name": "Stream extract",
             "short_desc": "Stream extract file from archive",
             "desc": "Open a streaming input for reading a file from a tar archive without "
                 "loading the entire file into memory",
@@ -278,7 +278,7 @@ module TarDataProvider {
             "cls": "TarDataProvider::TarDataProvider",
             "path": "/entry/delete",
             "action": "delete-entry",
-            "display_name": "Delete Entry",
+            "display_name": "Delete entry",
             "short_desc": "Delete entry from archive",
             "desc": "Delete a file or directory entry from a tar archive by recreating the "
                 "archive without the specified entry",
@@ -300,7 +300,7 @@ module TarDataProvider {
             "cls": "TarDataProvider::TarDataProvider",
             "path": "/archive/verify",
             "action": "verify-archive",
-            "display_name": "Verify Archive",
+            "display_name": "Verify archive",
             "short_desc": "Verify archive integrity",
             "desc": "Verify the integrity of a tar archive by reading all entries and their "
                 "data blocks without extracting to disk",
@@ -318,7 +318,7 @@ module TarDataProvider {
             "cls": "TarDataProvider::TarDataProvider",
             "path": "/archive/encrypt",
             "action": "encrypt-archive",
-            "display_name": "Encrypt Archive",
+            "display_name": "Encrypt archive",
             "short_desc": "Encrypt a tar archive with AES-256-CBC",
             "desc": "Encrypt a tar archive with AES-256-CBC. Output format is a `16`-byte "
                 "random IV followed by ciphertext",
@@ -336,7 +336,7 @@ module TarDataProvider {
             "cls": "TarDataProvider::TarDataProvider",
             "path": "/archive/decrypt",
             "action": "decrypt-archive",
-            "display_name": "Decrypt Archive",
+            "display_name": "Decrypt archive",
             "short_desc": "Decrypt an AES-256-CBC encrypted tar archive",
             "desc": "Decrypt a tar archive encrypted with AES-256-CBC. Expects the IV + "
                 "ciphertext format produced by the **encrypt** action",
@@ -354,7 +354,7 @@ module TarDataProvider {
             "cls": "TarDataProvider::TarDataProvider",
             "path": "/archive/split",
             "action": "split-archive",
-            "display_name": "Split Archive",
+            "display_name": "Split archive",
             "short_desc": "Split archive into fixed-size chunks",
             "desc": "Split a tar archive into multiple fixed-size binary chunks for multi-volume "
                 "storage or transfer",
@@ -372,7 +372,7 @@ module TarDataProvider {
             "cls": "TarDataProvider::TarDataProvider",
             "path": "/archive/join",
             "action": "join-archive",
-            "display_name": "Join Archive Chunks",
+            "display_name": "Join archive chunks",
             "short_desc": "Join archive chunks into single archive",
             "desc": "Join binary archive chunks back into a single tar archive",
             "action_code": DPAT_API,
@@ -501,6 +501,8 @@ module TarDataProvider {
     - the \c archive/extract and \c file/extract actions have a \c create_directories option (default \c true):
       with \c false, missing directories are not created (see @ref tardataprovider_extract_directories,
       <a href="https://github.com/qoretechnologies/module-tar/issues/11">issue 11</a>)
+    - the display names of the actions, their options and the options' values are in sentence case, as Qore's data
+      provider labels are (\c "Extract archive", \c "Archive path")
 */
 
 #! Contains all public definitions in the TarDataProvider module
@@ -559,9 +561,9 @@ public namespace TarDataProvider {
 
     #! List of allowed format values
     public const AllowedFormatValues = (
-        <AllowedValueInfo>{"value": "ustar", "display_name": "POSIX Ustar"},
-        <AllowedValueInfo>{"value": "pax", "display_name": "POSIX Pax"},
-        <AllowedValueInfo>{"value": "gnu", "display_name": "GNU Tar"},
+        <AllowedValueInfo>{"value": "ustar", "display_name": "POSIX ustar"},
+        <AllowedValueInfo>{"value": "pax", "display_name": "POSIX pax"},
+        <AllowedValueInfo>{"value": "gnu", "display_name": "GNU tar"},
         <AllowedValueInfo>{"value": "v7", "display_name": "V7"},
     );
 
@@ -571,8 +573,8 @@ public namespace TarDataProvider {
         <AllowedValueInfo>{"value": "ISO-8859-1", "display_name": "ISO-8859-1 (Latin-1)"},
         <AllowedValueInfo>{"value": "ASCII", "display_name": "ASCII"},
         <AllowedValueInfo>{"value": "UTF-16", "display_name": "UTF-16"},
-        <AllowedValueInfo>{"value": "UTF-16BE", "display_name": "UTF-16 Big Endian"},
-        <AllowedValueInfo>{"value": "UTF-16LE", "display_name": "UTF-16 Little Endian"},
+        <AllowedValueInfo>{"value": "UTF-16BE", "display_name": "UTF-16 big endian"},
+        <AllowedValueInfo>{"value": "UTF-16LE", "display_name": "UTF-16 little endian"},
         <AllowedValueInfo>{"value": "Windows-1252", "display_name": "Windows-1252"},
     );
 

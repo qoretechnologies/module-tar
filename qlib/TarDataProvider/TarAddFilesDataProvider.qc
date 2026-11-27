@@ -113,7 +113,7 @@ public class TarAddFilesRequestDataType inherits HashDataType {
         const Fields = {
             "archive_path": {
                 "type": StringType,
-                "display_name": "Archive Path",
+                "display_name": "Archive path",
                 "short_desc": "Path to the tar archive",
                 "desc": "The filesystem path to the tar archive to modify",
                 "example_value": "/path/to/archive.tar",
@@ -157,13 +157,13 @@ public class TarAddFilesResponseDataType inherits HashDataType {
         const Fields = {
             "archive_path": {
                 "type": StringType,
-                "display_name": "Archive Path",
+                "display_name": "Archive path",
                 "short_desc": "Path to modified archive",
                 "desc": "The filesystem path to the modified archive",
             },
             "added_count": {
                 "type": IntType,
-                "display_name": "Added Count",
+                "display_name": "Added count",
                 "short_desc": "Number of files added",
                 "desc": "Number of files that were added to the archive",
             },

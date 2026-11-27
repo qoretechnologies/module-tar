@@ -8,7 +8,7 @@
           "message": "Стиснути бінарні дані або файли у tar-архів у пам'яті"
         },
         "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.display_name": {
-          "source": "Compress Data",
+          "source": "Compress data",
           "message": "Стиснути дані"
         },
         "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOm5vbmU.display_name": {
@@ -48,15 +48,15 @@
           "message": "Метод стиснення"
         },
         "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Zm9ybWF0.allowed-value.c3RyaW5nOmdudQ.display_name": {
-          "source": "GNU Tar",
+          "source": "GNU tar",
           "message": "GNU Tar"
         },
         "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Zm9ybWF0.allowed-value.c3RyaW5nOnBheA.display_name": {
-          "source": "POSIX Pax",
+          "source": "POSIX pax",
           "message": "POSIX Pax"
         },
         "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Zm9ybWF0.allowed-value.c3RyaW5nOnVzdGFy.display_name": {
-          "source": "POSIX Ustar",
+          "source": "POSIX ustar",
           "message": "POSIX Ustar"
         },
         "app.VGFy.action.Y29tcHJlc3MtZGF0YQ.option.Zm9ybWF0.allowed-value.c3RyaW5nOnY3.display_name": {
@@ -96,7 +96,7 @@
           "message": "Створити новий tar-архів із файлів, каталогів або бінарних даних із додатковими параметрами стиснення та формату"
         },
         "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.display_name": {
-          "source": "Create Archive",
+          "source": "Create archive",
           "message": "Створити архів"
         },
         "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOm5vbmU.display_name": {
@@ -128,7 +128,7 @@
           "message": "Метод стиснення, який потрібно використати"
         },
         "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Y29tcHJlc3Npb24.display_name": {
-          "source": "Compression Method",
+          "source": "Compression method",
           "message": "Метод стиснення"
         },
         "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Y29tcHJlc3Npb24.short_desc": {
@@ -140,7 +140,7 @@
           "message": "Рівень стиснення від 1 (найшвидший, найменше стиснення) до 9 (найповільніший, найкраще стиснення). Використовуйте -1 або пропустіть для рівня за замовчуванням. Типові значення за замовчуванням: gzip=6, bzip2=9, xz=6, zstd=3, lz4=1"
         },
         "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Y29tcHJlc3Npb25fbGV2ZWw.display_name": {
-          "source": "Compression Level",
+          "source": "Compression level",
           "message": "Рівень стиснення"
         },
         "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Y29tcHJlc3Npb25fbGV2ZWw.short_desc": {
@@ -152,7 +152,7 @@
           "message": "Шлях, за яким буде створено архів tar. Якщо не вказано, повертає бінарні дані."
         },
         "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.YXJjaGl2ZV9wYXRo.display_name": {
-          "source": "Archive Path",
+          "source": "Archive path",
           "message": "Шлях до архіву"
         },
         "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.YXJjaGl2ZV9wYXRo.short_desc": {
@@ -172,15 +172,15 @@
           "message": "Порожні каталоги для створення"
         },
         "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Zm9ybWF0.allowed-value.c3RyaW5nOmdudQ.display_name": {
-          "source": "GNU Tar",
+          "source": "GNU tar",
           "message": "GNU Tar"
         },
         "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Zm9ybWF0.allowed-value.c3RyaW5nOnBheA.display_name": {
-          "source": "POSIX Pax",
+          "source": "POSIX pax",
           "message": "POSIX Pax"
         },
         "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Zm9ybWF0.allowed-value.c3RyaW5nOnVzdGFy.display_name": {
-          "source": "POSIX Ustar",
+          "source": "POSIX ustar",
           "message": "POSIX Ustar"
         },
         "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Zm9ybWF0.allowed-value.c3RyaW5nOnY3.display_name": {
@@ -192,7 +192,7 @@
           "message": "Формат tar, який потрібно використати"
         },
         "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Zm9ybWF0.display_name": {
-          "source": "Archive Format",
+          "source": "Archive format",
           "message": "Формат архіву"
         },
         "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.Zm9ybWF0.short_desc": {
@@ -216,7 +216,7 @@
           "message": "URL-адреса розташування FileLocationHandler, куди буде записано архів (альтернатива archive_path)"
         },
         "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.b3V0cHV0X2xvY2F0aW9u.display_name": {
-          "source": "Output Location",
+          "source": "Output location",
           "message": "Розташування виводу"
         },
         "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.b3V0cHV0X2xvY2F0aW9u.short_desc": {
@@ -228,7 +228,7 @@
           "message": "Якщо `true`, викликає помилку, якщо архів буде створено без елементів. Значення за замовчуванням: `false`, що дозволяє порожні архіви"
         },
         "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.cmVxdWlyZV9lbnRyaWVz.display_name": {
-          "source": "Require Entries",
+          "source": "Require entries",
           "message": "Вимагати наявності елементів"
         },
         "app.VGFy.action.Y3JlYXRlLWFyY2hpdmU.option.cmVxdWlyZV9lbnRyaWVz.short_desc": {
@@ -244,7 +244,7 @@
           "message": "Додати нові файли або оновити наявні файли в архіві tar"
         },
         "app.VGFy.action.YWRkLWZpbGVz.display_name": {
-          "source": "Add Files to Archive",
+          "source": "Add files to archive",
           "message": "Додати файли до архіву"
         },
         "app.VGFy.action.YWRkLWZpbGVz.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOm5vbmU.display_name": {
@@ -288,7 +288,7 @@
           "message": "Шлях у файловій системі до архіву tar, який потрібно змінити"
         },
         "app.VGFy.action.YWRkLWZpbGVz.option.YXJjaGl2ZV9wYXRo.display_name": {
-          "source": "Archive Path",
+          "source": "Archive path",
           "message": "Шлях до архіву"
         },
         "app.VGFy.action.YWRkLWZpbGVz.option.YXJjaGl2ZV9wYXRo.short_desc": {
@@ -296,15 +296,15 @@
           "message": "Шлях до архіву tar"
         },
         "app.VGFy.action.YWRkLWZpbGVz.option.Zm9ybWF0.allowed-value.c3RyaW5nOmdudQ.display_name": {
-          "source": "GNU Tar",
+          "source": "GNU tar",
           "message": "GNU Tar"
         },
         "app.VGFy.action.YWRkLWZpbGVz.option.Zm9ybWF0.allowed-value.c3RyaW5nOnBheA.display_name": {
-          "source": "POSIX Pax",
+          "source": "POSIX pax",
           "message": "POSIX Pax"
         },
         "app.VGFy.action.YWRkLWZpbGVz.option.Zm9ybWF0.allowed-value.c3RyaW5nOnVzdGFy.display_name": {
-          "source": "POSIX Ustar",
+          "source": "POSIX ustar",
           "message": "POSIX Ustar"
         },
         "app.VGFy.action.YWRkLWZpbGVz.option.Zm9ybWF0.allowed-value.c3RyaW5nOnY3.display_name": {
@@ -344,7 +344,7 @@
           "message": "Рекурсивно архівувати дерево каталогів у архів tar із збереженням прав доступу до файлів і, за бажанням, переходом за символьними посиланнями"
         },
         "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.display_name": {
-          "source": "Archive Directory",
+          "source": "Archive directory",
           "message": "Каталог архіву"
         },
         "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOm5vbmU.display_name": {
@@ -388,7 +388,7 @@
           "message": "Шлях, за яким буде створено архів tar. Якщо не вказано, повертає бінарні дані"
         },
         "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.YXJjaGl2ZV9wYXRo.display_name": {
-          "source": "Archive Path",
+          "source": "Archive path",
           "message": "Шлях до архіву"
         },
         "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.YXJjaGl2ZV9wYXRo.short_desc": {
@@ -400,7 +400,7 @@
           "message": "Назва, яка використовується для елемента кореневого каталогу в архіві. Якщо не вказано, використовується базова назва `directory_path`"
         },
         "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.YmFzZV9uYW1l.display_name": {
-          "source": "Base Name",
+          "source": "Base name",
           "message": "Базова назва"
         },
         "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.YmFzZV9uYW1l.short_desc": {
@@ -412,7 +412,7 @@
           "message": "Шлях у файловій системі до каталогу, який потрібно архівувати рекурсивно"
         },
         "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.ZGlyZWN0b3J5X3BhdGg.display_name": {
-          "source": "Directory Path",
+          "source": "Directory path",
           "message": "Шлях до каталогу"
         },
         "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.ZGlyZWN0b3J5X3BhdGg.short_desc": {
@@ -424,7 +424,7 @@
           "message": "Якщо `True`, переходить за символьними посиланнями та архівує вміст цільових файлів. Якщо `False` (за замовчуванням), архівує символьні посилання як елементи символьних посилань"
         },
         "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Zm9sbG93X3N5bWxpbmtz.display_name": {
-          "source": "Follow Symlinks",
+          "source": "Follow symlinks",
           "message": "Переходити за символьними посиланнями"
         },
         "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Zm9sbG93X3N5bWxpbmtz.short_desc": {
@@ -432,15 +432,15 @@
           "message": "Переходити за символьними посиланнями"
         },
         "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Zm9ybWF0.allowed-value.c3RyaW5nOmdudQ.display_name": {
-          "source": "GNU Tar",
+          "source": "GNU tar",
           "message": "GNU Tar"
         },
         "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Zm9ybWF0.allowed-value.c3RyaW5nOnBheA.display_name": {
-          "source": "POSIX Pax",
+          "source": "POSIX pax",
           "message": "POSIX Pax"
         },
         "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Zm9ybWF0.allowed-value.c3RyaW5nOnVzdGFy.display_name": {
-          "source": "POSIX Ustar",
+          "source": "POSIX ustar",
           "message": "POSIX Ustar"
         },
         "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.Zm9ybWF0.allowed-value.c3RyaW5nOnY3.display_name": {
@@ -464,7 +464,7 @@
           "message": "URL-адреса розташування FileLocationHandler, куди буде записано архів (альтернатива `archive_path`)"
         },
         "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.b3V0cHV0X2xvY2F0aW9u.display_name": {
-          "source": "Output Location",
+          "source": "Output location",
           "message": "Розташування виводу"
         },
         "app.VGFy.action.YXJjaGl2ZS1kaXJlY3Rvcnk.option.b3V0cHV0X2xvY2F0aW9u.short_desc": {
@@ -480,7 +480,7 @@
           "message": "Отримати метадані та статистику про архів tar, включаючи кількість елементів, метод стиснення та загальний розмір"
         },
         "app.VGFy.action.Z2V0LWFyY2hpdmUtaW5mbw.display_name": {
-          "source": "Get Archive Info",
+          "source": "Get archive info",
           "message": "Отримати інформацію про архів"
         },
         "app.VGFy.action.Z2V0LWFyY2hpdmUtaW5mbw.option.YXJjaGl2ZV9kYXRh.desc": {
@@ -488,7 +488,7 @@
           "message": "Архів tar у вигляді бінарних даних (альтернатива archive_path)"
         },
         "app.VGFy.action.Z2V0LWFyY2hpdmUtaW5mbw.option.YXJjaGl2ZV9kYXRh.display_name": {
-          "source": "Archive Data",
+          "source": "Archive data",
           "message": "Дані архіву"
         },
         "app.VGFy.action.Z2V0LWFyY2hpdmUtaW5mbw.option.YXJjaGl2ZV9kYXRh.short_desc": {
@@ -500,7 +500,7 @@
           "message": "URL-адреса розташування FileLocationHandler для архіву tar (альтернатива archive_path або archive_data)"
         },
         "app.VGFy.action.Z2V0LWFyY2hpdmUtaW5mbw.option.YXJjaGl2ZV9sb2NhdGlvbg.display_name": {
-          "source": "Archive Location",
+          "source": "Archive location",
           "message": "Розташування архіву"
         },
         "app.VGFy.action.Z2V0LWFyY2hpdmUtaW5mbw.option.YXJjaGl2ZV9sb2NhdGlvbg.short_desc": {
@@ -512,7 +512,7 @@
           "message": "Шлях у файловій системі до архіву tar"
         },
         "app.VGFy.action.Z2V0LWFyY2hpdmUtaW5mbw.option.YXJjaGl2ZV9wYXRo.display_name": {
-          "source": "Archive Path",
+          "source": "Archive path",
           "message": "Шлях до архіву"
         },
         "app.VGFy.action.Z2V0LWFyY2hpdmUtaW5mbw.option.YXJjaGl2ZV9wYXRo.short_desc": {
@@ -528,7 +528,7 @@
           "message": "Розпакувати архів tar та повернути вміст файлів у вигляді даних у пам'яті"
         },
         "app.VGFy.action.ZGVjb21wcmVzcy1kYXRh.display_name": {
-          "source": "Decompress Data",
+          "source": "Decompress data",
           "message": "Розпакувати дані"
         },
         "app.VGFy.action.ZGVjb21wcmVzcy1kYXRh.option.YXJjaGl2ZV9kYXRh.desc": {
@@ -536,7 +536,7 @@
           "message": "Архів tar у вигляді бінарних даних для розпакування"
         },
         "app.VGFy.action.ZGVjb21wcmVzcy1kYXRh.option.YXJjaGl2ZV9kYXRh.display_name": {
-          "source": "Archive Data",
+          "source": "Archive data",
           "message": "Дані архіву"
         },
         "app.VGFy.action.ZGVjb21wcmVzcy1kYXRh.option.YXJjaGl2ZV9kYXRh.short_desc": {
@@ -548,7 +548,7 @@
           "message": "URL-адреса розташування FileLocationHandler для архіву tar (альтернатива archive_data або archive_path)"
         },
         "app.VGFy.action.ZGVjb21wcmVzcy1kYXRh.option.YXJjaGl2ZV9sb2NhdGlvbg.display_name": {
-          "source": "Archive Location",
+          "source": "Archive location",
           "message": "Розташування архіву"
         },
         "app.VGFy.action.ZGVjb21wcmVzcy1kYXRh.option.YXJjaGl2ZV9sb2NhdGlvbg.short_desc": {
@@ -560,7 +560,7 @@
           "message": "Шлях у файловій системі до архіву tar (альтернатива archive_data)"
         },
         "app.VGFy.action.ZGVjb21wcmVzcy1kYXRh.option.YXJjaGl2ZV9wYXRo.display_name": {
-          "source": "Archive Path",
+          "source": "Archive path",
           "message": "Шлях до архіву"
         },
         "app.VGFy.action.ZGVjb21wcmVzcy1kYXRh.option.YXJjaGl2ZV9wYXRo.short_desc": {
@@ -576,7 +576,7 @@
           "message": "Розшифрувати архів tar, зашифрований за допомогою AES-256-CBC. Очікує формат IV + шифротекст, створений дією **encrypt**"
         },
         "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.display_name": {
-          "source": "Decrypt Archive",
+          "source": "Decrypt archive",
           "message": "Розшифрувати архів"
         },
         "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.ZW5jcnlwdGVkX2RhdGE.desc": {
@@ -584,7 +584,7 @@
           "message": "Зашифрований архів tar як бінарні дані"
         },
         "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.ZW5jcnlwdGVkX2RhdGE.display_name": {
-          "source": "Encrypted Data",
+          "source": "Encrypted data",
           "message": "Зашифровані дані"
         },
         "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.ZW5jcnlwdGVkX2RhdGE.short_desc": {
@@ -596,7 +596,7 @@
           "message": "URL-адреса розташування FileLocationHandler для зашифрованого архіву (альтернатива `encrypted_data` або `encrypted_path`)"
         },
         "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.ZW5jcnlwdGVkX2xvY2F0aW9u.display_name": {
-          "source": "Encrypted Location",
+          "source": "Encrypted location",
           "message": "Розташування зашифрованого файлу"
         },
         "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.ZW5jcnlwdGVkX2xvY2F0aW9u.short_desc": {
@@ -608,7 +608,7 @@
           "message": "Шлях у файловій системі до зашифрованого архіву (альтернатива `encrypted_data`)"
         },
         "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.ZW5jcnlwdGVkX3BhdGg.display_name": {
-          "source": "Encrypted File Path",
+          "source": "Encrypted file path",
           "message": "Шлях до зашифрованого файлу"
         },
         "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.ZW5jcnlwdGVkX3BhdGg.short_desc": {
@@ -620,7 +620,7 @@
           "message": "`32`-байтний бінарний ключ для розшифрування AES-256-CBC. Вкажіть або `key`, або `password`, відповідно до режиму шифрування"
         },
         "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.a2V5.display_name": {
-          "source": "Decryption Key",
+          "source": "Decryption key",
           "message": "Ключ розшифрування"
         },
         "app.VGFy.action.ZGVjcnlwdC1hcmNoaXZl.option.a2V5.short_desc": {
@@ -648,7 +648,7 @@
           "message": "Видалити елемент файлу або каталогу з архіву tar, перестворивши архів без вказаного елемента"
         },
         "app.VGFy.action.ZGVsZXRlLWVudHJ5.display_name": {
-          "source": "Delete Entry",
+          "source": "Delete entry",
           "message": "Видалити елемент"
         },
         "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Y29tcHJlc3Npb24.allowed-value.c3RyaW5nOm5vbmU.display_name": {
@@ -680,7 +680,7 @@
           "message": "Метод стиснення для вихідного архіву. Якщо не вказано, вихідний архів буде без стиснення"
         },
         "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Y29tcHJlc3Npb24.display_name": {
-          "source": "Output Compression",
+          "source": "Output compression",
           "message": "Стиснення вихідного файлу"
         },
         "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Y29tcHJlc3Npb24.short_desc": {
@@ -692,7 +692,7 @@
           "message": "Архів tar як бінарні дані"
         },
         "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.YXJjaGl2ZV9kYXRh.display_name": {
-          "source": "Archive Data",
+          "source": "Archive data",
           "message": "Дані архіву"
         },
         "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.YXJjaGl2ZV9kYXRh.short_desc": {
@@ -704,7 +704,7 @@
           "message": "URL-адреса розташування FileLocationHandler для архіву tar (альтернатива `archive_data` або `archive_path`)"
         },
         "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.YXJjaGl2ZV9sb2NhdGlvbg.display_name": {
-          "source": "Archive Location",
+          "source": "Archive location",
           "message": "Розташування архіву"
         },
         "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.YXJjaGl2ZV9sb2NhdGlvbg.short_desc": {
@@ -716,7 +716,7 @@
           "message": "Шлях у файловій системі до архіву tar (альтернатива `archive_data`)"
         },
         "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.YXJjaGl2ZV9wYXRo.display_name": {
-          "source": "Archive Path",
+          "source": "Archive path",
           "message": "Шлях до архіву"
         },
         "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.YXJjaGl2ZV9wYXRo.short_desc": {
@@ -728,7 +728,7 @@
           "message": "Повна назва шляху елемента, який потрібно видалити з архіву"
         },
         "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.ZW50cnlfbmFtZQ.display_name": {
-          "source": "Entry Name",
+          "source": "Entry name",
           "message": "Назва елемента"
         },
         "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.ZW50cnlfbmFtZQ.short_desc": {
@@ -736,15 +736,15 @@
           "message": "Назва елемента для видалення"
         },
         "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Zm9ybWF0.allowed-value.c3RyaW5nOmdudQ.display_name": {
-          "source": "GNU Tar",
+          "source": "GNU tar",
           "message": "GNU Tar"
         },
         "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Zm9ybWF0.allowed-value.c3RyaW5nOnBheA.display_name": {
-          "source": "POSIX Pax",
+          "source": "POSIX pax",
           "message": "POSIX Pax"
         },
         "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Zm9ybWF0.allowed-value.c3RyaW5nOnVzdGFy.display_name": {
-          "source": "POSIX Ustar",
+          "source": "POSIX ustar",
           "message": "POSIX Ustar"
         },
         "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Zm9ybWF0.allowed-value.c3RyaW5nOnY3.display_name": {
@@ -756,7 +756,7 @@
           "message": "Формат tar для вихідного архіву"
         },
         "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Zm9ybWF0.display_name": {
-          "source": "Output Format",
+          "source": "Output format",
           "message": "Вихідний формат"
         },
         "app.VGFy.action.ZGVsZXRlLWVudHJ5.option.Zm9ybWF0.short_desc": {
@@ -772,7 +772,7 @@
           "message": "Зашифрувати архів tar за допомогою AES-256-CBC. Вихідний формат — `16`-байтний випадковий IV, за яким слідує шифротекст"
         },
         "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.display_name": {
-          "source": "Encrypt Archive",
+          "source": "Encrypt archive",
           "message": "Зашифрувати архів"
         },
         "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.YXJjaGl2ZV9kYXRh.desc": {
@@ -780,7 +780,7 @@
           "message": "Архів tar у вигляді бінарних даних для шифрування"
         },
         "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.YXJjaGl2ZV9kYXRh.display_name": {
-          "source": "Archive Data",
+          "source": "Archive data",
           "message": "Дані архіву"
         },
         "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.YXJjaGl2ZV9kYXRh.short_desc": {
@@ -792,7 +792,7 @@
           "message": "URL-адреса розташування FileLocationHandler для архіву tar (альтернатива `archive_data` або `archive_path`)"
         },
         "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.YXJjaGl2ZV9sb2NhdGlvbg.display_name": {
-          "source": "Archive Location",
+          "source": "Archive location",
           "message": "Розташування архіву"
         },
         "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.YXJjaGl2ZV9sb2NhdGlvbg.short_desc": {
@@ -804,7 +804,7 @@
           "message": "Шлях у файловій системі до архіву tar (альтернатива `archive_data`)"
         },
         "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.YXJjaGl2ZV9wYXRo.display_name": {
-          "source": "Archive Path",
+          "source": "Archive path",
           "message": "Шлях до архіву"
         },
         "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.YXJjaGl2ZV9wYXRo.short_desc": {
@@ -816,7 +816,7 @@
           "message": "`32`-байтний бінарний ключ для шифрування AES-256-CBC. Вкажіть або `key`, або `password`, але не обидва"
         },
         "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.a2V5.display_name": {
-          "source": "Encryption Key",
+          "source": "Encryption key",
           "message": "Ключ шифрування"
         },
         "app.VGFy.action.ZW5jcnlwdC1hcmNoaXZl.option.a2V5.short_desc": {
@@ -844,7 +844,7 @@
           "message": "Розархівувати вміст архіву tar у цільовий каталог із необов'язковими фільтрами імен файлів у стилі glob `include`/`exclude`"
         },
         "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.display_name": {
-          "source": "Extract Archive",
+          "source": "Extract archive",
           "message": "Розархівувати архів"
         },
         "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.Y3JlYXRlX2RpcmVjdG9yaWVz.desc": {
@@ -864,7 +864,7 @@
           "message": "Архів tar у вигляді бінарних даних (альтернатива archive_path)"
         },
         "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.YXJjaGl2ZV9kYXRh.display_name": {
-          "source": "Archive Data",
+          "source": "Archive data",
           "message": "Дані архіву"
         },
         "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.YXJjaGl2ZV9kYXRh.short_desc": {
@@ -876,7 +876,7 @@
           "message": "URL-адреса розташування FileLocationHandler для архіву tar (альтернатива archive_path або archive_data)"
         },
         "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.YXJjaGl2ZV9sb2NhdGlvbg.display_name": {
-          "source": "Archive Location",
+          "source": "Archive location",
           "message": "Розташування архіву"
         },
         "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.YXJjaGl2ZV9sb2NhdGlvbg.short_desc": {
@@ -888,7 +888,7 @@
           "message": "Шлях у файловій системі до архіву tar для розархівування"
         },
         "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.YXJjaGl2ZV9wYXRo.display_name": {
-          "source": "Archive Path",
+          "source": "Archive path",
           "message": "Шлях до архіву"
         },
         "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.YXJjaGl2ZV9wYXRo.short_desc": {
@@ -912,7 +912,7 @@
           "message": "Список шаблонів у стилі glob; елементи, що відповідають будь-якому шаблону, будуть пропущені. Шаблони виключення застосовуються після шаблонів `include`.\n\n**Підтримувані символи підстановки**: `*` відповідає будь-яким символам (включно з `/`), `?` відповідає будь-якому одному символу, `[abc]` відповідає одному символу з набору"
         },
         "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.ZXhjbHVkZQ.display_name": {
-          "source": "Exclude Patterns",
+          "source": "Exclude patterns",
           "message": "Шаблони виключення"
         },
         "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.ZXhjbHVkZQ.short_desc": {
@@ -924,7 +924,7 @@
           "message": "Список шаблонів у стилі glob; буде розархівовано лише елементи, які відповідають принаймні одному шаблону. Якщо не вказано, за замовчуванням буде включено всі елементи.\n\n**Підтримувані символи підстановки**: `*` відповідає будь-яким символам (включно з `/`), `?` відповідає будь-якому одному символу, `[abc]` відповідає одному символу з набору"
         },
         "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.aW5jbHVkZQ.display_name": {
-          "source": "Include Patterns",
+          "source": "Include patterns",
           "message": "Шаблони включення"
         },
         "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.aW5jbHVkZQ.short_desc": {
@@ -948,7 +948,7 @@
           "message": "Кількість початкових компонентів шляху, які слід вилучити з назв елементів під час розархівування. Наприклад, якщо `strip_count` = `1`, елемент `project/src/main.c` стає `src/main.c`. Елементи з меншою кількістю компонентів, ніж `strip_count`, пропускаються"
         },
         "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.c3RyaXBfY291bnQ.display_name": {
-          "source": "Strip Components",
+          "source": "Strip components",
           "message": "Видалити компоненти"
         },
         "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.c3RyaXBfY291bnQ.short_desc": {
@@ -960,7 +960,7 @@
           "message": "Якщо `true`, відновлює початкові дозволи файлів"
         },
         "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.cHJlc2VydmVfcGVybWlzc2lvbnM.display_name": {
-          "source": "Preserve Permissions",
+          "source": "Preserve permissions",
           "message": "Зберегти дозволи"
         },
         "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.cHJlc2VydmVfcGVybWlzc2lvbnM.short_desc": {
@@ -972,7 +972,7 @@
           "message": "Якщо `true`, відновлює початковий час зміни"
         },
         "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.cHJlc2VydmVfdGltZXM.display_name": {
-          "source": "Preserve Times",
+          "source": "Preserve times",
           "message": "Зберегти час"
         },
         "app.VGFy.action.ZXh0cmFjdC1hcmNoaXZl.option.cHJlc2VydmVfdGltZXM.short_desc": {
@@ -988,7 +988,7 @@
           "message": "Вилучити один файл із архіву tar за цільовим шляхом на диску"
         },
         "app.VGFy.action.ZXh0cmFjdC1maWxl.display_name": {
-          "source": "Extract Single File",
+          "source": "Extract single file",
           "message": "Вилучити один файл"
         },
         "app.VGFy.action.ZXh0cmFjdC1maWxl.option.Y3JlYXRlX2RpcmVjdG9yaWVz.desc": {
@@ -1008,7 +1008,7 @@
           "message": "Архів tar як бінарні дані"
         },
         "app.VGFy.action.ZXh0cmFjdC1maWxl.option.YXJjaGl2ZV9kYXRh.display_name": {
-          "source": "Archive Data",
+          "source": "Archive data",
           "message": "Дані архіву"
         },
         "app.VGFy.action.ZXh0cmFjdC1maWxl.option.YXJjaGl2ZV9kYXRh.short_desc": {
@@ -1020,7 +1020,7 @@
           "message": "URL-адреса розташування FileLocationHandler для архіву tar (альтернатива archive_path або archive_data)"
         },
         "app.VGFy.action.ZXh0cmFjdC1maWxl.option.YXJjaGl2ZV9sb2NhdGlvbg.display_name": {
-          "source": "Archive Location",
+          "source": "Archive location",
           "message": "Розташування архіву"
         },
         "app.VGFy.action.ZXh0cmFjdC1maWxl.option.YXJjaGl2ZV9sb2NhdGlvbg.short_desc": {
@@ -1032,7 +1032,7 @@
           "message": "Шлях у файловій системі до архіву tar"
         },
         "app.VGFy.action.ZXh0cmFjdC1maWxl.option.YXJjaGl2ZV9wYXRo.display_name": {
-          "source": "Archive Path",
+          "source": "Archive path",
           "message": "Шлях до архіву"
         },
         "app.VGFy.action.ZXh0cmFjdC1maWxl.option.YXJjaGl2ZV9wYXRo.short_desc": {
@@ -1056,7 +1056,7 @@
           "message": "Назва/шлях елемента для видобування"
         },
         "app.VGFy.action.ZXh0cmFjdC1maWxl.option.ZW50cnlfbmFtZQ.display_name": {
-          "source": "Entry Name",
+          "source": "Entry name",
           "message": "Назва елемента"
         },
         "app.VGFy.action.ZXh0cmFjdC1maWxl.option.ZW50cnlfbmFtZQ.short_desc": {
@@ -1072,7 +1072,7 @@
           "message": "Об'єднати бінарні фрагменти архіву назад у єдиний tar-архів"
         },
         "app.VGFy.action.am9pbi1hcmNoaXZl.display_name": {
-          "source": "Join Archive Chunks",
+          "source": "Join archive chunks",
           "message": "Об'єднати фрагменти архіву"
         },
         "app.VGFy.action.am9pbi1hcmNoaXZl.option.Y2h1bmtz.desc": {
@@ -1096,7 +1096,7 @@
           "message": "Отримати список усіх елементів у tar-архіві з метаданими"
         },
         "app.VGFy.action.bGlzdC1hcmNoaXZl.display_name": {
-          "source": "List Archive Contents",
+          "source": "List archive contents",
           "message": "Показати вміст архіву"
         },
         "app.VGFy.action.bGlzdC1hcmNoaXZl.option.YXJjaGl2ZV9kYXRh.desc": {
@@ -1104,7 +1104,7 @@
           "message": "Архів tar у вигляді бінарних даних (альтернатива archive_path)"
         },
         "app.VGFy.action.bGlzdC1hcmNoaXZl.option.YXJjaGl2ZV9kYXRh.display_name": {
-          "source": "Archive Data",
+          "source": "Archive data",
           "message": "Дані архіву"
         },
         "app.VGFy.action.bGlzdC1hcmNoaXZl.option.YXJjaGl2ZV9kYXRh.short_desc": {
@@ -1116,7 +1116,7 @@
           "message": "URL-адреса розташування FileLocationHandler для архіву tar (альтернатива archive_path або archive_data)"
         },
         "app.VGFy.action.bGlzdC1hcmNoaXZl.option.YXJjaGl2ZV9sb2NhdGlvbg.display_name": {
-          "source": "Archive Location",
+          "source": "Archive location",
           "message": "Розташування архіву"
         },
         "app.VGFy.action.bGlzdC1hcmNoaXZl.option.YXJjaGl2ZV9sb2NhdGlvbg.short_desc": {
@@ -1128,7 +1128,7 @@
           "message": "Шлях у файловій системі до tar-архіву для перегляду вмісту"
         },
         "app.VGFy.action.bGlzdC1hcmNoaXZl.option.YXJjaGl2ZV9wYXRo.display_name": {
-          "source": "Archive Path",
+          "source": "Archive path",
           "message": "Шлях до архіву"
         },
         "app.VGFy.action.bGlzdC1hcmNoaXZl.option.YXJjaGl2ZV9wYXRo.short_desc": {
@@ -1144,7 +1144,7 @@
           "message": "Розбити tar-архів на кілька бінарних фрагментів фіксованого розміру для багатотомного зберігання або передачі"
         },
         "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.display_name": {
-          "source": "Split Archive",
+          "source": "Split archive",
           "message": "Розбити архів"
         },
         "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.option.Y2h1bmtfc2l6ZQ.desc": {
@@ -1152,7 +1152,7 @@
           "message": "Максимальний розмір кожного фрагмента у байтах. Останній фрагмент може бути меншим, якщо розмір архіву не ділиться націло"
         },
         "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.option.Y2h1bmtfc2l6ZQ.display_name": {
-          "source": "Chunk Size",
+          "source": "Chunk size",
           "message": "Розмір фрагмента"
         },
         "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.option.Y2h1bmtfc2l6ZQ.short_desc": {
@@ -1164,7 +1164,7 @@
           "message": "tar-архів у вигляді бінарних даних для розбиття"
         },
         "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.option.YXJjaGl2ZV9kYXRh.display_name": {
-          "source": "Archive Data",
+          "source": "Archive data",
           "message": "Дані архіву"
         },
         "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.option.YXJjaGl2ZV9kYXRh.short_desc": {
@@ -1176,7 +1176,7 @@
           "message": "URL-адреса розташування FileLocationHandler для архіву tar (альтернатива `archive_data` або `archive_path`)"
         },
         "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.option.YXJjaGl2ZV9sb2NhdGlvbg.display_name": {
-          "source": "Archive Location",
+          "source": "Archive location",
           "message": "Розташування архіву"
         },
         "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.option.YXJjaGl2ZV9sb2NhdGlvbg.short_desc": {
@@ -1188,7 +1188,7 @@
           "message": "Шлях у файловій системі до архіву tar (альтернатива `archive_data`)"
         },
         "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.option.YXJjaGl2ZV9wYXRo.display_name": {
-          "source": "Archive Path",
+          "source": "Archive path",
           "message": "Шлях до архіву"
         },
         "app.VGFy.action.c3BsaXQtYXJjaGl2ZQ.option.YXJjaGl2ZV9wYXRo.short_desc": {
@@ -1204,7 +1204,7 @@
           "message": "Відкрити потокове введення для читання файлу з tar-архіву без завантаження всього файлу в пам'ять"
         },
         "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.display_name": {
-          "source": "Stream Extract",
+          "source": "Stream extract",
           "message": "Потокове видобування"
         },
         "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.option.YXJjaGl2ZV9kYXRh.desc": {
@@ -1212,7 +1212,7 @@
           "message": "tar-архів у вигляді бінарних даних (альтернатива `archive_path`)"
         },
         "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.option.YXJjaGl2ZV9kYXRh.display_name": {
-          "source": "Archive Data",
+          "source": "Archive data",
           "message": "Дані архіву"
         },
         "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.option.YXJjaGl2ZV9kYXRh.short_desc": {
@@ -1224,7 +1224,7 @@
           "message": "URL-адреса розташування FileLocationHandler для tar-архіву (альтернатива `archive_path` або `archive_data`)"
         },
         "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.option.YXJjaGl2ZV9sb2NhdGlvbg.display_name": {
-          "source": "Archive Location",
+          "source": "Archive location",
           "message": "Розташування архіву"
         },
         "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.option.YXJjaGl2ZV9sb2NhdGlvbg.short_desc": {
@@ -1236,7 +1236,7 @@
           "message": "Шлях у файловій системі до архіву tar"
         },
         "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.option.YXJjaGl2ZV9wYXRo.display_name": {
-          "source": "Archive Path",
+          "source": "Archive path",
           "message": "Шлях до архіву"
         },
         "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.option.YXJjaGl2ZV9wYXRo.short_desc": {
@@ -1248,7 +1248,7 @@
           "message": "Повний шлях до елемента для читання з архіву"
         },
         "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.option.ZW50cnlfbmFtZQ.display_name": {
-          "source": "Entry Name",
+          "source": "Entry name",
           "message": "Назва елемента"
         },
         "app.VGFy.action.c3RyZWFtLWV4dHJhY3Q.option.ZW50cnlfbmFtZQ.short_desc": {
@@ -1264,7 +1264,7 @@
           "message": "Прочитати вміст файлу з tar-архіву без видобування на диск"
         },
         "app.VGFy.action.cmVhZC1maWxl.display_name": {
-          "source": "Read File Content",
+          "source": "Read file content",
           "message": "Прочитати вміст файлу"
         },
         "app.VGFy.action.cmVhZC1maWxl.option.YXJjaGl2ZV9kYXRh.desc": {
@@ -1272,7 +1272,7 @@
           "message": "Архів tar у вигляді бінарних даних (альтернатива archive_path)"
         },
         "app.VGFy.action.cmVhZC1maWxl.option.YXJjaGl2ZV9kYXRh.display_name": {
-          "source": "Archive Data",
+          "source": "Archive data",
           "message": "Дані архіву"
         },
         "app.VGFy.action.cmVhZC1maWxl.option.YXJjaGl2ZV9kYXRh.short_desc": {
@@ -1284,7 +1284,7 @@
           "message": "URL-адреса розташування FileLocationHandler для архіву tar (альтернатива archive_path або archive_data)"
         },
         "app.VGFy.action.cmVhZC1maWxl.option.YXJjaGl2ZV9sb2NhdGlvbg.display_name": {
-          "source": "Archive Location",
+          "source": "Archive location",
           "message": "Розташування архіву"
         },
         "app.VGFy.action.cmVhZC1maWxl.option.YXJjaGl2ZV9sb2NhdGlvbg.short_desc": {
@@ -1296,7 +1296,7 @@
           "message": "Шлях у файловій системі до архіву tar"
         },
         "app.VGFy.action.cmVhZC1maWxl.option.YXJjaGl2ZV9wYXRo.display_name": {
-          "source": "Archive Path",
+          "source": "Archive path",
           "message": "Шлях до архіву"
         },
         "app.VGFy.action.cmVhZC1maWxl.option.YXJjaGl2ZV9wYXRo.short_desc": {
@@ -1308,7 +1308,7 @@
           "message": "Якщо `true`, повертає вміст як текстовий рядок замість бінарних даних (за замовчуванням: `false`)"
         },
         "app.VGFy.action.cmVhZC1maWxl.option.YXNfdGV4dA.display_name": {
-          "source": "Read as Text",
+          "source": "Read as text",
           "message": "Прочитати як текст"
         },
         "app.VGFy.action.cmVhZC1maWxl.option.YXNfdGV4dA.short_desc": {
@@ -1320,7 +1320,7 @@
           "message": "Шлях/назва елемента для читання з архіву"
         },
         "app.VGFy.action.cmVhZC1maWxl.option.ZW50cnlfbmFtZQ.display_name": {
-          "source": "Entry Name",
+          "source": "Entry name",
           "message": "Назва елемента"
         },
         "app.VGFy.action.cmVhZC1maWxl.option.ZW50cnlfbmFtZQ.short_desc": {
@@ -1344,11 +1344,11 @@
           "message": "UTF-16"
         },
         "app.VGFy.action.cmVhZC1maWxl.option.ZW5jb2Rpbmc.allowed-value.c3RyaW5nOlVURi0xNkJF.display_name": {
-          "source": "UTF-16 Big Endian",
+          "source": "UTF-16 big endian",
           "message": "UTF-16 Big Endian"
         },
         "app.VGFy.action.cmVhZC1maWxl.option.ZW5jb2Rpbmc.allowed-value.c3RyaW5nOlVURi0xNkxF.display_name": {
-          "source": "UTF-16 Little Endian",
+          "source": "UTF-16 little endian",
           "message": "UTF-16 Little Endian"
         },
         "app.VGFy.action.cmVhZC1maWxl.option.ZW5jb2Rpbmc.allowed-value.c3RyaW5nOldpbmRvd3MtMTI1Mg.display_name": {
@@ -1376,7 +1376,7 @@
           "message": "Перевірити цілісність tar-архіву шляхом читання всіх елементів та їхніх блоків даних без видобування на диск"
         },
         "app.VGFy.action.dmVyaWZ5LWFyY2hpdmU.display_name": {
-          "source": "Verify Archive",
+          "source": "Verify archive",
           "message": "Перевірити архів"
         },
         "app.VGFy.action.dmVyaWZ5LWFyY2hpdmU.option.YXJjaGl2ZV9kYXRh.desc": {
@@ -1384,7 +1384,7 @@
           "message": "tar-архів у вигляді бінарних даних (альтернатива `archive_path`)"
         },
         "app.VGFy.action.dmVyaWZ5LWFyY2hpdmU.option.YXJjaGl2ZV9kYXRh.display_name": {
-          "source": "Archive Data",
+          "source": "Archive data",
           "message": "Дані архіву"
         },
         "app.VGFy.action.dmVyaWZ5LWFyY2hpdmU.option.YXJjaGl2ZV9kYXRh.short_desc": {
@@ -1396,7 +1396,7 @@
           "message": "URL-адреса розташування FileLocationHandler для tar-архіву (альтернатива `archive_path` або `archive_data`)"
         },
         "app.VGFy.action.dmVyaWZ5LWFyY2hpdmU.option.YXJjaGl2ZV9sb2NhdGlvbg.display_name": {
-          "source": "Archive Location",
+          "source": "Archive location",
           "message": "Розташування архіву"
         },
         "app.VGFy.action.dmVyaWZ5LWFyY2hpdmU.option.YXJjaGl2ZV9sb2NhdGlvbg.short_desc": {
@@ -1408,7 +1408,7 @@
           "message": "Шлях у файловій системі до tar-архіву для перевірки"
         },
         "app.VGFy.action.dmVyaWZ5LWFyY2hpdmU.option.YXJjaGl2ZV9wYXRo.display_name": {
-          "source": "Archive Path",
+          "source": "Archive path",
           "message": "Шлях до архіву"
         },
         "app.VGFy.action.dmVyaWZ5LWFyY2hpdmU.option.YXJjaGl2ZV9wYXRo.short_desc": {

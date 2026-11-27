@@ -168,20 +168,20 @@ public class TarDeleteEntryRequestDataType inherits HashDataType {
         const Fields = {
             "archive_data": {
                 "type": BinaryOrNothingType,
-                "display_name": "Archive Data",
+                "display_name": "Archive data",
                 "short_desc": "TAR archive binary data",
                 "desc": "The tar archive as binary data",
             },
             "archive_path": {
                 "type": StringOrNothingType,
-                "display_name": "Archive Path",
+                "display_name": "Archive path",
                 "short_desc": "Path to the tar archive",
                 "desc": "The filesystem path to the tar archive (alternative to `archive_data`)",
                 "example_value": "/path/to/archive.tar",
             },
             "archive_location": {
                 "type": StringOrNothingType,
-                "display_name": "Archive Location",
+                "display_name": "Archive location",
                 "short_desc": "Archive location URL",
                 "desc": "A FileLocationHandler location URL for the tar archive "
                     "(alternative to `archive_data` or `archive_path`)",
@@ -189,14 +189,14 @@ public class TarDeleteEntryRequestDataType inherits HashDataType {
             },
             "entry_name": {
                 "type": StringType,
-                "display_name": "Entry Name",
+                "display_name": "Entry name",
                 "short_desc": "Name of entry to delete",
                 "desc": "The full path name of the entry to delete from the archive",
                 "example_value": "old-file.txt",
             },
             "compression": {
                 "type": StringOrNothingType,
-                "display_name": "Output Compression",
+                "display_name": "Output compression",
                 "short_desc": "Compression for output archive",
                 "desc": "Compression method for the output archive. If not specified, the output "
                     "is uncompressed",
@@ -204,7 +204,7 @@ public class TarDeleteEntryRequestDataType inherits HashDataType {
             },
             "format": {
                 "type": StringOrNothingType,
-                "display_name": "Output Format",
+                "display_name": "Output format",
                 "short_desc": "TAR format for output archive",
                 "desc": "The tar format for the output archive",
                 "allowed_values": AllowedFormatValues,
@@ -224,14 +224,14 @@ public class TarDeleteEntryResponseDataType inherits HashDataType {
         const Fields = {
             "archive_data": {
                 "type": BinaryType,
-                "display_name": "Archive Data",
+                "display_name": "Archive data",
                 "short_desc": "Modified archive binary",
                 "desc": "The archive binary data with the entry removed (or unchanged if entry "
                     "was not found)",
             },
             "archive_size": {
                 "type": IntType,
-                "display_name": "Archive Size",
+                "display_name": "Archive size",
                 "short_desc": "Archive size in bytes",
                 "desc": "The size of the output archive in bytes",
             },
@@ -244,7 +244,7 @@ public class TarDeleteEntryResponseDataType inherits HashDataType {
             },
             "remaining_count": {
                 "type": IntType,
-                "display_name": "Remaining Count",
+                "display_name": "Remaining count",
                 "short_desc": "Number of entries remaining",
                 "desc": "The number of entries remaining in the archive after deletion",
             },

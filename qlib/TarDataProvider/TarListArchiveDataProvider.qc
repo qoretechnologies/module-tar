@@ -99,20 +99,20 @@ public class TarListRequestDataType inherits HashDataType {
         const Fields = {
             "archive_path": {
                 "type": StringOrNothingType,
-                "display_name": "Archive Path",
+                "display_name": "Archive path",
                 "short_desc": "Path to the tar archive file",
                 "desc": "The filesystem path to the tar archive to list",
                 "example_value": "/path/to/archive.tar.gz",
             },
             "archive_data": {
                 "type": BinaryOrNothingType,
-                "display_name": "Archive Data",
+                "display_name": "Archive data",
                 "short_desc": "Binary archive data",
                 "desc": "The tar archive as binary data (alternative to archive_path)",
             },
             "archive_location": {
                 "type": StringOrNothingType,
-                "display_name": "Archive Location",
+                "display_name": "Archive location",
                 "short_desc": "Archive location URL",
                 "desc": "A FileLocationHandler location URL for the tar archive (alternative to archive_path or archive_data)",
                 "example_value": "file:///path/to/archive.tar.gz",
@@ -138,7 +138,7 @@ public class TarListResponseDataType inherits HashDataType {
             },
             "count": {
                 "type": IntType,
-                "display_name": "Entry Count",
+                "display_name": "Entry count",
                 "short_desc": "Number of entries in archive",
                 "desc": "Total number of entries in the archive",
             },

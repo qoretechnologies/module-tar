@@ -173,13 +173,13 @@ public class TarDecryptArchiveRequestDataType inherits HashDataType {
         const Fields = {
             "encrypted_data": {
                 "type": BinaryOrNothingType,
-                "display_name": "Encrypted Data",
+                "display_name": "Encrypted data",
                 "short_desc": "Encrypted archive binary data",
                 "desc": "The encrypted tar archive as binary data",
             },
             "encrypted_path": {
                 "type": StringOrNothingType,
-                "display_name": "Encrypted File Path",
+                "display_name": "Encrypted file path",
                 "short_desc": "Path to encrypted archive file",
                 "desc": "The filesystem path to the encrypted archive "
                     "(alternative to `encrypted_data`)",
@@ -187,7 +187,7 @@ public class TarDecryptArchiveRequestDataType inherits HashDataType {
             },
             "encrypted_location": {
                 "type": StringOrNothingType,
-                "display_name": "Encrypted Location",
+                "display_name": "Encrypted location",
                 "short_desc": "Encrypted archive location URL",
                 "desc": "A FileLocationHandler location URL for the encrypted archive "
                     "(alternative to `encrypted_data` or `encrypted_path`)",
@@ -195,7 +195,7 @@ public class TarDecryptArchiveRequestDataType inherits HashDataType {
             },
             "key": {
                 "type": BinaryOrNothingType,
-                "display_name": "Decryption Key",
+                "display_name": "Decryption key",
                 "short_desc": "AES-256 decryption key (32 bytes)",
                 "desc": "A `32`-byte binary key for AES-256-CBC decryption. "
                     "Provide either `key` or `password`, matching the encryption mode",
@@ -222,13 +222,13 @@ public class TarDecryptArchiveResponseDataType inherits HashDataType {
         const Fields = {
             "archive_data": {
                 "type": BinaryType,
-                "display_name": "Archive Data",
+                "display_name": "Archive data",
                 "short_desc": "Decrypted archive binary",
                 "desc": "The decrypted tar archive as binary data",
             },
             "archive_size": {
                 "type": IntType,
-                "display_name": "Archive Size",
+                "display_name": "Archive size",
                 "short_desc": "Decrypted archive size in bytes",
                 "desc": "The size of the decrypted archive in bytes",
             },

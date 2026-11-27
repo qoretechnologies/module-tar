@@ -116,34 +116,34 @@ public class TarReadFileRequestDataType inherits HashDataType {
         const Fields = {
             "archive_path": {
                 "type": StringOrNothingType,
-                "display_name": "Archive Path",
+                "display_name": "Archive path",
                 "short_desc": "Path to the tar archive file",
                 "desc": "The filesystem path to the tar archive",
                 "example_value": "/path/to/archive.tar.gz",
             },
             "archive_data": {
                 "type": BinaryOrNothingType,
-                "display_name": "Archive Data",
+                "display_name": "Archive data",
                 "short_desc": "Binary archive data",
                 "desc": "The tar archive as binary data (alternative to archive_path)",
             },
             "archive_location": {
                 "type": StringOrNothingType,
-                "display_name": "Archive Location",
+                "display_name": "Archive location",
                 "short_desc": "Archive location URL",
                 "desc": "A FileLocationHandler location URL for the tar archive (alternative to archive_path or archive_data)",
                 "example_value": "file:///path/to/archive.tar.gz",
             },
             "entry_name": {
                 "type": StringType,
-                "display_name": "Entry Name",
+                "display_name": "Entry name",
                 "short_desc": "Name of file to read",
                 "desc": "The path/name of the entry to read from the archive",
                 "example_value": "data/config.json",
             },
             "as_text": {
                 "type": SoftBoolOrNothingType,
-                "display_name": "Read as Text",
+                "display_name": "Read as text",
                 "short_desc": "Return content as text string",
                 "desc": "If `true`, returns content as text string instead of binary (default: `false`)",
                 "example_value": False,
@@ -184,7 +184,7 @@ public class TarReadFileResponseDataType inherits HashDataType {
             },
             "entry_info": {
                 "type": AutoHashOrNothingType,
-                "display_name": "Entry Info",
+                "display_name": "Entry info",
                 "short_desc": "Entry metadata",
                 "desc": "Metadata about the entry (name, permissions, timestamps, etc.)",
             },

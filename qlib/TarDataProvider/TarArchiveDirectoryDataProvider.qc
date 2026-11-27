@@ -195,14 +195,14 @@ public class TarArchiveDirectoryRequestDataType inherits HashDataType {
         const Fields = {
             "directory_path": {
                 "type": StringType,
-                "display_name": "Directory Path",
+                "display_name": "Directory path",
                 "short_desc": "Path to directory to archive",
                 "desc": "The filesystem path to the directory to archive recursively",
                 "example_value": "/path/to/directory",
             },
             "archive_path": {
                 "type": StringOrNothingType,
-                "display_name": "Archive Path",
+                "display_name": "Archive path",
                 "short_desc": "Output archive file path",
                 "desc": "The path where the tar archive will be created. If not specified, "
                     "returns binary data",
@@ -210,7 +210,7 @@ public class TarArchiveDirectoryRequestDataType inherits HashDataType {
             },
             "output_location": {
                 "type": StringOrNothingType,
-                "display_name": "Output Location",
+                "display_name": "Output location",
                 "short_desc": "Output location URL",
                 "desc": "A FileLocationHandler location URL where the archive will be written "
                     "(alternative to `archive_path`)",
@@ -218,7 +218,7 @@ public class TarArchiveDirectoryRequestDataType inherits HashDataType {
             },
             "base_name": {
                 "type": StringOrNothingType,
-                "display_name": "Base Name",
+                "display_name": "Base name",
                 "short_desc": "Root directory name in archive",
                 "desc": "The name used for the root directory entry in the archive. If not "
                     "specified, uses the basename of `directory_path`",
@@ -240,7 +240,7 @@ public class TarArchiveDirectoryRequestDataType inherits HashDataType {
             },
             "follow_symlinks": {
                 "type": SoftBoolOrNothingType,
-                "display_name": "Follow Symlinks",
+                "display_name": "Follow symlinks",
                 "short_desc": "Follow symbolic links",
                 "desc": "If `True`, follows symbolic links and archives the target file contents. "
                     "If `False` (default), archives symlinks as symlink entries",
@@ -260,37 +260,37 @@ public class TarArchiveDirectoryResponseDataType inherits HashDataType {
         const Fields = {
             "archive_path": {
                 "type": StringOrNothingType,
-                "display_name": "Archive Path",
+                "display_name": "Archive path",
                 "short_desc": "Path to created archive",
                 "desc": "The filesystem path where the archive was created",
             },
             "output_location": {
                 "type": StringOrNothingType,
-                "display_name": "Output Location",
+                "display_name": "Output location",
                 "short_desc": "Output location URL",
                 "desc": "The location URL where the archive was written",
             },
             "archive_data": {
                 "type": BinaryOrNothingType,
-                "display_name": "Archive Data",
+                "display_name": "Archive data",
                 "short_desc": "Archive binary data",
                 "desc": "The archive as binary data (when no path was specified)",
             },
             "entry_count": {
                 "type": IntType,
-                "display_name": "Entry Count",
+                "display_name": "Entry count",
                 "short_desc": "Total entries added",
                 "desc": "Total number of entries added to the archive (files + directories)",
             },
             "file_count": {
                 "type": IntType,
-                "display_name": "File Count",
+                "display_name": "File count",
                 "short_desc": "Files added",
                 "desc": "Number of files (including symlinks) added to the archive",
             },
             "directory_count": {
                 "type": IntType,
-                "display_name": "Directory Count",
+                "display_name": "Directory count",
                 "short_desc": "Directories added",
                 "desc": "Number of directory entries added to the archive",
             },

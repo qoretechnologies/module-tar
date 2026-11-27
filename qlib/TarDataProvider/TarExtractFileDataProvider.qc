@@ -124,27 +124,27 @@ public class TarExtractFileRequestDataType inherits HashDataType {
         const Fields = {
             "archive_path": {
                 "type": StringOrNothingType,
-                "display_name": "Archive Path",
+                "display_name": "Archive path",
                 "short_desc": "Path to the tar archive",
                 "desc": "The filesystem path to the tar archive",
                 "example_value": "/path/to/archive.tar.gz",
             },
             "archive_data": {
                 "type": BinaryOrNothingType,
-                "display_name": "Archive Data",
+                "display_name": "Archive data",
                 "short_desc": "Binary archive data",
                 "desc": "The tar archive as binary data",
             },
             "archive_location": {
                 "type": StringOrNothingType,
-                "display_name": "Archive Location",
+                "display_name": "Archive location",
                 "short_desc": "Archive location URL",
                 "desc": "A FileLocationHandler location URL for the tar archive (alternative to archive_path or archive_data)",
                 "example_value": "file:///path/to/archive.tar.gz",
             },
             "entry_name": {
                 "type": StringType,
-                "display_name": "Entry Name",
+                "display_name": "Entry name",
                 "short_desc": "File to extract",
                 "desc": "The name/path of the entry to extract",
                 "example_value": "data/config.json",
@@ -180,13 +180,13 @@ public class TarExtractFileResponseDataType inherits HashDataType {
         const Fields = {
             "extracted_to": {
                 "type": StringType,
-                "display_name": "Extracted To",
+                "display_name": "Extracted to",
                 "short_desc": "Destination path",
                 "desc": "Path where the file was extracted",
             },
             "entry_name": {
                 "type": StringType,
-                "display_name": "Entry Name",
+                "display_name": "Entry name",
                 "short_desc": "Extracted entry name",
                 "desc": "Name of the entry that was extracted",
             },
