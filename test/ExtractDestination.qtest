@@ -1,0 +1,383 @@
+#!/usr/bin/env qore
+# -*- mode: qore; indent-tabs-mode: nil -*-
+
+/*
+    Qore tar module single-entry extraction destination test
+
+    Copyright (C) 2026 Qore Technologies, s.r.o.
+
+    Permission is hereby granted, free of charge, to any person obtaining a
+    copy of this software and associated documentation files (the "Software"),
+    to deal in the Software without restriction, including without limitation
+    the rights to use, copy, modify, merge, publish, distribute, sublicense,
+    and/or sell copies of the Software, and to permit persons to whom the
+    Software is furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in
+    all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+    DEALINGS IN THE SOFTWARE.
+*/
+
+%modern
+%prepend-module-path "${SCRIPT_DIR}/../qlib"
+
+%requires QUnit
+%requires Util
+%requires FsUtil
+%requires DataProvider
+%requires tar
+%requires TarDataProvider
+
+%exec-class ExtractDestinationTest
+
+#! Tests that a single entry is extracted to a destination directory (module-tar#8)
+/** TarFile::extract() and the file/extract action without a destination, or with a directory as the destination,
+    opened the directory as a file and failed; the entry is now extracted below the directory with its name as its
+    path there, with the checks of extractAll(), and the options of extractAll() apply.  Each case runs in a Program
+    of each execution mode.
+*/
+class ExtractDestinationTest inherits QUnit::Test {
+    private {
+        const Modes = {"ast": EM_AST, "ir": EM_IR, "jit": EM_JIT, "tiered": EM_TIERED};
+
+        const Source = "%modern
+%requires DataProvider
+%requires tar
+%requires TarDataProvider
+
+# runs the given code and returns its value, or the error
+auto sub run(code c) {
+    try {
+        return c();
+    } catch (hash<ExceptionInfo> ex) {
+        return ex.err;
+    }
+}
+
+# makes a file/extract request
+auto sub file_extract(hash<auto> req) {
+    return run(auto sub () {
+        return (new TarDataProvider()).getChildProviderEx(\"file\").getChildProviderEx(\"extract\").doRequest(req);
+    });
+}
+
+# calls TarFile::extract() for an archive in memory
+auto sub do_extract(binary data, string name, *hash<TarExtractOptions> opts) {
+    return run(auto sub () {
+        TarFile tar(data);
+        # \"extract\" is an operator: the method is called by name
+        if (exists opts) {
+            call_object_method(tar, \"extract\", name, opts);
+        } else {
+            call_object_method(tar, \"extract\", name);
+        }
+        return \"ok\";
+    });
+}
+
+# calls TarFile::extract() for an archive file
+auto sub do_extract_file(string path, string name, *hash<TarExtractOptions> opts) {
+    return run(auto sub () {
+        TarFile tar(path, \"r\");
+        call_object_method(tar, \"extract\", name, opts);
+        tar.close();
+        return \"ok\";
+    });
+}
+
+# calls TarFile::extractTo()
+auto sub do_extract_to(binary data, string name, string dest) {
+    return run(auto sub () {
+        TarFile tar(data);
+        tar.extractTo(name, dest);
+        return \"ok\";
+    });
+}
+";
+    }
+
+    private {
+        #! the directory of the test
+        string dir;
+        #! the current directory while the cases run
+        string cwd;
+        #! the destination directory
+        string dest;
+        #! an archive file
+        string archive;
+        #! the archive's data
+        binary archive_data;
+        #! an archive with an entry with an unsafe path and links with unsafe targets
+        binary unsafe_data;
+        #! an archive with duplicate names, a hard link and a directory
+        binary links_data;
+    }
+
+    constructor() : QUnit::Test("ExtractDestination", "1.0", \ARGV) {
+        dir = make_tmp_dir("tar-extract-destination-");
+        cwd = dir + "/cwd";
+        dest = dir + "/dest";
+        archive = dir + "/archive.tar";
+
+        {
+            TarFile tar();
+            tar.add("hello.txt", "hello");
+            tar.add("sub/nested.txt", "nested");
+            tar.add("other.log", "other");
+            archive_data = tar.toData();
+        }
+        {
+            TarFile tar();
+            tar.add("../escaped.txt", "escaped");
+            tar.addSymlink("link", "/etc/passwd");
+            tar.addHardlink("hardlink", "../escaped.txt");
+            tar.add("safe.txt", "safe");
+            unsafe_data = tar.toData();
+        }
+        {
+            TarFile tar();
+            tar.add("dup.txt", "first");
+            tar.add("dup.txt", "second");
+            tar.add("target.txt", "target");
+            tar.addHardlink("hardlink", "target.txt");
+            tar.addDirectory("dir");
+            links_data = tar.toData();
+        }
+        {
+            File f();
+            f.open2(archive, O_CREAT | O_WRONLY | O_TRUNC);
+            f.write(archive_data);
+            f.close();
+        }
+
+        foreach string mode in (keys Modes) {
+            string m = mode;
+            addTestCase("file/extract destination, " + m, sub () { testFileExtract(m); });
+            addTestCase("TarFile::extract(), " + m, sub () { testExtract(m); });
+            addTestCase("extract options, " + m, sub () { testOptions(m); });
+            addTestCase("unsafe entries, " + m, sub () { testUnsafe(m); });
+            addTestCase("errors, " + m, sub () { testErrors(m); });
+            addTestCase("links and duplicates, " + m, sub () { testLinks(m); });
+        }
+        set_return_value(main());
+    }
+
+    destructor() {
+        if (dir) {
+            remove_tree(dir);
+        }
+    }
+
+    setUp() {
+        foreach string path in ((cwd, dest)) {
+            if (is_dir(path)) {
+                remove_tree(path);
+            }
+            mkdir(path);
+        }
+        # the default destination is the current directory
+        chdir(cwd);
+    }
+
+    #! the file/extract action extracts to the current directory by default and below a destination directory
+    private testFileExtract(string mode) {
+        Program p = getProgram(mode);
+
+        # no destination: the current directory
+        auto rv = p.callFunction("file_extract", {"archive_data": archive_data, "entry_name": "hello.txt"});
+        assertEq({"extracted_to": "." + DirSep + "hello.txt", "entry_name": "hello.txt"}, rv,
+            "no destination " + mode);
+        assertEq("hello", ReadOnlyFile::readTextFile(cwd + "/hello.txt"), "no destination content " + mode);
+
+        # a destination directory: the entry's path below it
+        rv = p.callFunction("file_extract", {"archive_path": archive, "entry_name": "sub/nested.txt",
+            "destination": dest});
+        assertEq({"extracted_to": dest + DirSep + "sub/nested.txt", "entry_name": "sub/nested.txt"}, rv,
+            "destination directory " + mode);
+        assertEq("nested", ReadOnlyFile::readTextFile(dest + "/sub/nested.txt"), "directory content " + mode);
+        # only the entry is extracted
+        assertEq(("sub",), listDir(dest), "only the entry " + mode);
+
+        # a file destination: the file that the entry is written to (as before)
+        string file = dest + "/renamed.txt";
+        rv = p.callFunction("file_extract", {"archive_data": archive_data, "entry_name": "hello.txt",
+            "destination": file});
+        assertEq({"extracted_to": file, "entry_name": "hello.txt"}, rv, "file destination " + mode);
+        assertEq("hello", ReadOnlyFile::readTextFile(file), "file content " + mode);
+
+        # an entry that does not exist
+        assertEq("TAR-ERROR", p.callFunction("file_extract", {"archive_data": archive_data,
+            "entry_name": "missing.txt", "destination": dest}), "missing entry " + mode);
+        # an unsafe entry is refused below a directory, and nothing is written outside it
+        assertEq("TAR-SECURITY-ERROR", p.callFunction("file_extract", {"archive_data": unsafe_data,
+            "entry_name": "../escaped.txt", "destination": dest}), "unsafe entry " + mode);
+        assertFalse(exists hstat(dir + "/escaped.txt"), "nothing escaped " + mode);
+    }
+
+    #! TarFile::extract() extracts to the current directory by default and below the destination directory
+    private testExtract(string mode) {
+        Program p = getProgram(mode);
+
+        assertEq("ok", p.callFunction("do_extract", archive_data, "hello.txt"), "no options " + mode);
+        assertEq("hello", ReadOnlyFile::readTextFile(cwd + "/hello.txt"), "no options content " + mode);
+
+        assertEq("ok", p.callFunction("do_extract", archive_data, "sub/nested.txt", <TarExtractOptions>{}),
+            "no destination " + mode);
+        assertEq("nested", ReadOnlyFile::readTextFile(cwd + "/sub/nested.txt"), "no destination content " + mode);
+
+        assertEq("ok", p.callFunction("do_extract_file", archive, "sub/nested.txt",
+            <TarExtractOptions>{"destination": dest}), "destination " + mode);
+        assertEq("nested", ReadOnlyFile::readTextFile(dest + "/sub/nested.txt"), "destination content " + mode);
+        assertEq(("sub",), listDir(dest), "only the entry " + mode);
+
+        # extractTo() still writes the given file
+        assertEq("ok", p.callFunction("do_extract_to", archive_data, "hello.txt", dest + "/file.txt"),
+            "extractTo() " + mode);
+        assertEq("hello", ReadOnlyFile::readTextFile(dest + "/file.txt"), "extractTo() content " + mode);
+    }
+
+    #! the options of extractAll() apply, except include and exclude
+    private testOptions(string mode) {
+        Program p = getProgram(mode);
+
+        # strip_count
+        assertEq("ok", p.callFunction("do_extract", archive_data, "sub/nested.txt",
+            <TarExtractOptions>{"destination": dest, "strip_count": 1}), "strip_count " + mode);
+        assertEq("nested", ReadOnlyFile::readTextFile(dest + "/nested.txt"), "strip_count content " + mode);
+        assertFalse(exists hstat(dest + "/sub"), "strip_count path " + mode);
+        # a strip_count that removes the whole name
+        assertEq("TAR-ERROR", p.callFunction("do_extract", archive_data, "hello.txt",
+            <TarExtractOptions>{"destination": dest, "strip_count": 1}), "strip_count too large " + mode);
+        assertFalse(exists hstat(dest + "/hello.txt"), "nothing stripped away extracted " + mode);
+
+        # include and exclude do not apply to the named entry
+        assertEq("ok", p.callFunction("do_extract", archive_data, "hello.txt",
+            <TarExtractOptions>{"destination": dest, "include": ("*.log",), "exclude": ("*.txt",)}),
+            "include/exclude " + mode);
+        assertEq("hello", ReadOnlyFile::readTextFile(dest + "/hello.txt"), "include/exclude content " + mode);
+        assertFalse(exists hstat(dest + "/other.log"), "only the entry with include " + mode);
+
+        # overwrite: False leaves an existing file as it is, as extractAll() does
+        writeText(dest + "/hello.txt", "old");
+        assertEq("ok", p.callFunction("do_extract", archive_data, "hello.txt",
+            <TarExtractOptions>{"destination": dest, "overwrite": False}), "no overwrite " + mode);
+        assertEq("old", ReadOnlyFile::readTextFile(dest + "/hello.txt"), "not overwritten " + mode);
+        # overwriting is the default
+        assertEq("ok", p.callFunction("do_extract", archive_data, "hello.txt",
+            <TarExtractOptions>{"destination": dest}), "overwrite " + mode);
+        assertEq("hello", ReadOnlyFile::readTextFile(dest + "/hello.txt"), "overwritten " + mode);
+    }
+
+    #! an entry with an unsafe path or link target is refused, as by extractAll(); other entries do not matter
+    private testUnsafe(string mode) {
+        Program p = getProgram(mode);
+
+        assertEq("TAR-SECURITY-ERROR", p.callFunction("do_extract", unsafe_data, "../escaped.txt",
+            <TarExtractOptions>{"destination": dest}), "unsafe path " + mode);
+        assertFalse(exists hstat(dir + "/escaped.txt"), "nothing escaped " + mode);
+        assertEq("TAR-SECURITY-ERROR", p.callFunction("do_extract", unsafe_data, "link",
+            <TarExtractOptions>{"destination": dest}), "unsafe symlink target " + mode);
+        assertFalse(exists hlstat(dest + "/link"), "no symlink " + mode);
+        assertEq("TAR-SECURITY-ERROR", p.callFunction("do_extract", unsafe_data, "hardlink",
+            <TarExtractOptions>{"destination": dest}), "unsafe hard link target " + mode);
+        assertFalse(exists hlstat(dest + "/hardlink"), "no hard link " + mode);
+        assertEq("TAR-SECURITY-ERROR", p.callFunction("file_extract", {"archive_data": unsafe_data,
+            "entry_name": "hardlink", "destination": dest}), "file/extract unsafe hard link target " + mode);
+        assertEq("TAR-SECURITY-ERROR", p.callFunction("file_extract", {"archive_data": unsafe_data,
+            "entry_name": "link"}), "file/extract unsafe symlink target in the current directory " + mode);
+        assertFalse(exists hlstat(cwd + "/link"), "no symlink in the current directory " + mode);
+        # a safe entry of the same archive is extracted
+        assertEq("ok", p.callFunction("do_extract", unsafe_data, "safe.txt", <TarExtractOptions>{"destination": dest}),
+            "safe entry " + mode);
+        assertEq("safe", ReadOnlyFile::readTextFile(dest + "/safe.txt"), "safe entry content " + mode);
+        assertEq(("safe.txt",), listDir(dest), "only the safe entry " + mode);
+    }
+
+    #! duplicate names, hard links and directories
+    private testLinks(string mode) {
+        Program p = getProgram(mode);
+
+        # the first entry with a name is extracted, as by extractTo() and read()
+        assertEq("ok", p.callFunction("do_extract", links_data, "dup.txt", <TarExtractOptions>{"destination": dest}),
+            "duplicate " + mode);
+        assertEq("first", ReadOnlyFile::readTextFile(dest + "/dup.txt"), "first duplicate " + mode);
+        assertEq("ok", p.callFunction("do_extract_to", links_data, "dup.txt", dest + "/dup-to.txt"),
+            "duplicate extractTo() " + mode);
+        assertEq("first", ReadOnlyFile::readTextFile(dest + "/dup-to.txt"), "first duplicate extractTo() " + mode);
+
+        # a hard link needs its target below the destination
+        assertEq("TAR-ERROR", p.callFunction("do_extract", links_data, "hardlink",
+            <TarExtractOptions>{"destination": dest}), "hard link without its target " + mode);
+        assertFalse(exists hlstat(dest + "/hardlink"), "no hard link without its target " + mode);
+        assertEq("ok", p.callFunction("do_extract", links_data, "target.txt", <TarExtractOptions>{"destination": dest}),
+            "hard link target " + mode);
+        assertEq("ok", p.callFunction("do_extract", links_data, "hardlink", <TarExtractOptions>{"destination": dest}),
+            "hard link " + mode);
+        assertEq("target", ReadOnlyFile::readTextFile(dest + "/hardlink"), "hard link content " + mode);
+        assertEq(hstat(dest + "/target.txt").inode, hstat(dest + "/hardlink").inode, "hard link inode " + mode);
+
+        # a directory entry
+        assertEq("ok", p.callFunction("do_extract", links_data, "dir/", <TarExtractOptions>{"destination": dest}),
+            "directory " + mode);
+        assertTrue(is_dir(dest + "/dir"), "directory extracted " + mode);
+
+        # a destination with a trailing separator
+        auto rv = p.callFunction("file_extract", {"archive_data": links_data, "entry_name": "target.txt",
+            "destination": dest + "/"});
+        assertEq(dest + "/target.txt", rv.extracted_to, "trailing separator " + mode);
+    }
+
+    #! errors for missing entries and destinations, and for sandboxed callers
+    private testErrors(string mode) {
+        Program p = getProgram(mode);
+
+        assertEq("TAR-ERROR", p.callFunction("do_extract", archive_data, "missing.txt",
+            <TarExtractOptions>{"destination": dest}), "missing entry " + mode);
+        assertEq((), listDir(dest), "nothing extracted " + mode);
+        # a destination directory that does not exist is created, as by extractAll()
+        assertEq("ok", p.callFunction("do_extract", archive_data, "hello.txt",
+            <TarExtractOptions>{"destination": dest + "/new"}), "new destination " + mode);
+        assertEq("hello", ReadOnlyFile::readTextFile(dest + "/new/hello.txt"), "new destination content " + mode);
+
+        # the file-system policy of a sandbox applies to the destination directory
+        p = getProgram(mode, True);
+        assertEq("FILESYSTEM-ACCESS-DENIED", p.callFunction("do_extract", archive_data, "hello.txt",
+            <TarExtractOptions>{"destination": dest + "/sandbox"}), "sandbox " + mode);
+        assertFalse(exists hstat(dest + "/sandbox"), "nothing extracted for the sandbox " + mode);
+    }
+
+    #! returns the sorted names in a directory
+    private static list<string> listDir(string path) {
+        Dir d();
+        d.chdir(path);
+        return sort(d.list() ?? ());
+    }
+
+    #! writes a text file
+    private static writeText(string path, string text) {
+        File f();
+        f.open2(path, O_CREAT | O_WRONLY | O_TRUNC);
+        f.write(text);
+        f.close();
+    }
+
+    #! returns a Program in the given mode
+    private Program getProgram(string mode, *bool sandbox) {
+        Program p(PO_NEW_STYLE);
+        if (sandbox) {
+            SandboxManager sm();
+            sm.setFilesystemDefaultPolicy(False);
+            p.setSandboxManager(sm);
+        }
+        p.setExecMode(Modes{mode});
+        p.parse(Source, "extract-destination");
+        return p;
+    }
+}

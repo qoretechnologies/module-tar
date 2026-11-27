@@ -47,6 +47,10 @@ AbstractDataProvider dp = DataProvider::getFactoryObjectFromStringEx("tar{}/arch
     |/stream/extract|stream-extract|Stream extract large files
     |/entry/delete|delete-entry|Delete entry from archive
 
+    The \c destination of \c /file/extract is a directory or a file: a directory (by default the current directory)
+    receives the entry below it with the entry's name as its path there, with the checks of \c /archive/extract, and
+    \c extracted_to is that path; any other destination is the file that the entry is written to.
+
     @section tardpexamples Data Provider Examples
 
     @code{.py}

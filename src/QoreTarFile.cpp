@@ -1134,6 +1134,14 @@ QoreListNode* QoreTarFile::extractAll(const char* destPath, const QoreHashNode* 
                                        ExceptionSink* xsink,
                                        ResolvedCallReferenceNode* progress_callback,
                                        int64 total_entries) {
+    return extractEntries(destPath, opts, nullptr, xsink, progress_callback, total_entries);
+}
+
+// Extract the given entry, or all entries, to a directory
+QoreListNode* QoreTarFile::extractEntries(const char* destPath, const QoreHashNode* opts, const char* only_name,
+                                          ExceptionSink* xsink,
+                                          ResolvedCallReferenceNode* progress_callback,
+                                          int64 total_entries) {
     TarUtf8LocaleHelper utf8_locale;
     if (!checkOpen(xsink, false)) {
         return nullptr;
@@ -1195,6 +1203,13 @@ QoreListNode* QoreTarFile::extractAll(const char* destPath, const QoreHashNode* 
     archive_write_disk_set_options(disk, flags);
     archive_write_disk_set_standard_lookup(disk);
 
+    // a single entry is looked up by its name in NFC, as names are compared
+    std::string key;
+    if (only_name) {
+        key = tar_nfc(only_name);
+    }
+    bool found = false;
+
     struct archive_entry* entry;
     while (nextHeader(entry, xsink)) {
         // check for interrupt during extraction
@@ -1206,6 +1221,11 @@ QoreListNode* QoreTarFile::extractAll(const char* destPath, const QoreHashNode* 
         // archive_entry_set_pathname invalidates libarchive's
         std::string entry_name = tar_entry_pathname(entry);
 
+        // a single entry: the other entries are skipped (their data is skipped by the next header read)
+        if (only_name && entry_name != key) {
+            continue;
+        }
+
         // Security check: prevent path traversal attacks
         if (!isPathSafe(entry_name.c_str())) {
             xsink->raiseException("TAR-SECURITY-ERROR",
@@ -1214,8 +1234,8 @@ QoreListNode* QoreTarFile::extractAll(const char* destPath, const QoreHashNode* 
             break;
         }
 
-        // Apply include/exclude filters (on original name before stripping)
-        if (!matchesFilters(entry_name.c_str(), include_patterns, exclude_patterns)) {
+        // Apply include/exclude filters (on original name before stripping); they do not apply to a single entry
+        if (!only_name && !matchesFilters(entry_name.c_str(), include_patterns, exclude_patterns)) {
             continue;
         }
 
@@ -1224,9 +1244,15 @@ QoreListNode* QoreTarFile::extractAll(const char* destPath, const QoreHashNode* 
         if (strip_count > 0) {
             effective_name = stripPathComponents(entry_name, strip_count);
             if (effective_name.empty()) {
+                if (only_name) {
+                    xsink->raiseException("TAR-ERROR", "entry '%s' has no more than %d path components, which "
+                        "strip_count removes", entry_name.c_str(), strip_count);
+                    break;
+                }
                 continue;  // Not enough components; skip this entry
             }
         }
+        found = true;
 
         std::string dest_path = destination + "/" + effective_name;
         archive_entry_set_pathname(entry, dest_path.c_str());
@@ -1247,6 +1273,12 @@ QoreListNode* QoreTarFile::extractAll(const char* destPath, const QoreHashNode* 
             if (strip_count > 0) {
                 hl_target = stripPathComponents(hl_target, strip_count);
                 if (hl_target.empty()) {
+                    if (only_name) {
+                        xsink->raiseException("TAR-ERROR", "the target '%s' of hardlink entry '%s' has no more "
+                            "than %d path components, which strip_count removes", tar_nfc(raw_hardlink_target).c_str(),
+                            entry_name.c_str(), strip_count);
+                        break;
+                    }
                     continue;  // Target stripped away; skip
                 }
             }
@@ -1309,6 +1341,11 @@ QoreListNode* QoreTarFile::extractAll(const char* destPath, const QoreHashNode* 
                 break;
             }
         }
+
+        // a single entry is extracted once: the first entry with the name, as extractTo() does
+        if (only_name) {
+            break;
+        }
     }
 
     archive_write_close(disk);
@@ -1317,13 +1354,17 @@ QoreListNode* QoreTarFile::extractAll(const char* destPath, const QoreHashNode* 
     if (*xsink) {
         return nullptr;
     }
+    if (only_name && !found) {
+        xsink->raiseException("TAR-ERROR", "entry '%s' not found", only_name);
+        return nullptr;
+    }
     return extracted_names.release();
 }
 
-// Extract single entry
-void QoreTarFile::extractEntry(const char* name, const char* destPath, ExceptionSink* xsink) {
-    TarUtf8LocaleHelper utf8_locale;
-    extractTo(name, destPath, xsink);
+// Extract single entry to a directory
+void QoreTarFile::extractEntry(const char* name, const char* destPath, const QoreHashNode* opts,
+                               ExceptionSink* xsink) {
+    ReferenceHolder<QoreListNode> names(extractEntries(destPath, opts, name, xsink), xsink);
 }
 
 // Extract entry to destination
